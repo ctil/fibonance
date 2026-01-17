@@ -1,10 +1,10 @@
 import { parse } from "yaml";
-import type { Config } from "./types";
+import type { Config, RawConfig } from "./types";
 
 export function parseConfig(yamlContent: string): Config {
-  const config = parse(yamlContent) as Config;
+  const raw = parse(yamlContent) as RawConfig;
 
-  const totalPercentage = config.stocks.reduce(
+  const totalPercentage = raw.stocks.reduce(
     (sum, stock) => sum + stock.target_percentage,
     0
   );
@@ -16,7 +16,7 @@ export function parseConfig(yamlContent: string): Config {
   // Validate that no symbol appears multiple times (as primary or alternative)
   const symbolOwner = new Map<string, string>();
 
-  for (const stock of config.stocks) {
+  for (const stock of raw.stocks) {
     if (symbolOwner.has(stock.symbol)) {
       const owner = symbolOwner.get(stock.symbol);
       throw new Error(
@@ -36,7 +36,15 @@ export function parseConfig(yamlContent: string): Config {
     }
   }
 
-  return config;
+  // Transform raw types to clean camelCase types
+  return {
+    stocks: raw.stocks.map((stock) => ({
+      symbol: stock.symbol,
+      targetPercentage: stock.target_percentage,
+      description: stock.description,
+      alternatives: stock.alternatives,
+    })),
+  };
 }
 
 export async function parseConfigFile(filePath: string): Promise<Config> {

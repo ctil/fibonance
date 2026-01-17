@@ -85,13 +85,13 @@ export function rebalanceCalc(
   for (const stock of config.stocks) {
     const currentAmount = amountsBySymbol.get(stock.symbol) ?? 0;
     const currentPercentage = (currentAmount / total) * 100;
-    const drift = currentPercentage - stock.target_percentage;
+    const drift = currentPercentage - stock.targetPercentage;
     const amountNeeded = Math.round(total * (-drift / 100)) || 0; // || 0 converts -0 to 0
 
     symbols[stock.symbol] = {
       amount: currentAmount,
       currentPercentage,
-      targetPercentage: stock.target_percentage,
+      targetPercentage: stock.targetPercentage,
       drift,
       amountNeeded,
     };
@@ -113,7 +113,7 @@ export function depositCalc(config: Config, amountCents: number): DepositResult 
 
   for (const stock of config.stocks) {
     const amountToDeposit = Math.floor(
-      amountCents * (stock.target_percentage / 100)
+      amountCents * (stock.targetPercentage / 100)
     );
     allocations[stock.symbol] = amountToDeposit;
     total += amountToDeposit;
