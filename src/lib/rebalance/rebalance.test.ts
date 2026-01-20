@@ -27,7 +27,7 @@ interface TestDefinition {
   tolerance: number;
 }
 
-const testsDir = join(import.meta.dir, "../../../tests");
+const testsDir = join(import.meta.dir, "tests");
 const definitionsDir = join(testsDir, "definitions");
 
 const testFiles = readdirSync(definitionsDir).filter((f) => f.endsWith(".json"));
