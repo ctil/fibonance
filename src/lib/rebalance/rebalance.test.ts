@@ -1,5 +1,5 @@
 import { describe, it, expect } from "bun:test";
-import { rebalanceCalc } from "./rebalance";
+import { rebalance } from "./rebalance";
 import { parseConfig } from "./config";
 import { readdirSync } from "fs";
 import { join } from "path";
@@ -49,7 +49,7 @@ describe("rebalance", () => {
       const csvContent = await Bun.file(csvPath).text();
 
       const config = parseConfig(configContent);
-      const result = rebalanceCalc(
+      const result = rebalance(
         config,
         csvContent,
         testDef.input.depositAmount

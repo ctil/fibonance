@@ -47,7 +47,7 @@ function parseCsv(content: string): CsvRow[] {
 /**
  * Calculate rebalancing recommendations.
  */
-export function rebalanceCalc(
+export function rebalance(
   config: Config,
   csvContent: string,
   depositCents: number = 0
@@ -107,7 +107,7 @@ export function rebalanceCalc(
 /**
  * Calculate how to allocate a deposit across assets.
  */
-export function depositCalc(config: Config, amountCents: number): DepositResult {
+export function deposit(config: Config, amountCents: number): DepositResult {
   const allocations: Record<string, number> = {};
   let total = 0;
 

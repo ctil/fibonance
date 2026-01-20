@@ -1,4 +1,4 @@
 export * from "./types";
 export { parseConfig, parseConfigFile } from "./config";
-export { rebalanceCalc, depositCalc } from "./rebalance";
+export { rebalance, deposit } from "./rebalance";
 export { amountToInt, formatAmount } from "./utils";
