@@ -569,3 +569,10 @@ tr:hover td {
     padding: 0 var(--space-8);
   }
 }
+
+
+/* Global Styles */
+
+body {
+  background-color: var(--color-cream-200);
+}

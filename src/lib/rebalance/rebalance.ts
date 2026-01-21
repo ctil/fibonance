@@ -108,15 +108,22 @@ export function rebalance(
  * Calculate how to allocate a deposit across assets.
  */
 export function deposit(config: Config, amountCents: number): DepositResult {
-  const allocations: Record<string, number> = {};
+  const allocationMap: Record<string, number> = {};
   let total = 0;
 
   for (const stock of config.stocks) {
     const amountToDeposit = Math.floor(
       amountCents * (stock.targetPercentage / 100)
     );
-    allocations[stock.symbol] = amountToDeposit;
+    allocationMap[stock.symbol] = amountToDeposit;
     total += amountToDeposit;
+  }
+  const allocations = [];
+  for (const symbol in allocationMap) {
+    allocations.push({
+      symbol,
+      amount: allocationMap[symbol]
+    });
   }
 
   return {

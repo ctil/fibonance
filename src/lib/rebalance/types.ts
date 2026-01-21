@@ -37,6 +37,6 @@ export interface RebalanceResult {
 }
 
 export interface DepositResult {
-  allocations: Record<string, number>;
+  allocations: { symbol: string; amount: number }[];
   total: number;
 }
