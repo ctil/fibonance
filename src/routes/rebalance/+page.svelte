@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { deposit, DEFAULT_CONFIG, formatAmount } from "$lib/rebalance";
 	import CopyText from "$lib/components/CopyText.svelte";
+	import InputCash from "$lib/components/InputCash.svelte";
 
 	let toDeposit = $state(null);
 	let toDepositCents = $derived(toDeposit ? toDeposit * 100 : 0);
 	let rebalanceResult = $derived(deposit(DEFAULT_CONFIG, toDepositCents));
 </script>
 
-<h1>Deposit</h1>
+<h3>Deposit</h3>
 <div class="inputs">
-	<label for="">Amount to Deposit</label>
-	<input type="number" class="mb-4" bind:value={toDeposit} />
+	<InputCash label="Amount to deposit" bind:value={toDeposit} />
 
 	{#each rebalanceResult.allocations as allocation}
 		<div class="allocation mb-2">
@@ -22,6 +22,8 @@
 		</div>
 	{/each}
 </div>
+
+<h3>Rebalance</h3>
 
 <style>
 	span {
