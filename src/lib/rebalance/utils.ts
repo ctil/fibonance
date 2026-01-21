@@ -11,7 +11,7 @@ export function amountToInt(amount: string): number {
 /**
  * Format cents (integer) to a dollar string.
  */
-export function formatAmount(amount: number, includeCommas: boolean): string {
+export function formatAmount(amount: number, includeSymbols?: boolean): string {
   const isNegative = amount < 0;
   const absAmount = Math.abs(amount);
   let amountStr = absAmount.toString();
@@ -24,12 +24,16 @@ export function formatAmount(amount: number, includeCommas: boolean): string {
   let dollars = amountStr.slice(0, -2);
   const cents = amountStr.slice(-2);
 
-  if (includeCommas) {
+  if (includeSymbols) {
     for (let i = dollars.length - 3; i > 0; i -= 3) {
       dollars = dollars.slice(0, i) + "," + dollars.slice(i);
     }
   }
 
-  const formatted = "$" + dollars + "." + cents;
+
+  let formatted = dollars + "." + cents;
+  if (includeSymbols) {
+    formatted = '$' + formatted;
+  }
   return isNegative ? "-" + formatted : formatted;
 }
