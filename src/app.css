@@ -333,7 +333,9 @@ label {
 }
 
 .card-body {
-  padding: var(--space-6);
+  padding-left: var(--space-6);
+  padding-right: var(--space-6);
+  padding-bottom: var(--space-6);
 }
 
 .card-footer {

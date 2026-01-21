@@ -8,16 +8,18 @@
 	let rebalanceResult = $derived(deposit(DEFAULT_CONFIG, toDepositCents));
 </script>
 
-<div class="inputs">
-	<h3 style="text-align: center">Deposit</h3>
-	<InputCash label="Amount" bind:value={toDeposit} />
+<div class="inputs card">
+	<h3 style="text-align: center" class="card-header">Deposit</h3>
+	<div class="card-body">
+		<InputCash label="Amount" bind:value={toDeposit} />
 
-	{#each rebalanceResult.allocations as allocation}
-		<div class="allocation mb-2">
-			<span><b class="mr-3">{allocation.symbol}</b></span>
-			<CopyCash cents={allocation.amount} />
-		</div>
-	{/each}
+		{#each rebalanceResult.allocations as allocation}
+			<div class="allocation mb-2">
+				<span><b class="mr-3">{allocation.symbol}</b></span>
+				<CopyCash cents={allocation.amount} />
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
