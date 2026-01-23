@@ -9,6 +9,7 @@ A = P(1 + r/n)^(nt)
 ```
 
 Where:
+
 - **A** = final amount
 - **P** = principal (initial investment)
 - **r** = annual interest rate (as a decimal, e.g., 0.07 for 7%)
@@ -19,7 +20,10 @@ Where:
 
 ```javascript
 function compoundInterest(principal, annualRate, compoundsPerYear, years) {
-  return principal * Math.pow(1 + annualRate / compoundsPerYear, compoundsPerYear * years);
+  return (
+    principal *
+    Math.pow(1 + annualRate / compoundsPerYear, compoundsPerYear * years)
+  );
 }
 
 // Example: $10,000 at 7% annual rate, compounded annually for 10 years
@@ -44,13 +48,13 @@ annualCompoundInterest(10000, 0.07, 10); // $19,671.51
 
 ### Different Compounding Frequencies
 
-| Frequency    | n value |
-|--------------|---------|
-| Annually     | 1       |
-| Semi-annually| 2       |
-| Quarterly    | 4       |
-| Monthly      | 12      |
-| Daily        | 365     |
+| Frequency     | n value |
+| ------------- | ------- |
+| Annually      | 1       |
+| Semi-annually | 2       |
+| Quarterly     | 4       |
+| Monthly       | 12      |
+| Daily         | 365     |
 
 ```javascript
 // Monthly compounding: $10,000 at 7% for 10 years
@@ -74,7 +78,12 @@ continuousCompoundInterest(10000, 0.07, 10); // $20,137.53
 To calculate compound interest with regular deposits:
 
 ```javascript
-function compoundWithContributions(principal, monthlyContribution, annualRate, years) {
+function compoundWithContributions(
+  principal,
+  monthlyContribution,
+  annualRate,
+  years,
+) {
   const monthlyRate = annualRate / 12;
   const months = years * 12;
 
@@ -82,7 +91,8 @@ function compoundWithContributions(principal, monthlyContribution, annualRate, y
   const principalFV = principal * Math.pow(1 + monthlyRate, months);
 
   // Future value of monthly contributions (annuity formula)
-  const contributionsFV = monthlyContribution *
+  const contributionsFV =
+    monthlyContribution *
     ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
 
   return principalFV + contributionsFV;
@@ -135,16 +145,16 @@ In SvelteKit, `$lib` is a built-in alias that maps to `src/lib`. This allows cle
 
 ```typescript
 // Instead of:
-import { rebalanceCalc } from '../../lib/rebalance';
+import { rebalanceCalc } from "../../lib/rebalance";
 
 // You can write:
-import { rebalanceCalc } from '$lib/rebalance';
+import { rebalanceCalc } from "$lib/rebalance";
 ```
 
 If `src/lib/index.ts` exists and re-exports modules, you can import directly from `$lib`:
 
 ```typescript
-import { rebalanceCalc } from '$lib';
+import { rebalanceCalc } from "$lib";
 ```
 
 The intermediate `index.ts` barrel file is optional—you can import from deeper paths like `$lib/rebalance` if you prefer explicit imports or don't need the top-level barrel.
@@ -220,11 +230,11 @@ Use `+page.ts` for universal load functions (runs on server and client):
 
 ```typescript
 // src/routes/portfolio/[id]/+page.ts
-import type { PageLoad } from './$types';
+import type { PageLoad } from "./$types";
 
 export const load: PageLoad = ({ params }) => {
   return {
-    portfolioId: params.id
+    portfolioId: params.id,
   };
 };
 ```
@@ -233,7 +243,7 @@ Use `+page.server.ts` for server-only loading (database access, secrets):
 
 ```typescript
 // src/routes/portfolio/[id]/+page.server.ts
-import type { PageServerLoad } from './$types';
+import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
   const portfolio = await db.getPortfolio(params.id);
@@ -279,20 +289,20 @@ src/routes/
 The global stylesheet `src/app.css` provides a design system with CSS custom properties and utility classes. Import it in `+layout.svelte`:
 
 ```typescript
-import '../app.css';
+import "../app.css";
 ```
 
 ### Color Palette
 
 Five color families, each with shades from 50 (lightest) to 900 (darkest):
 
-| Family      | Variable prefix     | Use case                    |
-|-------------|---------------------|-----------------------------|
-| Chestnut    | `--color-chestnut-` | Primary actions, branding   |
-| Cream       | `--color-cream-`    | Backgrounds, text, borders  |
-| Meadow      | `--color-meadow-`   | Success states, accents     |
-| Sage        | `--color-sage-`     | Secondary elements          |
-| Sky         | `--color-sky-`      | Info states, highlights     |
+| Family   | Variable prefix     | Use case                   |
+| -------- | ------------------- | -------------------------- |
+| Chestnut | `--color-chestnut-` | Primary actions, branding  |
+| Cream    | `--color-cream-`    | Backgrounds, text, borders |
+| Meadow   | `--color-meadow-`   | Success states, accents    |
+| Sage     | `--color-sage-`     | Secondary elements         |
+| Sky      | `--color-sky-`      | Info states, highlights    |
 
 ```css
 /* Using color variables */
@@ -341,9 +351,12 @@ var(--color-text-muted)     /* Subtle text */
 #### Financial Values
 
 ```html
-<span class="value-positive">+$1,234.56</span>  <!-- Green, for gains/buy -->
-<span class="value-negative">-$567.89</span>    <!-- Red, for losses/sell -->
-<span class="value-neutral">$0.00</span>        <!-- Gray, no change -->
+<span class="value-positive">+$1,234.56</span>
+<!-- Green, for gains/buy -->
+<span class="value-negative">-$567.89</span>
+<!-- Red, for losses/sell -->
+<span class="value-neutral">$0.00</span>
+<!-- Gray, no change -->
 ```
 
 #### Backgrounds
@@ -382,16 +395,16 @@ var(--color-text-muted)     /* Subtle text */
 
 Tailwind-style utility classes for padding, margin, and gap. Available sizes: 0, 1, 2, 3, 4, 5, 6, 8 (plus 10, 12, 16 for padding).
 
-| Size | Value        |
-|------|--------------|
-| 0    | 0            |
-| 1    | 0.25rem (4px)|
-| 2    | 0.5rem (8px) |
-| 3    | 0.75rem (12px)|
-| 4    | 1rem (16px)  |
-| 5    | 1.25rem (20px)|
-| 6    | 1.5rem (24px)|
-| 8    | 2rem (32px)  |
+| Size | Value          |
+| ---- | -------------- |
+| 0    | 0              |
+| 1    | 0.25rem (4px)  |
+| 2    | 0.5rem (8px)   |
+| 3    | 0.75rem (12px) |
+| 4    | 1rem (16px)    |
+| 5    | 1.25rem (20px) |
+| 6    | 1.5rem (24px)  |
+| 8    | 2rem (32px)    |
 
 #### Padding
 

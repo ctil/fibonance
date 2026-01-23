@@ -21,7 +21,7 @@ export function calculateInterest(
   monthlyContribution: number,
   annualRatePercent: number,
   years: number,
-  frequency: CompoundFrequency = "annually"
+  frequency: CompoundFrequency = "annually",
 ): number {
   const annualRate = annualRatePercent / 100;
   const periodsPerYear = PERIODS_PER_YEAR[frequency];
@@ -38,7 +38,8 @@ export function calculateInterest(
   let contributionsFV = 0;
   if (contributionPerPeriod > 0 && periodRate > 0) {
     contributionsFV =
-      contributionPerPeriod * ((Math.pow(1 + periodRate, totalPeriods) - 1) / periodRate);
+      contributionPerPeriod *
+      ((Math.pow(1 + periodRate, totalPeriods) - 1) / periodRate);
   } else if (contributionPerPeriod > 0) {
     contributionsFV = contributionPerPeriod * totalPeriods;
   }

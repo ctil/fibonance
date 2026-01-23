@@ -1,4 +1,9 @@
-import type { Config, RebalanceResult, SymbolData, DepositResult } from "./types";
+import type {
+  Config,
+  RebalanceResult,
+  SymbolData,
+  DepositResult,
+} from "./types";
 import { amountToInt } from "./utils";
 
 interface CsvRow {
@@ -50,7 +55,7 @@ function parseCsv(content: string): CsvRow[] {
 export function rebalance(
   config: Config,
   csvContent: string,
-  depositCents: number = 0
+  depositCents: number = 0,
 ): RebalanceResult {
   // Build a map from any symbol (primary or alternative) to its primary symbol
   const symbolToPrimary = new Map<string, string>();
@@ -76,7 +81,7 @@ export function rebalance(
     total += amount;
     amountsBySymbol.set(
       primarySymbol,
-      (amountsBySymbol.get(primarySymbol) ?? 0) + amount
+      (amountsBySymbol.get(primarySymbol) ?? 0) + amount,
     );
   }
 
@@ -113,7 +118,7 @@ export function deposit(config: Config, amountCents: number): DepositResult {
 
   for (const stock of config.stocks) {
     const amountToDeposit = Math.floor(
-      amountCents * (stock.targetPercentage / 100)
+      amountCents * (stock.targetPercentage / 100),
     );
     allocationMap[stock.symbol] = amountToDeposit;
     total += amountToDeposit;
@@ -122,7 +127,7 @@ export function deposit(config: Config, amountCents: number): DepositResult {
   for (const symbol in allocationMap) {
     allocations.push({
       symbol,
-      amount: allocationMap[symbol]
+      amount: allocationMap[symbol],
     });
   }
 

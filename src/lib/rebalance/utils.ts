@@ -30,10 +30,9 @@ export function formatAmount(amount: number, includeSymbols?: boolean): string {
     }
   }
 
-
   let formatted = dollars + "." + cents;
   if (includeSymbols) {
-    formatted = '$' + formatted;
+    formatted = "$" + formatted;
   }
   return isNegative ? "-" + formatted : formatted;
 }

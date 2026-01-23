@@ -30,7 +30,9 @@ interface TestDefinition {
 const testsDir = join(import.meta.dir, "tests");
 const definitionsDir = join(testsDir, "definitions");
 
-const testFiles = readdirSync(definitionsDir).filter((f) => f.endsWith(".json"));
+const testFiles = readdirSync(definitionsDir).filter((f) =>
+  f.endsWith(".json"),
+);
 
 describe("rebalance", () => {
   for (const testFile of testFiles) {
@@ -49,17 +51,15 @@ describe("rebalance", () => {
       const csvContent = await Bun.file(csvPath).text();
 
       const config = parseConfig(configContent);
-      const result = rebalance(
-        config,
-        csvContent,
-        testDef.input.depositAmount
-      );
+      const result = rebalance(config, csvContent, testDef.input.depositAmount);
 
       // Check total
       expect(result.total).toBe(testDef.expected.total);
 
       // Check each symbol
-      for (const [symbol, expected] of Object.entries(testDef.expected.symbols)) {
+      for (const [symbol, expected] of Object.entries(
+        testDef.expected.symbols,
+      )) {
         const actual = result.symbols[symbol];
         expect(actual).toBeDefined();
 
@@ -67,7 +67,7 @@ describe("rebalance", () => {
 
         expect(actual.currentPercentage).toBeCloseTo(
           expected.currentPercentage,
-          3
+          3,
         );
 
         expect(actual.drift).toBeCloseTo(expected.drift, 3);

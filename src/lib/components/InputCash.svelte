@@ -1,12 +1,12 @@
 <script lang="ts">
-  interface Props {
-    value?: number | null;
-    label: string;
-  }
+    interface Props {
+        value?: number | null;
+        label: string;
+    }
 
-  const uid = $props.id();
+    const uid = $props.id();
 
-  let { value = $bindable(), label }: Props = $props();
+    let { value = $bindable(), label }: Props = $props();
 </script>
 
 <label for="{uid}-amount">{label}</label>

@@ -22,16 +22,16 @@ export const DEFAULT_CONFIG: Config = {
       symbol: "FBTC",
       targetPercentage: 1,
       description: "Bitcoin ETF",
-    }
-  ]
-}
+    },
+  ],
+};
 
 export function parseConfig(yamlContent: string): Config {
   const raw = parse(yamlContent) as RawConfig;
 
   const totalPercentage = raw.stocks.reduce(
     (sum, stock) => sum + stock.target_percentage,
-    0
+    0,
   );
 
   if (Math.abs(totalPercentage - 100.0) > 1e-9) {
@@ -45,7 +45,7 @@ export function parseConfig(yamlContent: string): Config {
     if (symbolOwner.has(stock.symbol)) {
       const owner = symbolOwner.get(stock.symbol);
       throw new Error(
-        `symbol ${stock.symbol} appears multiple times (primary for both ${owner} and ${stock.symbol})`
+        `symbol ${stock.symbol} appears multiple times (primary for both ${owner} and ${stock.symbol})`,
       );
     }
     symbolOwner.set(stock.symbol, stock.symbol);
@@ -54,7 +54,7 @@ export function parseConfig(yamlContent: string): Config {
       if (symbolOwner.has(alt)) {
         const owner = symbolOwner.get(alt);
         throw new Error(
-          `symbol ${alt} appears multiple times (primary/alternative for ${owner}, alternative for ${stock.symbol})`
+          `symbol ${alt} appears multiple times (primary/alternative for ${owner}, alternative for ${stock.symbol})`,
         );
       }
       symbolOwner.set(alt, stock.symbol);
