@@ -333,9 +333,7 @@ label {
 }
 
 .card-body {
-  padding-left: var(--space-6);
-  padding-right: var(--space-6);
-  padding-bottom: var(--space-6);
+  padding: var(--space-6);
 }
 
 .card-footer {
@@ -375,6 +373,8 @@ tr:hover td {
 .text-success { color: var(--color-success); }
 .text-warning { color: var(--color-warning); }
 .text-error { color: var(--color-error); }
+
+.text-center { text-align: center; }
 
 .bg-primary { background-color: var(--color-primary); }
 .bg-surface { background-color: var(--color-surface); }
