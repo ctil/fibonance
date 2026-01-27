@@ -1,34 +1,34 @@
 {
-  "name": "rounding_edge_case",
-  "description": "Non-round dollar amounts test calculation precision",
-  "command": "rebalance",
-  "configFile": "configs/simple.yaml",
-  "input": {
-    "csvFile": "portfolios/rounding.csv",
-    "depositAmount": 0
-  },
-  "expected": {
-    "total": 3333333,
-    "symbols": {
-      "VTI": {
-        "amount": 2366667,
-        "currentPercentage": 71.00001,
-        "drift": 0.00001,
-        "amountNeeded": -1
-      },
-      "VXUS": {
-        "amount": 600000,
-        "currentPercentage": 18.0,
-        "drift": 0.0,
-        "amountNeeded": 0
-      },
-      "BND": {
-        "amount": 366666,
-        "currentPercentage": 10.99998,
-        "drift": -0.00002,
-        "amountNeeded": 1
-      }
-    }
-  },
-  "tolerance": 0.01
+    "name": "rounding_edge_case",
+    "description": "Non-round dollar amounts test calculation precision",
+    "command": "rebalance",
+    "configFile": "configs/simple.yaml",
+    "input": {
+        "csvFile": "portfolios/rounding.csv",
+        "depositAmount": 0
+    },
+    "expected": {
+        "total": 3333333,
+        "symbols": {
+            "VTI": {
+                "amount": 2366667,
+                "currentPercentage": 71.00001,
+                "drift": 0.00001,
+                "amountNeeded": -1
+            },
+            "VXUS": {
+                "amount": 600000,
+                "currentPercentage": 18.0,
+                "drift": 0.0,
+                "amountNeeded": 0
+            },
+            "BND": {
+                "amount": 366666,
+                "currentPercentage": 10.99998,
+                "drift": -0.00002,
+                "amountNeeded": 1
+            }
+        }
+    },
+    "tolerance": 0.01
 }

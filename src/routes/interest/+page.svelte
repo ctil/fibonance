@@ -1,5 +1,5 @@
 <script lang="ts">
-	import InterestCalc from "$lib/components/InterestCalc.svelte";
+import InterestCalc from "$lib/components/InterestCalc.svelte";
 </script>
 
 <div class="inputs mt-4">

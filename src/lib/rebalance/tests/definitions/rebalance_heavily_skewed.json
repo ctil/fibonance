@@ -1,34 +1,34 @@
 {
-  "name": "heavily_skewed_portfolio",
-  "description": "Portfolio heavily skewed with VTI at 95%",
-  "command": "rebalance",
-  "configFile": "configs/simple.yaml",
-  "input": {
-    "csvFile": "portfolios/heavily_skewed.csv",
-    "depositAmount": 0
-  },
-  "expected": {
-    "total": 10000000,
-    "symbols": {
-      "VTI": {
-        "amount": 9500000,
-        "currentPercentage": 95.0,
-        "drift": 24.0,
-        "amountNeeded": -2400000
-      },
-      "VXUS": {
-        "amount": 300000,
-        "currentPercentage": 3.0,
-        "drift": -15.0,
-        "amountNeeded": 1500000
-      },
-      "BND": {
-        "amount": 200000,
-        "currentPercentage": 2.0,
-        "drift": -9.0,
-        "amountNeeded": 900000
-      }
-    }
-  },
-  "tolerance": 0.001
+    "name": "heavily_skewed_portfolio",
+    "description": "Portfolio heavily skewed with VTI at 95%",
+    "command": "rebalance",
+    "configFile": "configs/simple.yaml",
+    "input": {
+        "csvFile": "portfolios/heavily_skewed.csv",
+        "depositAmount": 0
+    },
+    "expected": {
+        "total": 10000000,
+        "symbols": {
+            "VTI": {
+                "amount": 9500000,
+                "currentPercentage": 95.0,
+                "drift": 24.0,
+                "amountNeeded": -2400000
+            },
+            "VXUS": {
+                "amount": 300000,
+                "currentPercentage": 3.0,
+                "drift": -15.0,
+                "amountNeeded": 1500000
+            },
+            "BND": {
+                "amount": 200000,
+                "currentPercentage": 2.0,
+                "drift": -9.0,
+                "amountNeeded": 900000
+            }
+        }
+    },
+    "tolerance": 0.001
 }

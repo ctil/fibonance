@@ -1,34 +1,34 @@
 {
-  "name": "balanced_portfolio_with_deposit",
-  "description": "Balanced portfolio with $10k deposit should allocate proportionally",
-  "command": "rebalance",
-  "configFile": "configs/simple.yaml",
-  "input": {
-    "csvFile": "portfolios/balanced.csv",
-    "depositAmount": 1000000
-  },
-  "expected": {
-    "total": 11000000,
-    "symbols": {
-      "VTI": {
-        "amount": 7100000,
-        "currentPercentage": 64.545454545,
-        "drift": -6.454545455,
-        "amountNeeded": 710000
-      },
-      "VXUS": {
-        "amount": 1800000,
-        "currentPercentage": 16.363636364,
-        "drift": -1.636363636,
-        "amountNeeded": 180000
-      },
-      "BND": {
-        "amount": 1100000,
-        "currentPercentage": 10.0,
-        "drift": -1.0,
-        "amountNeeded": 110000
-      }
-    }
-  },
-  "tolerance": 0.001
+    "name": "balanced_portfolio_with_deposit",
+    "description": "Balanced portfolio with $10k deposit should allocate proportionally",
+    "command": "rebalance",
+    "configFile": "configs/simple.yaml",
+    "input": {
+        "csvFile": "portfolios/balanced.csv",
+        "depositAmount": 1000000
+    },
+    "expected": {
+        "total": 11000000,
+        "symbols": {
+            "VTI": {
+                "amount": 7100000,
+                "currentPercentage": 64.545454545,
+                "drift": -6.454545455,
+                "amountNeeded": 710000
+            },
+            "VXUS": {
+                "amount": 1800000,
+                "currentPercentage": 16.363636364,
+                "drift": -1.636363636,
+                "amountNeeded": 180000
+            },
+            "BND": {
+                "amount": 1100000,
+                "currentPercentage": 10.0,
+                "drift": -1.0,
+                "amountNeeded": 110000
+            }
+        }
+    },
+    "tolerance": 0.001
 }

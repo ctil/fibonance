@@ -1,22 +1,22 @@
 <script lang="ts">
-    import { formatAmount } from "$lib/rebalance";
+import { formatAmount } from "$lib/rebalance";
 
-    interface Props {
-        cents: number;
-    }
+interface Props {
+    cents: number;
+}
 
-    let { cents }: Props = $props();
+let { cents }: Props = $props();
 
-    let displayText = $derived(formatAmount(cents, true));
-    let copyText = $derived(formatAmount(cents));
+let displayText = $derived(formatAmount(cents, true));
+let copyText = $derived(formatAmount(cents));
 
-    let copied = $state(false);
+let copied = $state(false);
 
-    async function copy() {
-        await navigator.clipboard.writeText(copyText);
-        copied = true;
-        setTimeout(() => (copied = false), 2000);
-    }
+async function copy() {
+    await navigator.clipboard.writeText(copyText);
+    copied = true;
+    setTimeout(() => (copied = false), 2000);
+}
 </script>
 
 <span class="copy-text">

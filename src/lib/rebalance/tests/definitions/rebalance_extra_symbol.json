@@ -1,34 +1,34 @@
 {
-  "name": "extra_symbol_in_csv_ignored",
-  "description": "Extra symbol in CSV (AAPL) should be ignored, only track configured symbols",
-  "command": "rebalance",
-  "configFile": "configs/simple.yaml",
-  "input": {
-    "csvFile": "portfolios/extra_symbol.csv",
-    "depositAmount": 0
-  },
-  "expected": {
-    "total": 10000000,
-    "symbols": {
-      "VTI": {
-        "amount": 7100000,
-        "currentPercentage": 71.0,
-        "drift": 0.0,
-        "amountNeeded": 0
-      },
-      "VXUS": {
-        "amount": 1800000,
-        "currentPercentage": 18.0,
-        "drift": 0.0,
-        "amountNeeded": 0
-      },
-      "BND": {
-        "amount": 1100000,
-        "currentPercentage": 11.0,
-        "drift": 0.0,
-        "amountNeeded": 0
-      }
-    }
-  },
-  "tolerance": 0.001
+    "name": "extra_symbol_in_csv_ignored",
+    "description": "Extra symbol in CSV (AAPL) should be ignored, only track configured symbols",
+    "command": "rebalance",
+    "configFile": "configs/simple.yaml",
+    "input": {
+        "csvFile": "portfolios/extra_symbol.csv",
+        "depositAmount": 0
+    },
+    "expected": {
+        "total": 10000000,
+        "symbols": {
+            "VTI": {
+                "amount": 7100000,
+                "currentPercentage": 71.0,
+                "drift": 0.0,
+                "amountNeeded": 0
+            },
+            "VXUS": {
+                "amount": 1800000,
+                "currentPercentage": 18.0,
+                "drift": 0.0,
+                "amountNeeded": 0
+            },
+            "BND": {
+                "amount": 1100000,
+                "currentPercentage": 11.0,
+                "drift": 0.0,
+                "amountNeeded": 0
+            }
+        }
+    },
+    "tolerance": 0.001
 }

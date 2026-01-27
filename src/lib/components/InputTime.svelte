@@ -1,11 +1,11 @@
 <script lang="ts">
-  interface Props {
+interface Props {
     value?: number | null;
     label: string;
-  }
+}
 
-  const uid = $props.id();
-  let { value = $bindable(), label }: Props = $props();
+const uid = $props.id();
+let { value = $bindable(), label }: Props = $props();
 </script>
 
 <label for="{uid}-time">{label}</label>

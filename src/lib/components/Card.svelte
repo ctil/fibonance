@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { Snippet } from "svelte";
+import type { Snippet } from "svelte";
 
-  interface Props {
+interface Props {
     header?: string;
     body: Snippet;
-  }
-  let { header, body }: Props = $props();
+}
+let { header, body }: Props = $props();
 </script>
 
 <div class="card">

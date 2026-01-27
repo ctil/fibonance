@@ -1,34 +1,34 @@
 {
-  "name": "unbalanced_portfolio",
-  "description": "Portfolio with VTI overweight (80%), others underweight",
-  "command": "rebalance",
-  "configFile": "configs/simple.yaml",
-  "input": {
-    "csvFile": "portfolios/unbalanced.csv",
-    "depositAmount": 0
-  },
-  "expected": {
-    "total": 10000000,
-    "symbols": {
-      "VTI": {
-        "amount": 8000000,
-        "currentPercentage": 80.0,
-        "drift": 9.0,
-        "amountNeeded": -900000
-      },
-      "VXUS": {
-        "amount": 1200000,
-        "currentPercentage": 12.0,
-        "drift": -6.0,
-        "amountNeeded": 600000
-      },
-      "BND": {
-        "amount": 800000,
-        "currentPercentage": 8.0,
-        "drift": -3.0,
-        "amountNeeded": 300000
-      }
-    }
-  },
-  "tolerance": 0.001
+    "name": "unbalanced_portfolio",
+    "description": "Portfolio with VTI overweight (80%), others underweight",
+    "command": "rebalance",
+    "configFile": "configs/simple.yaml",
+    "input": {
+        "csvFile": "portfolios/unbalanced.csv",
+        "depositAmount": 0
+    },
+    "expected": {
+        "total": 10000000,
+        "symbols": {
+            "VTI": {
+                "amount": 8000000,
+                "currentPercentage": 80.0,
+                "drift": 9.0,
+                "amountNeeded": -900000
+            },
+            "VXUS": {
+                "amount": 1200000,
+                "currentPercentage": 12.0,
+                "drift": -6.0,
+                "amountNeeded": 600000
+            },
+            "BND": {
+                "amount": 800000,
+                "currentPercentage": 8.0,
+                "drift": -3.0,
+                "amountNeeded": 300000
+            }
+        }
+    },
+    "tolerance": 0.001
 }
