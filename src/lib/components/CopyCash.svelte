@@ -1,11 +1,13 @@
 <script lang="ts">
 import { formatAmount } from "$lib/rebalance";
+import type { ClassValue } from "svelte/elements";
 
 interface Props {
     cents: number;
+    class?: ClassValue;
 }
 
-let { cents }: Props = $props();
+let { cents, class: className }: Props = $props();
 
 let displayText = $derived(formatAmount(cents, true));
 let copyText = $derived(formatAmount(cents));
@@ -19,7 +21,7 @@ async function copy() {
 }
 </script>
 
-<span class="copy-text">
+<span class={["copy-text", className]}>
     <code>{displayText}</code>
     <button onclick={copy} title="Copy to clipboard">
         {copied ? "Copied!" : "Copy"}
