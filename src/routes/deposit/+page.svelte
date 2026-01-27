@@ -1,11 +1,11 @@
 <script lang="ts">
-import { deposit, DEFAULT_CONFIG } from "$lib/rebalance";
-import CopyCash from "$lib/components/CopyCash.svelte";
-import InputCash from "$lib/components/InputCash.svelte";
+    import { deposit, DEFAULT_CONFIG } from "$lib/rebalance";
+    import CopyCash from "$lib/components/CopyCash.svelte";
+    import InputCash from "$lib/components/InputCash.svelte";
 
-let toDeposit = $state(null);
-let toDepositCents = $derived(toDeposit ? toDeposit * 100 : 0);
-let rebalanceResult = $derived(deposit(DEFAULT_CONFIG, toDepositCents));
+    let toDeposit = $state(null);
+    let toDepositCents = $derived(toDeposit ? toDeposit * 100 : 0);
+    let rebalanceResult = $derived(deposit(DEFAULT_CONFIG, toDepositCents));
 </script>
 
 <div class="inputs card">

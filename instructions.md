@@ -20,10 +20,10 @@ Where:
 
 ```javascript
 function compoundInterest(principal, annualRate, compoundsPerYear, years) {
-  return (
-    principal *
-    Math.pow(1 + annualRate / compoundsPerYear, compoundsPerYear * years)
-  );
+    return (
+        principal *
+        Math.pow(1 + annualRate / compoundsPerYear, compoundsPerYear * years)
+    );
 }
 
 // Example: $10,000 at 7% annual rate, compounded annually for 10 years
@@ -37,7 +37,7 @@ For annual gains where interest compounds once per year (n=1):
 
 ```javascript
 function annualCompoundInterest(principal, annualRate, years) {
-  return principal * Math.pow(1 + annualRate, years);
+    return principal * Math.pow(1 + annualRate, years);
 }
 
 // $10,000 at 7% for 10 years
@@ -67,7 +67,7 @@ For continuous compounding, use the formula `A = Pe^(rt)`:
 
 ```javascript
 function continuousCompoundInterest(principal, annualRate, years) {
-  return principal * Math.exp(annualRate * years);
+    return principal * Math.exp(annualRate * years);
 }
 
 continuousCompoundInterest(10000, 0.07, 10); // $20,137.53
@@ -79,23 +79,23 @@ To calculate compound interest with regular deposits:
 
 ```javascript
 function compoundWithContributions(
-  principal,
-  monthlyContribution,
-  annualRate,
-  years,
+    principal,
+    monthlyContribution,
+    annualRate,
+    years,
 ) {
-  const monthlyRate = annualRate / 12;
-  const months = years * 12;
+    const monthlyRate = annualRate / 12;
+    const months = years * 12;
 
-  // Future value of initial principal
-  const principalFV = principal * Math.pow(1 + monthlyRate, months);
+    // Future value of initial principal
+    const principalFV = principal * Math.pow(1 + monthlyRate, months);
 
-  // Future value of monthly contributions (annuity formula)
-  const contributionsFV =
-    monthlyContribution *
-    ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
+    // Future value of monthly contributions (annuity formula)
+    const contributionsFV =
+        monthlyContribution *
+        ((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate);
 
-  return principalFV + contributionsFV;
+    return principalFV + contributionsFV;
 }
 
 // $10,000 initial + $500/month at 7% for 10 years
@@ -108,7 +108,7 @@ To find the rate needed to reach a goal:
 
 ```javascript
 function requiredRate(principal, targetAmount, years) {
-  return Math.pow(targetAmount / principal, 1 / years) - 1;
+    return Math.pow(targetAmount / principal, 1 / years) - 1;
 }
 
 // What rate turns $10,000 into $50,000 in 20 years?
@@ -119,7 +119,7 @@ requiredRate(10000, 50000, 20); // 0.0838 (8.38%)
 
 ```javascript
 function yearsToGoal(principal, targetAmount, annualRate) {
-  return Math.log(targetAmount / principal) / Math.log(1 + annualRate);
+    return Math.log(targetAmount / principal) / Math.log(1 + annualRate);
 }
 
 // How long to double $10,000 at 7%?
@@ -132,7 +132,7 @@ To calculate real purchasing power growth:
 
 ```javascript
 function realReturn(nominalRate, inflationRate) {
-  return (1 + nominalRate) / (1 + inflationRate) - 1;
+    return (1 + nominalRate) / (1 + inflationRate) - 1;
 }
 
 // 7% nominal return with 3% inflation
@@ -183,12 +183,12 @@ src/routes/
 ```svelte
 <!-- src/routes/+layout.svelte -->
 <script>
-  import '../app.css';
+    import "../app.css";
 </script>
 
 <nav>...</nav>
 <main>
-  <slot />
+    <slot />
 </main>
 <footer>...</footer>
 ```
@@ -219,8 +219,8 @@ Access the parameter in the page:
 ```svelte
 <!-- src/routes/portfolio/[id]/+page.svelte -->
 <script>
-  import { page } from '$app/stores';
-  // $page.params.id contains "123" for /portfolio/123
+    import { page } from "$app/stores";
+    // $page.params.id contains "123" for /portfolio/123
 </script>
 ```
 
@@ -233,9 +233,9 @@ Use `+page.ts` for universal load functions (runs on server and client):
 import type { PageLoad } from "./$types";
 
 export const load: PageLoad = ({ params }) => {
-  return {
-    portfolioId: params.id,
-  };
+    return {
+        portfolioId: params.id,
+    };
 };
 ```
 
@@ -246,8 +246,8 @@ Use `+page.server.ts` for server-only loading (database access, secrets):
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ params }) => {
-  const portfolio = await db.getPortfolio(params.id);
-  return { portfolio };
+    const portfolio = await db.getPortfolio(params.id);
+    return { portfolio };
 };
 ```
 
@@ -255,7 +255,7 @@ Access loaded data in the page:
 
 ```svelte
 <script>
-  export let data;  // { portfolio: ... }
+    export let data; // { portfolio: ... }
 </script>
 ```
 
@@ -307,9 +307,9 @@ Five color families, each with shades from 50 (lightest) to 900 (darkest):
 ```css
 /* Using color variables */
 .my-element {
-  background-color: var(--color-chestnut-100);
-  color: var(--color-chestnut-800);
-  border: 1px solid var(--color-border);
+    background-color: var(--color-chestnut-100);
+    color: var(--color-chestnut-800);
+    border: 1px solid var(--color-border);
 }
 ```
 
@@ -379,15 +379,15 @@ var(--color-text-muted)     /* Subtle text */
 
 ```html
 <div class="card">
-  <div class="card-header">
-    <h3>Portfolio Summary</h3>
-  </div>
-  <div class="card-body">
-    <p>Card content goes here.</p>
-  </div>
-  <div class="card-footer">
-    <button class="btn btn-primary">Rebalance</button>
-  </div>
+    <div class="card-header">
+        <h3>Portfolio Summary</h3>
+    </div>
+    <div class="card-body">
+        <p>Card content goes here.</p>
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary">Rebalance</button>
+    </div>
 </div>
 ```
 
@@ -430,12 +430,12 @@ Tailwind-style utility classes for padding, margin, and gap. Available sizes: 0,
 
 ```html
 <div style="display: flex;" class="gap-4">
-  <div>Item 1</div>
-  <div>Item 2</div>
+    <div>Item 1</div>
+    <div>Item 2</div>
 </div>
 
 <div style="display: grid;" class="gap-x-4 gap-y-2">
-  <!-- Different horizontal and vertical gaps -->
+    <!-- Different horizontal and vertical gaps -->
 </div>
 ```
 
@@ -445,9 +445,9 @@ You can also use spacing variables in custom styles:
 
 ```css
 .my-component {
-  padding: var(--space-4);
-  margin-bottom: var(--space-6);
-  gap: var(--space-2);
+    padding: var(--space-4);
+    margin-bottom: var(--space-6);
+    gap: var(--space-2);
 }
 ```
 
@@ -470,6 +470,6 @@ var(--font-mono) /* Monospace for code/numbers */
 
 ```html
 <div class="container">
-  <!-- Centered, max-width content with responsive padding -->
+    <!-- Centered, max-width content with responsive padding -->
 </div>
 ```
