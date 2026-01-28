@@ -53,7 +53,7 @@
             </select>
         </div>
         {#if result != null}
-            <p>Result: <CopyCash cents={result} /></p>
+            <CopyCash cents={result} />
         {/if}
     {/snippet}
 </Card>
