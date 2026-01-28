@@ -5,6 +5,12 @@
     import InputPercent from "$lib/components/InputPercent.svelte";
     import InputTime from "$lib/components/InputTime.svelte";
     import { calculateInterest, type CompoundFrequency } from "$lib/compound";
+    import type { ClassValue } from "svelte/elements";
+
+    interface Props {
+        class?: ClassValue;
+    }
+    let { class: className }: Props = $props();
 
     let initial = $state<number | null>(null);
     let monthly = $state<number | null>(null);
@@ -31,7 +37,7 @@
     });
 </script>
 
-<Card header="Interest">
+<Card header="Interest" class={className}>
     {#snippet body()}
         <InputCash label="Initial Deposit" bind:value={initial} />
         <InputCash label="Monthly Contribution" bind:value={monthly} />
