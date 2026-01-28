@@ -11,19 +11,19 @@
 
 <div class="flex">
     <DepositAllocation
-        class="w-[260px] m-3"
+        class="w-[260px] mr-3"
         title="No Bonds"
         config={NO_BONDS}
         depositCents={toDepositCents}
     />
     <DepositAllocation
-        class="w-[260px] m-3"
+        class="w-[260px] mr-3"
         title="Indexes only"
         config={INDEXES_ONLY}
         depositCents={toDepositCents}
     />
     <DepositAllocation
-        class="w-[260px] m-3"
+        class="w-[260px] mr-3"
         title="Full Portfolio"
         config={DEFAULT_CONFIG}
         depositCents={toDepositCents}
