@@ -8,7 +8,7 @@
     function getLinkClass(path: string) {
         const base = "no-underline py-2 px-3 rounded";
         return page.url.pathname === path
-            ? `${base} font-bold bg-sage-200`
+            ? `${base} font-bold bg-sage-300`
             : base;
     }
 </script>
@@ -17,7 +17,7 @@
     <link rel="icon" href={favicon} />
 </svelte:head>
 
-<nav class="my-4 border-b-6 border-sage-200">
+<nav class="my-4 border-b-6 border-sage-300">
     <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
     <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
 </nav>

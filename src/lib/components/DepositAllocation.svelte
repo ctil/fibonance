@@ -19,7 +19,9 @@
     {#snippet body()}
         {#each result.allocations as allocation}
             <div class="flex justify-between mb-2">
-                <span class="w-[60px]"><b class="mr-3">{allocation.symbol}</b></span>
+                <span class="w-[60px]"
+                    ><b class="mr-3">{allocation.symbol}</b></span
+                >
                 <CopyCash cents={allocation.amount} />
             </div>
         {/each}

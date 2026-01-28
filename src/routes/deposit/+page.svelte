@@ -7,7 +7,7 @@
     let toDepositCents = $derived(toDeposit ? toDeposit * 100 : 0);
 </script>
 
-<InputCash class="mb-5" label="Amount" bind:value={toDeposit} />
+<InputCash class="mb-5 w-[200px]" label="Amount" bind:value={toDeposit} />
 
 <div class="flex">
     <DepositAllocation
