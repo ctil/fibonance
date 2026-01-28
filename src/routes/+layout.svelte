@@ -10,32 +10,25 @@
     <link rel="icon" href={favicon} />
 </svelte:head>
 
-<nav>
-    <a href="/deposit" class:active={page.url.pathname === "/deposit"}>
+<nav class="m-4 border-b-4 border-sage-200">
+    <a
+        href="/deposit"
+        class="no-underline py-2 px-3 rounded {page.url.pathname === '/deposit'
+            ? 'font-bold bg-sage-200'
+            : ''}"
+    >
         Deposit</a
     >
-    <a href="/interest" class:active={page.url.pathname === "/interest"}
-        >Interest</a
+    <a
+        href="/interest"
+        class="no-underline py-2 px-3 rounded {page.url.pathname === '/interest'
+            ? 'font-bold bg-sage-200'
+            : ''}"
+    >
+        Interest</a
     >
 </nav>
 
 <div class="p-5">
     {@render children()}
 </div>
-
-<style>
-    nav {
-        margin: var(--space-4);
-        border-bottom: 5px solid var(--color-sage-200);
-        a {
-            text-decoration: none;
-            padding: var(--space-2) var(--space-3);
-            border-radius: var(--radius-2);
-            &.active {
-                font-weight: bold;
-                background-color: var(--color-sage-200);
-                /* box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1); */
-            }
-        }
-    }
-</style>
