@@ -7,23 +7,25 @@
     let toDepositCents = $derived(toDeposit ? toDeposit * 100 : 0);
 </script>
 
-<InputCash class="mb-5" label="Deposit Amount" bind:value={toDeposit} />
+<InputCash class="mb-5" label="Amount" bind:value={toDeposit} />
 
-<DepositAllocation
-    class="w-[260px]"
-    title="Full Portfolio"
-    config={DEFAULT_CONFIG}
-    depositCents={toDepositCents}
-/>
-<DepositAllocation
-    class="w-[260px]"
-    title="Index funds only"
-    config={INDEXES_ONLY}
-    depositCents={toDepositCents}
-/>
-<DepositAllocation
-    class="w-[260px]"
-    title="No Bonds"
-    config={NO_BONDS}
-    depositCents={toDepositCents}
-/>
+<div class="flex">
+    <DepositAllocation
+        class="w-[260px] m-3"
+        title="No Bonds"
+        config={NO_BONDS}
+        depositCents={toDepositCents}
+    />
+    <DepositAllocation
+        class="w-[260px] m-3"
+        title="Indexes only"
+        config={INDEXES_ONLY}
+        depositCents={toDepositCents}
+    />
+    <DepositAllocation
+        class="w-[260px] m-3"
+        title="Full Portfolio"
+        config={DEFAULT_CONFIG}
+        depositCents={toDepositCents}
+    />
+</div>
