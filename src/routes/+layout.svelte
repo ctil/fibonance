@@ -1,6 +1,7 @@
 <script lang="ts">
     import "../app.css";
     import favicon from "$lib/assets/favicon.svg";
+    import cavalier from "$lib/assets/cavalier.svg";
     import { page } from "$app/state";
 
     let { children } = $props();
@@ -19,7 +20,10 @@
 </svelte:head>
 
 <nav class="bg-sage-600 px-6 py-3 flex items-center justify-between">
-    <span class="text-cream-50 text-xl font-semibold">Fibonance</span>
+    <div class="flex items-center gap-2">
+        <img src={cavalier} alt="Cavalier" class="w-8 h-8" />
+        <span class="text-cream-50 text-xl font-semibold">Fibonance</span>
+    </div>
     <div class="flex gap-2">
         <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
         <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
