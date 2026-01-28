@@ -6,11 +6,17 @@
         value?: number | null;
         label: string;
         class?: ClassValue;
+        onsubmit?: () => void;
     }
 
     const uid = $props.id();
 
-    let { value = $bindable(), label, class: className }: Props = $props();
+    let {
+        value = $bindable(),
+        label,
+        class: className,
+        onsubmit,
+    }: Props = $props();
 
     let displayValue = $state("");
 
@@ -45,6 +51,13 @@
         value = parseValue(displayValue);
         displayValue = formatWithCommas(value);
     }
+
+    function handleKeydown(e: KeyboardEvent) {
+        if (e.key === "Enter") {
+            handleBlur();
+            onsubmit?.();
+        }
+    }
 </script>
 
 <div class={["mb-4", className]}>
@@ -63,6 +76,7 @@
             bind:value={displayValue}
             oninput={handleInput}
             onblur={handleBlur}
+            onkeydown={handleKeydown}
         />
     </div>
 </div>
