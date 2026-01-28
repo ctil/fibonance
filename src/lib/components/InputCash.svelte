@@ -48,10 +48,7 @@
 </script>
 
 <div class={["mb-4", className]}>
-    <label
-        for="{uid}-amount"
-        class="block text-sm font-medium text-cream-700 mb-1.5"
-    >
+    <label for="{uid}-amount">
         {label}
     </label>
     <div class="relative">
@@ -62,10 +59,7 @@
             id="{uid}-amount"
             type="text"
             inputmode="decimal"
-            class="w-full pl-7 pr-3 py-2 bg-cream-50 border border-cream-300 rounded-lg
-                   text-cream-900 placeholder-cream-400
-                   focus:outline-none focus:ring-2 focus:ring-meadow-400 focus:border-meadow-400
-                   transition-colors duration-150"
+            class="pl-7 pr-3"
             bind:value={displayValue}
             oninput={handleInput}
             onblur={handleBlur}

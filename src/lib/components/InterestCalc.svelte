@@ -44,20 +44,8 @@
         <InputPercent label="Annual Rate (%)" bind:value={rate} />
         <InputTime label="Number of years" bind:value={years} />
         <div class="mb-4">
-            <label
-                for="compound-frequency"
-                class="block text-sm font-medium text-cream-700 mb-1.5"
-            >
-                Compound Frequency
-            </label>
-            <select
-                id="compound-frequency"
-                class="w-full px-3 py-2 bg-cream-50 border border-cream-300 rounded-lg
-                       text-cream-900
-                       focus:outline-none focus:ring-2 focus:ring-meadow-400 focus:border-meadow-400
-                       transition-colors duration-150"
-                bind:value={frequency}
-            >
+            <label for="compound-frequency"> Compound Frequency </label>
+            <select id="compound-frequency" class="px-3" bind:value={frequency}>
                 <option value="annually">Annually</option>
                 <option value="quarterly">Quarterly</option>
                 <option value="monthly">Monthly</option>
