@@ -3,9 +3,9 @@
 </script>
 
 <p>
-    Fibonance is a financial planning app to help with tasks like portfolio
+    Fibonance is a financial planning app that helps with tasks like portfolio
     rebalancing and retirement planning. The name is a portmanteau of finance
-    and Fibonacci (the name of a beloved Cavalier King Charles Spaniel).
+    and Fibonacci AKA Fib (the name of a beloved Cavalier King Charles Spaniel).
 </p>
 <img
     src={fibImage}

@@ -5,6 +5,7 @@
     "type": "module",
     "scripts": {
         "serve": "vite dev",
+        "dev": "vite dev",
         "build": "vite build",
         "preview": "vite preview",
         "prepare": "svelte-kit sync || echo ''",

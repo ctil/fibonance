@@ -9,21 +9,21 @@
 
 <InputCash class="mb-5 w-[200px]" label="Amount" bind:value={toDeposit} />
 
-<div class="flex">
+<div class="flex flex-col md:flex-row gap-3">
     <DepositAllocation
-        class="w-[260px] mr-3"
+        class="w-full md:w-[260px]"
         title="No Bonds"
         config={NO_BONDS}
         depositCents={toDepositCents}
     />
     <DepositAllocation
-        class="w-[260px] mr-3"
+        class="w-full md:w-[260px]"
         title="Indexes only"
         config={INDEXES_ONLY}
         depositCents={toDepositCents}
     />
     <DepositAllocation
-        class="w-[260px] mr-3"
+        class="w-full md:w-[260px]"
         title="Full Portfolio"
         config={DEFAULT_CONFIG}
         depositCents={toDepositCents}
