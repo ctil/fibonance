@@ -45,6 +45,7 @@
         const input = e.target as HTMLInputElement;
         // Allow digits, commas, decimal point, and minus
         displayValue = input.value.replace(/[^0-9,.\-]/g, "");
+        value = parseValue(displayValue);
     }
 
     function handleBlur() {
