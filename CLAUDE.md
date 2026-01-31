@@ -1,6 +1,6 @@
 # Fibonance
 
-Portfolio rebalancing library and web frontend in TypeScript. Includes rebalancing calculations based on target asset allocation percentages, and a SvelteKit frontend for deposit allocation and compound interest calculations.
+Portfolio rebalancing library and web frontend in TypeScript. Includes rebalancing calculations based on target asset allocation percentages, and a SvelteKit frontend for deposit allocation, compound interest calculations, and more.
 
 ## Tech Stack
 
@@ -22,12 +22,14 @@ bun test     # Run tests
 ## Code Structure
 
 ### Rebalancing Library (`src/lib/rebalance/`)
+
 - `types.ts` - TypeScript interfaces (Config, Stock, SymbolData, RebalanceResult)
 - `config.ts` - YAML config parsing with validation
 - `rebalance.ts` - Core calculation logic
 - `utils.ts` - Dollar string parsing/formatting utilities
 
 ### Frontend
+
 - `src/routes/` - SvelteKit pages (`/`, `/deposit`, `/interest`)
 - `src/lib/components/` - Svelte components (InputCash, InputPercent, Card, etc.)
 - `src/lib/compound.ts` - Compound interest calculation logic
