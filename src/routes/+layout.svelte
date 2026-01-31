@@ -25,6 +25,7 @@
         <span class="text-cream-50 text-xl font-semibold">Fibonance</span>
     </div>
     <div class="flex gap-2">
+        <a href="/" class={getLinkClass("/")}>Home</a>
         <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
         <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
     </div>
