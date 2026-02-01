@@ -11,13 +11,14 @@
         "db:migrate": "drizzle-kit migrate",
         "db:push": "drizzle-kit push",
         "db:seed": "bun run seed.ts",
-        "db:studio": "drizzle-kit studio",
         "db:shell-dev": "turso db shell fibonance-dev",
         "db:shell-prod": "turso db shell fibonance",
+        "db:studio": "drizzle-kit studio",
         "dev": "vite dev",
         "format": "prettier --write src",
         "prepare": "svelte-kit sync || echo ''",
         "preview": "vite preview",
+        "register-user": "bun scripts/register-user.ts",
         "serve": "vite dev",
         "test": "bun test"
     },
@@ -27,6 +28,8 @@
         "yaml": "^2.7.0"
     },
     "devDependencies": {
+        "@oslojs/crypto": "^1.0.1",
+        "@oslojs/encoding": "^1.1.0",
         "@sveltejs/adapter-vercel": "^6.3.1",
         "@sveltejs/kit": "^2.49.1",
         "@sveltejs/vite-plugin-svelte": "^6.2.1",

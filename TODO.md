@@ -1,0 +1,2 @@
+- [ ] Setup client so it can use local Turso DB: https://docs.turso.tech/local-development
+- [ ] Allow user to create new portfolios from UI

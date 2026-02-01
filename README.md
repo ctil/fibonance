@@ -32,9 +32,15 @@ bun format
 
 ## Database Migrations
 
-The migrations are generated in `drizzle/`. You can modify them by hand before pushing to prod.
+The migrations are generated in `drizzle/`.
 
 1. Change schema in `src/lib/db/schema.ts`
 2. Generate migrations `bun db:generate`
 3. Run migrations `bun db:migrate`
 
+## Environment Variables
+
+```
+TURSO_DATABASE_URL=libsql://your-db.turso.io
+TURSO_AUTH_TOKEN=your-token
+```

@@ -2,8 +2,10 @@
     import "../app.css";
     import favicon from "$lib/assets/favicon.svg";
     import { page } from "$app/state";
+    import { enhance } from "$app/forms";
+    import type { LayoutData } from "./$types";
 
-    let { children } = $props();
+    let { children, data }: { children: any; data: LayoutData } = $props();
     let menuOpen = $state(false);
 
     function getLinkClass(path: string) {
@@ -26,10 +28,17 @@
     </div>
 
     <!-- Desktop nav links -->
-    <div class="hidden md:flex gap-2">
+    <div class="hidden md:flex gap-2 items-center">
         <a href="/" class={getLinkClass("/")}>Home</a>
         <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
         <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
+        {#if data.user}
+            <form method="post" action="/logout" use:enhance class="inline">
+                <button class={getLinkClass("")}>Sign out</button>
+            </form>
+        {:else}
+            <a href="/login" class={getLinkClass("/login")}>Sign in</a>
+        {/if}
     </div>
 
     <!-- Hamburger button (mobile) -->
@@ -89,6 +98,20 @@
                 class={getLinkClass("/interest")}
                 onclick={() => (menuOpen = false)}>Interest</a
             >
+            {#if data.user}
+                <form method="post" action="/logout" use:enhance>
+                    <button
+                        class={getLinkClass("")}
+                        onclick={() => (menuOpen = false)}>Sign out</button
+                    >
+                </form>
+            {:else}
+                <a
+                    href="/login"
+                    class={getLinkClass("/login")}
+                    onclick={() => (menuOpen = false)}>Sign in</a
+                >
+            {/if}
         </div>
     {/if}
 </nav>

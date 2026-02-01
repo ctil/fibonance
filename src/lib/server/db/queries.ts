@@ -1,6 +1,6 @@
-import type { DrizzleDB } from "./client";
+import type { DrizzleDB } from ".";
 import { portfolios, stockAllocations } from "./schema";
-import { asc } from "drizzle-orm";
+import { asc, eq } from "drizzle-orm";
 import type { Config, Stock } from "$lib/rebalance/types";
 
 export interface Portfolio {
@@ -9,10 +9,14 @@ export interface Portfolio {
     config: Config;
 }
 
-export async function getPortfoliosFromDb(db: DrizzleDB): Promise<Portfolio[]> {
+export async function getPortfoliosFromDb(
+    db: DrizzleDB,
+    userId: string,
+): Promise<Portfolio[]> {
     const portfolioRows = await db
         .select()
         .from(portfolios)
+        .where(eq(portfolios.userId, userId))
         .orderBy(asc(portfolios.id));
 
     const allocationRows = await db

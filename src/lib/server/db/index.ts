@@ -5,16 +5,14 @@ import * as schema from "./schema";
 
 export type DrizzleDB = ReturnType<typeof drizzle<typeof schema>>;
 
-let db: DrizzleDB | null = null;
-
-export function getDb(): DrizzleDB | null {
-    if (db) return db;
-
+function createDb(): DrizzleDB {
     const url = env.TURSO_DATABASE_URL;
     const authToken = env.TURSO_AUTH_TOKEN;
 
     if (!url || !authToken) {
-        return null;
+        throw new Error(
+            "Database configuration missing: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are required",
+        );
     }
 
     const client = createClient({
@@ -22,11 +20,7 @@ export function getDb(): DrizzleDB | null {
         authToken,
     });
 
-    db = drizzle(client, { schema });
-
-    return db;
+    return drizzle(client, { schema });
 }
 
-export function isDbAvailable(): boolean {
-    return !!env.TURSO_DATABASE_URL && !!env.TURSO_AUTH_TOKEN;
-}
+export const db = createDb();
