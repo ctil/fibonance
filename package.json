@@ -15,7 +15,7 @@
         "db:shell-dev": "turso db shell fibonance-dev",
         "db:shell-prod": "turso db shell fibonance",
         "dev": "vite dev",
-        "format": "prettier --write .",
+        "format": "prettier --write src",
         "prepare": "svelte-kit sync || echo ''",
         "preview": "vite preview",
         "serve": "vite dev",

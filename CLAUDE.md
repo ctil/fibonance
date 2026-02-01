@@ -66,6 +66,7 @@ TURSO_AUTH_TOKEN=your-token
 ### Schema
 
 Two tables with a one-to-many relationship defined in `src/lib/db/schema.ts`:
+
 - `portfolios` - Portfolio name and description
 - `stockAllocations` - Stock symbols, target percentages, and sort order (references portfolio)
 

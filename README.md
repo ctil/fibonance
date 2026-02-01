@@ -16,9 +16,25 @@ The name is a portmanteau of finance and Fibonacci AKA Fib (the name of a belove
 
 ```sh
 bun install
-bun dev      # Start dev server
-bun build    # Production build
-bun check    # Type checking
-bun format   # Format code
-bun test     # Run tests
+
+# Start dev server
+bun dev
+
+# Production build
+bun run build
+
+# Type checking
+bun check
+
+# Format code
+bun format
 ```
+
+## Database Migrations
+
+The migrations are generated in `drizzle/`. You can modify them by hand before pushing to prod.
+
+1. Change schema in `src/lib/db/schema.ts`
+2. Generate migrations `bun db:generate`
+3. Run migrations `bun db:migrate`
+

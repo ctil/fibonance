@@ -18,10 +18,16 @@ export async function getPortfoliosFromDb(db: DrizzleDB): Promise<Portfolio[]> {
     const allocationRows = await db
         .select()
         .from(stockAllocations)
-        .orderBy(asc(stockAllocations.portfolioId), asc(stockAllocations.sortOrder));
+        .orderBy(
+            asc(stockAllocations.portfolioId),
+            asc(stockAllocations.sortOrder),
+        );
 
     // Group allocations by portfolio_id
-    const allocationsByPortfolio = new Map<number, (typeof allocationRows)[number][]>();
+    const allocationsByPortfolio = new Map<
+        number,
+        (typeof allocationRows)[number][]
+    >();
     for (const row of allocationRows) {
         const existing = allocationsByPortfolio.get(row.portfolioId) ?? [];
         existing.push(row);

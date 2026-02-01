@@ -18,16 +18,32 @@ const SEED_DATA = [
         name: "No Bonds",
         description: null,
         stocks: [
-            { symbol: "VTI", targetPercentage: 80, description: "Total Market Fund" },
-            { symbol: "VXUS", targetPercentage: 20, description: "International Fund" },
+            {
+                symbol: "VTI",
+                targetPercentage: 80,
+                description: "Total Market Fund",
+            },
+            {
+                symbol: "VXUS",
+                targetPercentage: 20,
+                description: "International Fund",
+            },
         ],
     },
     {
         name: "Indexes only",
         description: null,
         stocks: [
-            { symbol: "VTI", targetPercentage: 79, description: "Total Market Fund" },
-            { symbol: "VXUS", targetPercentage: 20, description: "International Fund" },
+            {
+                symbol: "VTI",
+                targetPercentage: 79,
+                description: "Total Market Fund",
+            },
+            {
+                symbol: "VXUS",
+                targetPercentage: 20,
+                description: "International Fund",
+            },
             { symbol: "FBTC", targetPercentage: 1, description: "Bitcoin ETF" },
         ],
     },
@@ -35,8 +51,16 @@ const SEED_DATA = [
         name: "Full Portfolio",
         description: null,
         stocks: [
-            { symbol: "VTI", targetPercentage: 71, description: "Total Market Fund" },
-            { symbol: "VXUS", targetPercentage: 18, description: "International Fund" },
+            {
+                symbol: "VTI",
+                targetPercentage: 71,
+                description: "Total Market Fund",
+            },
+            {
+                symbol: "VXUS",
+                targetPercentage: 18,
+                description: "International Fund",
+            },
             { symbol: "BND", targetPercentage: 10, description: "Bond Fund" },
             { symbol: "FBTC", targetPercentage: 1, description: "Bitcoin ETF" },
         ],
@@ -55,7 +79,9 @@ async function seed() {
             })
             .returning({ id: portfolios.id });
 
-        console.log(`Created portfolio: ${portfolio.name} (id: ${inserted.id})`);
+        console.log(
+            `Created portfolio: ${portfolio.name} (id: ${inserted.id})`,
+        );
 
         for (let i = 0; i < portfolio.stocks.length; i++) {
             const stock = portfolio.stocks[i];
