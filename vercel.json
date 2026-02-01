@@ -1,0 +1,3 @@
+{
+    "buildCommand": "bun db:migrate && bun build"
+}

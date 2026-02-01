@@ -1,15 +1,15 @@
-import { getDbClient } from "$lib/db/client";
+import { getDb } from "$lib/db/client";
 import { getPortfoliosFromDb, type Portfolio } from "$lib/db/queries";
 
 export async function getPortfolios(): Promise<Portfolio[]> {
-    const client = getDbClient();
+    const db = getDb();
 
-    if (!client) {
+    if (!db) {
         return HARDCODED_PORTFOLIOS;
     }
 
     try {
-        return await getPortfoliosFromDb(client);
+        return await getPortfoliosFromDb(db);
     } catch (error) {
         console.error("Failed to fetch portfolios from database:", error);
         return HARDCODED_PORTFOLIOS;

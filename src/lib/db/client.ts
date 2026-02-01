@@ -1,10 +1,14 @@
-import { createClient, type Client } from "@libsql/client";
+import { createClient } from "@libsql/client";
+import { drizzle } from "drizzle-orm/libsql";
 import { env } from "$env/dynamic/private";
+import * as schema from "./schema";
 
-let client: Client | null = null;
+export type DrizzleDB = ReturnType<typeof drizzle<typeof schema>>;
 
-export function getDbClient(): Client | null {
-    if (client) return client;
+let db: DrizzleDB | null = null;
+
+export function getDb(): DrizzleDB | null {
+    if (db) return db;
 
     const url = env.TURSO_DATABASE_URL;
     const authToken = env.TURSO_AUTH_TOKEN;
@@ -13,12 +17,14 @@ export function getDbClient(): Client | null {
         return null;
     }
 
-    client = createClient({
+    const client = createClient({
         url,
         authToken,
     });
 
-    return client;
+    db = drizzle(client, { schema });
+
+    return db;
 }
 
 export function isDbAvailable(): boolean {

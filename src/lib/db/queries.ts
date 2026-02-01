@@ -1,4 +1,6 @@
-import type { Client } from "@libsql/client";
+import type { DrizzleDB } from "./client";
+import { portfolios, stockAllocations } from "./schema";
+import { asc } from "drizzle-orm";
 import type { Config, Stock } from "$lib/rebalance/types";
 
 export interface Portfolio {
@@ -7,42 +9,23 @@ export interface Portfolio {
     config: Config;
 }
 
-interface PortfolioRow {
-    id: number;
-    name: string;
-    description: string | null;
-}
+export async function getPortfoliosFromDb(db: DrizzleDB): Promise<Portfolio[]> {
+    const portfolioRows = await db
+        .select()
+        .from(portfolios)
+        .orderBy(asc(portfolios.id));
 
-interface StockAllocationRow {
-    portfolio_id: number;
-    symbol: string;
-    target_percentage: number;
-    description: string;
-    alternatives: string | null;
-    sort_order: number;
-}
-
-export async function getPortfoliosFromDb(
-    client: Client,
-): Promise<Portfolio[]> {
-    const portfoliosResult = await client.execute(
-        "SELECT id, name, description FROM portfolios ORDER BY id",
-    );
-
-    const allocationsResult = await client.execute(
-        "SELECT portfolio_id, symbol, target_percentage, description, alternatives, sort_order FROM stock_allocations ORDER BY portfolio_id, sort_order",
-    );
-
-    const portfolioRows = portfoliosResult.rows as unknown as PortfolioRow[];
-    const allocationRows =
-        allocationsResult.rows as unknown as StockAllocationRow[];
+    const allocationRows = await db
+        .select()
+        .from(stockAllocations)
+        .orderBy(asc(stockAllocations.portfolioId), asc(stockAllocations.sortOrder));
 
     // Group allocations by portfolio_id
-    const allocationsByPortfolio = new Map<number, StockAllocationRow[]>();
+    const allocationsByPortfolio = new Map<number, (typeof allocationRows)[number][]>();
     for (const row of allocationRows) {
-        const existing = allocationsByPortfolio.get(row.portfolio_id) ?? [];
+        const existing = allocationsByPortfolio.get(row.portfolioId) ?? [];
         existing.push(row);
-        allocationsByPortfolio.set(row.portfolio_id, existing);
+        allocationsByPortfolio.set(row.portfolioId, existing);
     }
 
     // Build portfolios with their configs
@@ -50,9 +33,9 @@ export async function getPortfoliosFromDb(
         const allocations = allocationsByPortfolio.get(portfolio.id) ?? [];
         const stocks: Stock[] = allocations.map((a) => ({
             symbol: a.symbol,
-            targetPercentage: a.target_percentage,
+            targetPercentage: a.targetPercentage,
             description: a.description,
-            alternatives: a.alternatives ? JSON.parse(a.alternatives) : undefined,
+            alternatives: a.alternatives ?? undefined,
         }));
 
         return {
