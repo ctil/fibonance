@@ -1,3 +1,4 @@
+import { hash } from '@node-rs/argon2';
 import { createClient } from '@libsql/client';
 import { drizzle } from 'drizzle-orm/libsql';
 import { user } from '../src/lib/server/db/schema';
@@ -21,7 +22,7 @@ const client = createClient({ url, authToken });
 const db = drizzle(client);
 
 const id = crypto.randomUUID();
-const passwordHash = await Bun.password.hash(password);
+const passwordHash = await hash(password);
 
 await db.insert(user).values({ id, username, passwordHash });
 console.log(`User "${username}" registered successfully.`);
