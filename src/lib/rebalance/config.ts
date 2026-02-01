@@ -1,66 +1,6 @@
 import { parse } from "yaml";
 import type { Config, RawConfig } from "./types";
 
-export const DEFAULT_CONFIG: Config = {
-    stocks: [
-        {
-            symbol: "VTI",
-            targetPercentage: 71,
-            description: "Total Market Fund",
-        },
-        {
-            symbol: "VXUS",
-            targetPercentage: 18,
-            description: "International Fund",
-        },
-        {
-            symbol: "BND",
-            targetPercentage: 10,
-            description: "Bond Fund",
-        },
-        {
-            symbol: "FBTC",
-            targetPercentage: 1,
-            description: "Bitcoin ETF",
-        },
-    ],
-};
-
-export const INDEXES_ONLY: Config = {
-    stocks: [
-        {
-            symbol: "VTI",
-            targetPercentage: 79,
-            description: "Total Market Fund",
-        },
-        {
-            symbol: "VXUS",
-            targetPercentage: 20,
-            description: "International Fund",
-        },
-        {
-            symbol: "FBTC",
-            targetPercentage: 1,
-            description: "Bitcoin ETF",
-        },
-    ],
-};
-
-export const NO_BONDS: Config = {
-    stocks: [
-        {
-            symbol: "VTI",
-            targetPercentage: 80,
-            description: "Total Market Fund",
-        },
-        {
-            symbol: "VXUS",
-            targetPercentage: 20,
-            description: "International Fund",
-        },
-    ],
-};
-
 export function parseConfig(yamlContent: string): Config {
     const raw = parse(yamlContent) as RawConfig;
 
