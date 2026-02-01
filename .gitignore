@@ -49,3 +49,6 @@ vite.config.ts.timestamp-*
 
 # AI prompts
 prompts/
+
+# Local database
+local.db

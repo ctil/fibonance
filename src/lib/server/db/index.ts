@@ -9,7 +9,7 @@ function createDb(): DrizzleDB {
     const url = env.TURSO_DATABASE_URL;
     const authToken = env.TURSO_AUTH_TOKEN;
 
-    if (!url || !authToken) {
+    if ((!url || !authToken) && !url?.startsWith("file:")) {
         throw new Error(
             "Database configuration missing: TURSO_DATABASE_URL and TURSO_AUTH_TOKEN are required",
         );

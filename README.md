@@ -44,3 +44,10 @@ The migrations are generated in `drizzle/`.
 TURSO_DATABASE_URL=libsql://your-db.turso.io
 TURSO_AUTH_TOKEN=your-token
 ```
+
+For local development, create a DB file:
+```sh
+ sqlite3 local.db "VACUUM;"
+```
+
+And set TURSO_DATABASE_URL to `file:local.db`.

@@ -1,6 +1,6 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
-import { portfolios, stockAllocations } from "./src/lib/db/schema";
+import { portfolios, stockAllocations } from "./src/lib/server/db/schema";
 
 const url = process.env.TURSO_DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
