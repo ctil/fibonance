@@ -13,5 +13,5 @@ CREATE TABLE `user` (
 --> statement-breakpoint
 CREATE UNIQUE INDEX `user_username_unique` ON `user` (`username`);--> statement-breakpoint
 DROP INDEX `portfolios_name_unique`;--> statement-breakpoint
-ALTER TABLE `portfolios` ADD `user_id` text REFERENCES user(id);--> statement-breakpoint
+ALTER TABLE `portfolios` ADD `user_id` text NOT NULL REFERENCES user(id);--> statement-breakpoint
 CREATE UNIQUE INDEX `portfolios_user_name_idx` ON `portfolios` (`user_id`,`name`);
