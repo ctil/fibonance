@@ -15,6 +15,10 @@
             ? `${base} font-bold bg-white/20`
             : base;
     }
+
+    function getDisabledClass() {
+        return "py-2 px-3 rounded text-cream-50/50 cursor-not-allowed";
+    }
 </script>
 
 <svelte:head>
@@ -30,7 +34,11 @@
     <!-- Desktop nav links -->
     <div class="hidden md:flex gap-2 items-center">
         <a href="/" class={getLinkClass("/")}>Home</a>
-        <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
+        {#if data.user}
+            <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
+        {:else}
+            <span class={getDisabledClass()}>Deposit</span>
+        {/if}
         <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
         {#if data.user}
             <form method="post" action="/logout" use:enhance class="inline">
@@ -88,11 +96,15 @@
                 class={getLinkClass("/")}
                 onclick={() => (menuOpen = false)}>Home</a
             >
-            <a
-                href="/deposit"
-                class={getLinkClass("/deposit")}
-                onclick={() => (menuOpen = false)}>Deposit</a
-            >
+            {#if data.user}
+                <a
+                    href="/deposit"
+                    class={getLinkClass("/deposit")}
+                    onclick={() => (menuOpen = false)}>Deposit</a
+                >
+            {:else}
+                <span class={getDisabledClass()}>Deposit</span>
+            {/if}
             <a
                 href="/interest"
                 class={getLinkClass("/interest")}
