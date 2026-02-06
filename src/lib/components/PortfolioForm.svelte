@@ -2,6 +2,7 @@
     import { enhance } from "$app/forms";
     import { tick } from "svelte";
     import type { Portfolio } from "$lib/server/portfolios";
+    import { X } from "lucide-svelte";
     import Card from "./Card.svelte";
 
     interface Props {
@@ -43,7 +44,7 @@
     let action = $derived(portfolio ? "?/update" : "?/create");
 </script>
 
-<Card class="w-full max-w-lg">
+<Card class="w-full max-w-sm">
     {#snippet body()}
         <form
             method="post"
@@ -78,9 +79,7 @@
 
             <div class="mb-3">
                 <div class="flex items-center justify-between mb-2">
-                    <span class="text-sm font-medium text-cream-700"
-                        >Stocks</span
-                    >
+                    <h4 class="text-md font-medium">Stocks</h4>
                     <span
                         class={[
                             "text-sm font-medium",
@@ -130,7 +129,7 @@
                             onclick={() => removeStock(i)}
                             disabled={stocks.length <= 1}
                         >
-                            &times;
+                            <X size={16} />
                         </button>
                     </div>
                 {/each}

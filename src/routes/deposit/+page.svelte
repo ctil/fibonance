@@ -3,6 +3,7 @@
     import DepositAllocation from "$lib/components/DepositAllocation.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import PortfolioForm from "$lib/components/PortfolioForm.svelte";
+    import { Pencil, Trash2 } from "lucide-svelte";
 
     let { data, form } = $props();
 
@@ -54,44 +55,45 @@
                     title={portfolio.name}
                     config={portfolio.config}
                     depositCents={toDepositCents}
-                />
-                <div class="flex gap-2 mt-2">
-                    <button
-                        class="text-sm text-sage-600 hover:text-sage-800 transition"
-                        onclick={() => {
-                            creatingNew = false;
-                            editingPortfolioId = portfolio.id;
-                        }}
-                    >
-                        Edit
-                    </button>
-                    <form
-                        method="post"
-                        action="?/delete"
-                        use:enhance={({ cancel }) => {
-                            if (
-                                !confirm(
-                                    `Delete portfolio "${portfolio.name}"?`,
-                                )
-                            ) {
-                                cancel();
-                                return;
-                            }
-                        }}
-                    >
-                        <input
-                            type="hidden"
-                            name="portfolioId"
-                            value={portfolio.id}
-                        />
+                >
+                    {#snippet headerActions()}
                         <button
-                            type="submit"
-                            class="text-sm text-red-600 hover:text-red-800 transition"
+                            class="p-1 text-sage-600 hover:text-sage-800 transition"
+                            onclick={() => {
+                                creatingNew = false;
+                                editingPortfolioId = portfolio.id;
+                            }}
                         >
-                            Delete
+                            <Pencil size={16} />
                         </button>
-                    </form>
-                </div>
+                        <form
+                            method="post"
+                            action="?/delete"
+                            use:enhance={({ cancel }) => {
+                                if (
+                                    !confirm(
+                                        `Delete portfolio "${portfolio.name}"?`,
+                                    )
+                                ) {
+                                    cancel();
+                                    return;
+                                }
+                            }}
+                        >
+                            <input
+                                type="hidden"
+                                name="portfolioId"
+                                value={portfolio.id}
+                            />
+                            <button
+                                type="submit"
+                                class="p-1 text-red-600 hover:text-red-800 transition"
+                            >
+                                <Trash2 size={16} />
+                            </button>
+                        </form>
+                    {/snippet}
+                </DepositAllocation>
             </div>
         {/if}
     {/each}
