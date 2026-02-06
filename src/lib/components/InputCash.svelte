@@ -61,7 +61,7 @@
     }
 </script>
 
-<div class={["mb-4", className]}>
+<div class={className}>
     <label for="{uid}-amount">
         {label}
     </label>

@@ -24,9 +24,9 @@
 </script>
 
 <div class="flex items-center gap-4 mb-5">
-    <InputCash class="w-[200px] mb-0" label="Amount" bind:value={toDeposit} />
+    <InputCash class="w-[200px]" label="Amount" bind:value={toDeposit} />
     <button
-        class="bg-sage-600 text-cream-50 px-4 py-2 rounded-md hover:bg-sage-700 transition mt-4"
+        class="bg-sage-600 text-cream-50 px-4 py-2 rounded-md hover:bg-sage-700 transition mt-6"
         onclick={startCreate}
     >
         New Portfolio
