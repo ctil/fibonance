@@ -1,5 +1,6 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
+    import { tick } from "svelte";
     import type { Portfolio } from "$lib/server/portfolios";
     import Card from "./Card.svelte";
 
@@ -29,8 +30,10 @@
         stocks.reduce((sum, s) => sum + (s.targetPercentage || 0), 0),
     );
 
-    function addStock() {
+    async function addStock() {
         stocks.push({ symbol: "", targetPercentage: 0 });
+        await tick();
+        document.getElementById(`stock-symbol-${stocks.length - 1}`)?.focus();
     }
 
     function removeStock(index: number) {
@@ -92,7 +95,7 @@
 
                 {#each stocks as stock, i}
                     <div class="flex gap-2 mb-2 items-end">
-                        <div class="w-24">
+                        <div class="w-32">
                             {#if i === 0}
                                 <label for="stock-symbol-{i}">Symbol</label>
                             {/if}
@@ -107,7 +110,7 @@
                                 }}
                             />
                         </div>
-                        <div class="w-16">
+                        <div class="w-24">
                             {#if i === 0}
                                 <label for="stock-pct-{i}">%</label>
                             {/if}
