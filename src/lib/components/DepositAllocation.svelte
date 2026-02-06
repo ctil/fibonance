@@ -13,7 +13,13 @@
         headerActions?: Snippet;
         class?: ClassValue;
     }
-    let { title, config, depositCents, headerActions, class: className }: Props = $props();
+    let {
+        title,
+        config,
+        depositCents,
+        headerActions,
+        class: className,
+    }: Props = $props();
     let result = $derived(deposit(config, depositCents));
 </script>
 

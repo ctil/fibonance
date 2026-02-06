@@ -125,7 +125,7 @@
                         </div>
                         <button
                             type="button"
-                            class="px-2 py-2 text-red-600 hover:text-red-800 transition"
+                            class="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition cursor-pointer"
                             onclick={() => removeStock(i)}
                             disabled={stocks.length <= 1}
                         >

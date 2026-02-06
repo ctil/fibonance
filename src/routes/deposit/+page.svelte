@@ -58,7 +58,7 @@
                 >
                     {#snippet headerActions()}
                         <button
-                            class="p-1 text-sage-600 hover:text-sage-800 transition"
+                            class="p-1 text-sage-600 hover:text-sage-800 hover:bg-cream-200 rounded transition cursor-pointer"
                             onclick={() => {
                                 creatingNew = false;
                                 editingPortfolioId = portfolio.id;
@@ -87,7 +87,7 @@
                             />
                             <button
                                 type="submit"
-                                class="p-1 text-red-600 hover:text-red-800 transition"
+                                class="p-1 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition cursor-pointer"
                             >
                                 <Trash2 size={16} />
                             </button>
