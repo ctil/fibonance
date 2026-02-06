@@ -39,10 +39,14 @@
 
 <Card header="Interest" class={className}>
     {#snippet body()}
-        <InputCash label="Initial Deposit" bind:value={initial} />
-        <InputCash label="Monthly Contribution" bind:value={monthly} />
-        <InputPercent label="Annual Rate (%)" bind:value={rate} />
-        <InputTime label="Number of years" bind:value={years} />
+        <InputCash label="Initial Deposit" class="mb-4" bind:value={initial} />
+        <InputCash
+            label="Monthly Contribution"
+            class="mb-4"
+            bind:value={monthly}
+        />
+        <InputPercent label="Annual Rate (%)" class="mb-4" bind:value={rate} />
+        <InputTime label="Number of years" class="mb-4" bind:value={years} />
         <div class="mb-4">
             <label for="compound-frequency"> Compound Frequency </label>
             <select id="compound-frequency" class="px-3" bind:value={frequency}>

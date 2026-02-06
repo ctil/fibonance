@@ -1,14 +1,17 @@
 <script lang="ts">
+    import type { ClassValue } from "svelte/elements";
+
     interface Props {
         value?: number | null;
         label: string;
+        class?: ClassValue;
     }
 
     const uid = $props.id();
-    let { value = $bindable(), label }: Props = $props();
+    let { value = $bindable(), label, class: className }: Props = $props();
 </script>
 
-<div class="mb-4">
+<div class={className}>
     <label for="{uid}-time">
         {label}
     </label>
