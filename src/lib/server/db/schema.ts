@@ -6,18 +6,18 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 
-// Auth tables (Lucia)
-export const user = sqliteTable("user", {
+// Auth tables
+export const users = sqliteTable("users", {
     id: text("id").primaryKey(),
     username: text("username").notNull().unique(),
     passwordHash: text("password_hash").notNull(),
 });
 
-export const session = sqliteTable("session", {
+export const sessions = sqliteTable("sessions", {
     id: text("id").primaryKey(),
     userId: text("user_id")
         .notNull()
-        .references(() => user.id),
+        .references(() => users.id),
     expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
 });
 
@@ -28,7 +28,7 @@ export const portfolios = sqliteTable(
         id: integer("id").primaryKey({ autoIncrement: true }),
         userId: text("user_id")
             .notNull()
-            .references(() => user.id),
+            .references(() => users.id),
         name: text("name").notNull(),
         description: text("description"),
         createdAt: text("created_at").default("datetime('now')"),
@@ -45,20 +45,20 @@ export const stockAllocations = sqliteTable("stock_allocations", {
         .references(() => portfolios.id, { onDelete: "cascade" }),
     symbol: text("symbol").notNull(),
     targetPercentage: integer("target_percentage").notNull(),
-    description: text("description").notNull(),
+    description: text("description"),
     alternatives: text("alternatives", { mode: "json" }).$type<string[]>(),
     sortOrder: integer("sort_order").default(0),
 });
 
 // Relations
-export const userRelations = relations(user, ({ many }) => ({
+export const userRelations = relations(users, ({ many }) => ({
     portfolios: many(portfolios),
 }));
 
 export const portfoliosRelations = relations(portfolios, ({ one, many }) => ({
-    user: one(user, {
+    user: one(users, {
         fields: [portfolios.userId],
-        references: [user.id],
+        references: [users.id],
     }),
     stockAllocations: many(stockAllocations),
 }));
@@ -74,7 +74,7 @@ export const stockAllocationsRelations = relations(
 );
 
 // Types
-export type User = typeof user.$inferSelect;
-export type Session = typeof session.$inferSelect;
+export type User = typeof users.$inferSelect;
+export type Session = typeof sessions.$inferSelect;
 export type PortfolioRecord = typeof portfolios.$inferSelect;
 export type StockAllocationRecord = typeof stockAllocations.$inferSelect;

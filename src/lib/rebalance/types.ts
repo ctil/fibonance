@@ -14,7 +14,6 @@ export interface RawConfig {
 export interface Stock {
     symbol: string;
     targetPercentage: number;
-    description: string;
     alternatives?: string[];
 }
 

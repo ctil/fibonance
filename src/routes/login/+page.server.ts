@@ -34,8 +34,8 @@ export const actions: Actions = {
 
         const results = await db
             .select()
-            .from(table.user)
-            .where(eq(table.user.username, username));
+            .from(table.users)
+            .where(eq(table.users.username, username));
 
         const existingUser = results.at(0);
         if (!existingUser) {

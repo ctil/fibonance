@@ -15,6 +15,13 @@
       "when": 1769976264863,
       "tag": "0001_worried_beyonder",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1770348114573,
+      "tag": "0002_familiar_komodo",
+      "breakpoints": true
     }
   ]
 }
