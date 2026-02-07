@@ -9,6 +9,7 @@ Portfolio rebalancing library and web frontend in TypeScript. Includes rebalanci
 - Svelte / SvelteKit
 - Tailwind CSS v4
 - Turso (libSQL) with Drizzle ORM
+- lucide-svelte for icons
 
 ## Build and Test
 

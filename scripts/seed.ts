@@ -1,6 +1,12 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
-import { portfolios, stockAllocations } from "./src/lib/server/db/schema";
+import { hash } from "@node-rs/argon2";
+import {
+    portfolios,
+    stockAllocations,
+    users,
+    sessions,
+} from "../src/lib/server/db/schema";
 
 const url = process.env.TURSO_DATABASE_URL;
 const authToken = process.env.TURSO_AUTH_TOKEN;
@@ -16,7 +22,6 @@ const db = drizzle(client);
 const SEED_DATA = [
     {
         name: "No Bonds",
-        description: null,
         stocks: [
             {
                 symbol: "VTI",
@@ -32,7 +37,6 @@ const SEED_DATA = [
     },
     {
         name: "Indexes only",
-        description: null,
         stocks: [
             {
                 symbol: "VTI",
@@ -49,7 +53,6 @@ const SEED_DATA = [
     },
     {
         name: "Full Portfolio",
-        description: null,
         stocks: [
             {
                 symbol: "VTI",
@@ -70,12 +73,32 @@ const SEED_DATA = [
 async function seed() {
     console.log("Seeding database...");
 
+    const [username, password] = Bun.argv.slice(2);
+
+    if (!username || !password) {
+        console.error(
+            "Usage: bun scripts/register-user.ts <username> <password>",
+        );
+        process.exit(1);
+    }
+
+    await db.delete(stockAllocations);
+    await db.delete(sessions);
+    await db.delete(portfolios);
+    await db.delete(users);
+
+    const userId = crypto.randomUUID();
+    const passwordHash = await hash(password);
+
+    await db.insert(users).values({ id: userId, username, passwordHash });
+    console.log(`User "${username}" registered successfully.`);
+
     for (const portfolio of SEED_DATA) {
         const [inserted] = await db
             .insert(portfolios)
             .values({
                 name: portfolio.name,
-                description: portfolio.description,
+                userId,
             })
             .returning({ id: portfolios.id });
 
