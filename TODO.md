@@ -1,2 +1,11 @@
-- [ ] Setup client so it can use local Turso DB: https://docs.turso.tech/local-development
-- [ ] Allow user to create new portfolios from UI
+- [ ] Merge dev into main and seed DB
+- [ ] Add rebalance page with CSV upload
+- [ ] Retirement page
+    - [ ] Calculate retirement date
+    - [ ] Plot different scenarios based on a range of returns
+    - [ ] Show how savings rate affects date
+    - [ ] Can save investment amounts and assumptions
+- [ ] Add Fidelity integration
+- [ ] Portfolio page with adjustable risk slider
+    - [ ] Allow user to choose bond allocation percentage
+    - [ ] Instead of raw porfolios, you can set US/International and Stock/Bond ratios
