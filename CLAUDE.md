@@ -26,6 +26,7 @@ bun test     # Run tests
 - Database table names are plural
 - Use Svelte runes
 - Add a class prop to all components
+- Fix all compiler warnings and errors
 
 ## Database
 
