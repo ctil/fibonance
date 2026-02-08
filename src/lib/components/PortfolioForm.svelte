@@ -45,7 +45,7 @@
     let action = $derived(portfolio ? "?/update" : "?/create");
 </script>
 
-<Card class="w-full max-w-sm">
+<Card class="w-full max-w-lg">
     {#snippet body()}
         <form
             method="post"
@@ -95,7 +95,7 @@
 
                 {#each stocks as stock, i}
                     <div class="flex gap-2 mb-2 items-end">
-                        <div class="w-32">
+                        <div class="w-24 shrink-0">
                             {#if i === 0}
                                 <label for="stock-symbol-{i}">Symbol</label>
                             {/if}
@@ -110,7 +110,7 @@
                                 }}
                             />
                         </div>
-                        <div class="w-24">
+                        <div class="w-20 shrink-0">
                             {#if i === 0}
                                 <label for="stock-pct-{i}">%</label>
                             {/if}
@@ -124,7 +124,7 @@
                                 bind:value={stock.targetPercentage}
                             />
                         </div>
-                        <div class="flex-1">
+                        <div class="flex-1 min-w-0">
                             {#if i === 0}
                                 <label for="stock-alt-{i}">Alternatives</label>
                             {/if}

@@ -21,7 +21,7 @@ const db = drizzle(client);
 
 const SEED_DATA = [
     {
-        name: "No Bonds",
+        name: "Equities only",
         stocks: [
             {
                 symbol: "VTI",
@@ -38,7 +38,7 @@ const SEED_DATA = [
         ],
     },
     {
-        name: "Indexes only",
+        name: "No Bonds",
         stocks: [
             {
                 symbol: "VTI",
