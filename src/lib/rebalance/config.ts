@@ -1,5 +1,18 @@
 import { parse } from "yaml";
-import type { Config, RawConfig } from "./types";
+
+import type { Config } from "./types";
+
+// Raw types matching YAML structure (snake_case)
+interface RawStock {
+    symbol: string;
+    target_percentage: number;
+    description: string;
+    alternatives?: string[];
+}
+
+interface RawConfig {
+    stocks: RawStock[];
+}
 
 export function parseConfig(yamlContent: string): Config {
     const raw = parse(yamlContent) as RawConfig;
