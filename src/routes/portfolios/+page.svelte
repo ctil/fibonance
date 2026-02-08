@@ -90,7 +90,9 @@
                     {#each portfolio.config.stocks as stock}
                         <div class="flex justify-between mb-1">
                             <span class="font-medium">{stock.symbol}</span>
-                            <span class="text-sage-600">{stock.targetPercentage}%</span>
+                            <span class="text-sage-600"
+                                >{stock.targetPercentage}%</span
+                            >
                         </div>
                         {#if stock.alternatives?.length}
                             <p class="text-sm text-sage-500 mb-2 ml-2">
@@ -105,5 +107,7 @@
 </div>
 
 {#if data.portfolios.length === 0 && !creatingNew}
-    <p class="text-sage-500">No portfolios yet. Click the + button to create one.</p>
+    <p class="text-sage-500">
+        No portfolios yet. Click the + button to create one.
+    </p>
 {/if}

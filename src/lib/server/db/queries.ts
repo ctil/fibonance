@@ -12,7 +12,11 @@ export interface Portfolio {
 
 export interface PortfolioInput {
     name: string;
-    stocks: { symbol: string; targetPercentage: number; alternatives?: string[] }[];
+    stocks: {
+        symbol: string;
+        targetPercentage: number;
+        alternatives?: string[];
+    }[];
 }
 
 export async function getPortfoliosFromDb(

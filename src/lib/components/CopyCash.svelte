@@ -49,6 +49,8 @@
         background: var(--bg-primary, white);
         cursor: pointer;
         font-size: 0.875rem;
+        width: 4.5rem;
+        text-align: center;
     }
 
     button:hover {

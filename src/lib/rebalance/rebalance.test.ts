@@ -125,11 +125,7 @@ describe("rebalance", () => {
     });
 
     it("Small portfolio with large $50k deposit", async () => {
-        const result = rebalance(
-            simpleConfig,
-            await csv("small.csv"),
-            5000000,
-        );
+        const result = rebalance(simpleConfig, await csv("small.csv"), 5000000);
 
         expect(result.total).toBe(5010000);
 
@@ -159,11 +155,7 @@ describe("rebalance", () => {
     });
 
     it("Non-round dollar amounts test calculation precision", async () => {
-        const result = rebalance(
-            simpleConfig,
-            await csv("rounding.csv"),
-            0,
-        );
+        const result = rebalance(simpleConfig, await csv("rounding.csv"), 0);
 
         expect(result.total).toBe(3333333);
 
@@ -251,11 +243,7 @@ describe("rebalance", () => {
     });
 
     it("Portfolio with VTI overweight (80%), others underweight", async () => {
-        const result = rebalance(
-            simpleConfig,
-            await csv("unbalanced.csv"),
-            0,
-        );
+        const result = rebalance(simpleConfig, await csv("unbalanced.csv"), 0);
 
         expect(result.total).toBe(10000000);
 

@@ -36,9 +36,12 @@
     <div class="hidden md:flex gap-2 items-center">
         <a href="/" class={getLinkClass("/")}>Home</a>
         {#if data.user}
-            <a href="/portfolios" class={getLinkClass("/portfolios")}>Portfolios</a>
+            <a href="/portfolios" class={getLinkClass("/portfolios")}
+                >Portfolios</a
+            >
             <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
-            <a href="/rebalance" class={getLinkClass("/rebalance")}>Rebalance</a>
+            <a href="/rebalance" class={getLinkClass("/rebalance")}>Rebalance</a
+            >
         {:else}
             <span class={getDisabledClass()}>Portfolios</span>
             <span class={getDisabledClass()}>Deposit</span>

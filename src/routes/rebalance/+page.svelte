@@ -122,8 +122,8 @@
                                 >
                                 <td
                                     class="py-2 pr-4"
-                                    class:text-red-600={data.drift < -0.5}
-                                    class:text-green-600={data.drift > 0.5}
+                                    class:text-red-600={data.drift < 0}
+                                    class:text-green-600={data.drift > 0}
                                 >
                                     {data.drift > 0
                                         ? "+"
@@ -132,9 +132,9 @@
                                 <td class="py-2">
                                     {#if data.amountNeeded !== 0}
                                         <span
-                                            class={data.amountNeeded > 0
-                                                ? "text-green-600"
-                                                : "text-red-600"}
+                                            class="{data.amountNeeded > 0
+                                                ? 'text-green-600'
+                                                : 'text-red-600'} mr-2"
                                         >
                                             {data.amountNeeded > 0
                                                 ? "Buy"

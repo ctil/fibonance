@@ -22,7 +22,9 @@
 <div class="flex items-end gap-4 mb-5 flex-wrap">
     <InputCash class="w-[200px]" label="Amount" bind:value={toDeposit} />
     <div class="flex flex-col gap-1">
-        <label for="portfolio-select" class="text-sm font-medium">Portfolio</label>
+        <label for="portfolio-select" class="text-sm font-medium"
+            >Portfolio</label
+        >
         <select
             id="portfolio-select"
             class="block"
