@@ -48,7 +48,6 @@ bun test     # Run tests
 ## Key Conventions
 
 - All amounts stored as **cents** (integers) to avoid float precision issues
-- Config `target_percentage` values must sum to exactly 100
 - CSV must have `Symbol` and `Current Value` columns
 - Positive `amountNeeded` = buy, negative = sell
 
@@ -65,17 +64,6 @@ Tables defined in `src/lib/server/db/schema.ts`:
 - `portfolios` - Portfolio name and description
 - `stockAllocations` - Stock symbols, target percentages, and sort order (references portfolio)
 
-### Drizzle Commands
-
-```sh
-bun db:generate    # Generate migration
-bun db:migrate     # Apply migrations to database
-```
-
 ### Schema Changes
 
 Edit `src/lib/server/db/schema.ts` then run `bun db:generate` to generate migrations. To apply the migrations, run `bun db:migrate`
-
-## Tests
-
-Tests use JSON definitions in `src/lib/rebalance/tests/definitions/` with fixtures in `tests/configs/` and `tests/portfolios/`. Run with `bun test`.
