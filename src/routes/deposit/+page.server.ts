@@ -21,6 +21,7 @@ export const load: PageServerLoad = async (event) => {
 interface StockInput {
     symbol: string;
     targetPercentage: number;
+    alternatives?: string[];
 }
 
 function parseStocks(formData: FormData): {
@@ -63,7 +64,15 @@ function parseStocks(formData: FormData): {
                 error: `Stock ${symbol}: percentage must be an integer between 1 and 100`,
             };
         }
-        stocks.push({ symbol, targetPercentage });
+        const alternativesRaw = String(item.alternatives ?? "").trim();
+        const alternatives = alternativesRaw
+            ? alternativesRaw
+                  .split(",")
+                  .map((s: string) => s.trim().toUpperCase())
+                  .filter(Boolean)
+            : undefined;
+
+        stocks.push({ symbol, targetPercentage, alternatives });
     }
 
     const sum = stocks.reduce((s, st) => s + st.targetPercentage, 0);

@@ -21,8 +21,9 @@
             ? portfolio.config.stocks.map((s) => ({
                   symbol: s.symbol,
                   targetPercentage: s.targetPercentage,
+                  alternatives: s.alternatives?.join(", ") ?? "",
               }))
-            : [{ symbol: "", targetPercentage: 0 }];
+            : [{ symbol: "", targetPercentage: 0, alternatives: "" }];
     }
     let name = $state(getInitialName());
     let stocks = $state(getInitialStocks());
@@ -32,7 +33,7 @@
     );
 
     async function addStock() {
-        stocks.push({ symbol: "", targetPercentage: 0 });
+        stocks.push({ symbol: "", targetPercentage: 0, alternatives: "" });
         await tick();
         document.getElementById(`stock-symbol-${stocks.length - 1}`)?.focus();
     }
@@ -121,6 +122,21 @@
                                 step="1"
                                 required
                                 bind:value={stock.targetPercentage}
+                            />
+                        </div>
+                        <div class="flex-1">
+                            {#if i === 0}
+                                <label for="stock-alt-{i}">Alternatives</label>
+                            {/if}
+                            <input
+                                id="stock-alt-{i}"
+                                type="text"
+                                placeholder="FSKAX, SWTSX"
+                                bind:value={stock.alternatives}
+                                oninput={() => {
+                                    stock.alternatives =
+                                        stock.alternatives.toUpperCase();
+                                }}
                             />
                         </div>
                         <button

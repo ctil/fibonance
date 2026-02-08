@@ -12,7 +12,7 @@ export interface Portfolio {
 
 export interface PortfolioInput {
     name: string;
-    stocks: { symbol: string; targetPercentage: number }[];
+    stocks: { symbol: string; targetPercentage: number; alternatives?: string[] }[];
 }
 
 export async function getPortfoliosFromDb(
@@ -82,6 +82,7 @@ export async function createPortfolioInDb(
                 portfolioId: row.id,
                 symbol: stock.symbol,
                 targetPercentage: stock.targetPercentage,
+                alternatives: stock.alternatives ?? null,
                 description: null,
                 sortOrder: i,
             })),
@@ -115,6 +116,7 @@ export async function updatePortfolioInDb(
                 portfolioId,
                 symbol: stock.symbol,
                 targetPercentage: stock.targetPercentage,
+                alternatives: stock.alternatives ?? null,
                 description: null,
                 sortOrder: i,
             })),
