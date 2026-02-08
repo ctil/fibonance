@@ -1,5 +1,3 @@
-- [x] Merge dev into main and seed DB
-- [ ] Add rebalance page with CSV upload
 - [ ] Retirement page
     - [ ] Calculate retirement date
     - [ ] Plot different scenarios based on a range of returns
