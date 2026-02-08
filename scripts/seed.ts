@@ -25,11 +25,13 @@ const SEED_DATA = [
         stocks: [
             {
                 symbol: "VTI",
+                alternatives: ["FSKAX"],
                 targetPercentage: 80,
                 description: "Total Market Fund",
             },
             {
                 symbol: "VXUS",
+                alternatives: ["FTIHX"],
                 targetPercentage: 20,
                 description: "International Fund",
             },
@@ -40,11 +42,13 @@ const SEED_DATA = [
         stocks: [
             {
                 symbol: "VTI",
+                alternatives: ["FSKAX"],
                 targetPercentage: 79,
                 description: "Total Market Fund",
             },
             {
                 symbol: "VXUS",
+                alternatives: ["FTIHX"],
                 targetPercentage: 20,
                 description: "International Fund",
             },
@@ -56,11 +60,13 @@ const SEED_DATA = [
         stocks: [
             {
                 symbol: "VTI",
+                alternatives: ["FSKAX"],
                 targetPercentage: 71,
                 description: "Total Market Fund",
             },
             {
                 symbol: "VXUS",
+                alternatives: ["FTIHX"],
                 targetPercentage: 18,
                 description: "International Fund",
             },
@@ -111,6 +117,7 @@ async function seed() {
             await db.insert(stockAllocations).values({
                 portfolioId: inserted.id,
                 symbol: stock.symbol,
+                alternatives: stock.alternatives,
                 targetPercentage: stock.targetPercentage,
                 description: stock.description,
                 sortOrder: i,
