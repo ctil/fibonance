@@ -67,7 +67,7 @@
         <label for="csv-upload">CSV File</label>
         <label
             for="csv-upload"
-            class="block cursor-pointer bg-sage-600 !text-white px-4 py-2 rounded-md hover:bg-sage-700 transition text-center"
+            class="block cursor-pointer bg-sage-600 !text-white px-4 py-[0.5625rem] !mb-0 border border-sage-600 rounded-lg hover:bg-sage-700 hover:border-sage-700 transition text-center leading-normal"
         >
             {csvFileName ?? "Upload CSV"}
         </label>
