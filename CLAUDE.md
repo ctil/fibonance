@@ -24,6 +24,8 @@ bun test     # Run tests
 - CSV must have `Symbol` and `Current Value` columns
 - Positive `amountNeeded` = buy, negative = sell
 - Database table names are plural
+- Use Svelte runes
+- Add a class prop to all components
 
 ## Database
 

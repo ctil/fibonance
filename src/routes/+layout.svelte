@@ -37,8 +37,10 @@
         <a href="/" class={getLinkClass("/")}>Home</a>
         {#if data.user}
             <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
+            <a href="/rebalance" class={getLinkClass("/rebalance")}>Rebalance</a>
         {:else}
             <span class={getDisabledClass()}>Deposit</span>
+            <span class={getDisabledClass()}>Rebalance</span>
         {/if}
         <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
         {#if data.user}
@@ -103,8 +105,14 @@
                     class={getLinkClass("/deposit")}
                     onclick={() => (menuOpen = false)}>Deposit</a
                 >
+                <a
+                    href="/rebalance"
+                    class={getLinkClass("/rebalance")}
+                    onclick={() => (menuOpen = false)}>Rebalance</a
+                >
             {:else}
                 <span class={getDisabledClass()}>Deposit</span>
+                <span class={getDisabledClass()}>Rebalance</span>
             {/if}
             <a
                 href="/interest"
