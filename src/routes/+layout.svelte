@@ -47,8 +47,7 @@
             <span class={getDisabledClass()}>Deposit</span>
             <span class={getDisabledClass()}>Rebalance</span>
         {/if}
-        <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
-        <a href="/retirement" class={getLinkClass("/retirement")}>Retirement</a>
+        <a href="/calculators" class={getLinkClass("/calculators")}>Calculators</a>
         {#if data.user}
             <form method="post" action="/logout" use:enhance class="inline">
                 <button class={getLinkClass("")}>Sign out</button>
@@ -127,14 +126,9 @@
                 <span class={getDisabledClass()}>Rebalance</span>
             {/if}
             <a
-                href="/interest"
-                class={getLinkClass("/interest")}
-                onclick={() => (menuOpen = false)}>Interest</a
-            >
-            <a
-                href="/retirement"
-                class={getLinkClass("/retirement")}
-                onclick={() => (menuOpen = false)}>Retirement</a
+                href="/calculators"
+                class={getLinkClass("/calculators")}
+                onclick={() => (menuOpen = false)}>Calculators</a
             >
             {#if data.user}
                 <form method="post" action="/logout" use:enhance>
