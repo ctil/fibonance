@@ -47,7 +47,9 @@
             <span class={getDisabledClass()}>Deposit</span>
             <span class={getDisabledClass()}>Rebalance</span>
         {/if}
-        <a href="/calculators" class={getLinkClass("/calculators")}>Calculators</a>
+        <a href="/calculators" class={getLinkClass("/calculators")}
+            >Calculators</a
+        >
         {#if data.user}
             <form method="post" action="/logout" use:enhance class="inline">
                 <button class={getLinkClass("")}>Sign out</button>
