@@ -48,6 +48,7 @@
             <span class={getDisabledClass()}>Rebalance</span>
         {/if}
         <a href="/interest" class={getLinkClass("/interest")}>Interest</a>
+        <a href="/retirement" class={getLinkClass("/retirement")}>Retirement</a>
         {#if data.user}
             <form method="post" action="/logout" use:enhance class="inline">
                 <button class={getLinkClass("")}>Sign out</button>
@@ -129,6 +130,11 @@
                 href="/interest"
                 class={getLinkClass("/interest")}
                 onclick={() => (menuOpen = false)}>Interest</a
+            >
+            <a
+                href="/retirement"
+                class={getLinkClass("/retirement")}
+                onclick={() => (menuOpen = false)}>Retirement</a
             >
             {#if data.user}
                 <form method="post" action="/logout" use:enhance>

@@ -7,6 +7,9 @@ import * as table from "$lib/server/db/schema";
 
 const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
+// Sessions last 30 days and are renewed for another 30 days when
+// the user visits within the last 15 days before expiry.
+
 export const sessionCookieName = "auth-session";
 
 export function generateSessionToken() {
