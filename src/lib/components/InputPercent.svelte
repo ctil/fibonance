@@ -19,7 +19,7 @@
         <input
             id="{uid}-percent"
             type="number"
-            step="0.1"
+            step="1"
             min="0"
             class="pl-3 pr-8"
             bind:value

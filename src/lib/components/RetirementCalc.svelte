@@ -5,16 +5,53 @@
     import { calculateRetirement } from "$lib/retirement";
     import type { ClassValue } from "svelte/elements";
 
+    const STORAGE_KEY = "retirement-calc";
+
+    interface SavedRetirementData {
+        currentValue?: number | null;
+        annualSavings?: number | null;
+        annualExpenses?: number | null;
+        safeWithdrawalRate?: number | null;
+        expectedRealReturn?: number | null;
+    }
+
     interface Props {
         class?: ClassValue;
     }
     let { class: className }: Props = $props();
 
-    let currentValue = $state<number | null>(null);
-    let annualSavings = $state<number | null>(null);
-    let annualExpenses = $state<number | null>(null);
-    let safeWithdrawalRate = $state<number | null>(4);
-    let expectedRealReturn = $state<number | null>(6);
+    // Load saved data from local storage
+    function loadSaved(): SavedRetirementData {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw) as SavedRetirementData;
+        } catch (err) {
+            console.error("Error loading saved data:", err);
+        }
+        return {};
+    }
+
+    const saved = loadSaved();
+    let currentValue = $state<number | null>(saved.currentValue ?? null);
+    let annualSavings = $state<number | null>(saved.annualSavings ?? null);
+    let annualExpenses = $state<number | null>(saved.annualExpenses ?? null);
+    let safeWithdrawalRate = $state<number | null>(
+        saved.safeWithdrawalRate ?? 4,
+    );
+    let expectedRealReturn = $state<number | null>(
+        saved.expectedRealReturn ?? 6,
+    );
+
+    $effect(() => {
+        const data = {
+            currentValue,
+            annualSavings,
+            annualExpenses,
+            safeWithdrawalRate,
+            expectedRealReturn,
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    });
 
     let result = $derived.by(() => {
         if (
