@@ -7,16 +7,42 @@
     import { calculateInterest, type CompoundFrequency } from "$lib/compound";
     import type { ClassValue } from "svelte/elements";
 
+    const STORAGE_KEY = "interest-calc";
+
+    interface SavedInterestData {
+        initial?: number | null;
+        monthly?: number | null;
+        rate?: number | null;
+        years?: number | null;
+        frequency?: CompoundFrequency;
+    }
+
     interface Props {
         class?: ClassValue;
     }
     let { class: className }: Props = $props();
 
-    let initial = $state<number | null>(null);
-    let monthly = $state<number | null>(null);
-    let rate = $state<number | null>(null);
-    let years = $state<number | null>(null);
-    let frequency = $state<CompoundFrequency>("annually");
+    function loadSaved(): SavedInterestData {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch (err) {
+            console.error("Error loading saved interest data:", err);
+        }
+        return {};
+    }
+
+    const saved = loadSaved();
+    let initial = $state<number | null>(saved.initial ?? null);
+    let monthly = $state<number | null>(saved.monthly ?? null);
+    let rate = $state<number | null>(saved.rate ?? null);
+    let years = $state<number | null>(saved.years ?? null);
+    let frequency = $state<CompoundFrequency>(saved.frequency ?? "annually");
+
+    $effect(() => {
+        const data = { initial, monthly, rate, years, frequency };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    });
 
     let result = $derived.by(() => {
         if (

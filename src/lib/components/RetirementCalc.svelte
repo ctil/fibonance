@@ -24,9 +24,9 @@
     function loadSaved(): SavedRetirementData {
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) return JSON.parse(raw) as SavedRetirementData;
+            if (raw) return JSON.parse(raw);
         } catch (err) {
-            console.error("Error loading saved data:", err);
+            console.error("Error loading saved retirement data:", err);
         }
         return {};
     }
