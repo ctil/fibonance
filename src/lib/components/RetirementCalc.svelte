@@ -119,25 +119,33 @@
             bind:value={expectedRealReturn}
         />
         {#if result === "already"}
-            <p class="text-lg font-semibold text-green-600">
-                You can retire now!
-            </p>
+            <div
+                class="mt-6 rounded-lg border border-green-200 bg-green-50 p-4"
+            >
+                <p class="text-2xl font-semibold text-green-600">
+                    You can retire now!
+                </p>
+            </div>
         {:else if result === "impossible"}
-            <p class="text-lg font-semibold text-red-600">
-                Cannot reach retirement target with current savings rate.
-            </p>
+            <div class="mt-6 rounded-lg border border-red-200 bg-red-50 p-4">
+                <p class="text-2xl font-semibold text-red-600">
+                    Cannot reach retirement target with current savings rate.
+                </p>
+            </div>
         {:else if result != null}
-            <div class="space-y-1">
-                <p>
-                    <span class="font-medium">Target:</span>
+            <div
+                class="mt-6 space-y-1 rounded-lg border border-green-200 bg-green-50 p-4"
+            >
+                <p class="text-lg">
+                    <span class="font-bold">Target:</span>
                     {formatCurrency(result.targetValue)}
                 </p>
-                <p>
-                    <span class="font-medium">Years to retirement:</span>
+                <p class="text-lg">
+                    <span class="font-bold">Years to retirement:</span>
                     {result.yearsToRetirement.toFixed(1)} years
                 </p>
-                <p>
-                    <span class="font-medium">Target date:</span>
+                <p class="text-lg">
+                    <span class="font-bold">Target date:</span>
                     {formatDate(result.retirementDate)}
                 </p>
             </div>
