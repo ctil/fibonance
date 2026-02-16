@@ -42,10 +42,12 @@
             <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
             <a href="/rebalance" class={getLinkClass("/rebalance")}>Rebalance</a
             >
+            <a href="/profile" class={getLinkClass("/profile")}>Profile</a>
         {:else}
             <span class={getDisabledClass()}>Portfolios</span>
             <span class={getDisabledClass()}>Deposit</span>
             <span class={getDisabledClass()}>Rebalance</span>
+            <span class={getDisabledClass()}>Profile</span>
         {/if}
         <a href="/calculators" class={getLinkClass("/calculators")}
             >Calculators</a
@@ -122,10 +124,16 @@
                     class={getLinkClass("/rebalance")}
                     onclick={() => (menuOpen = false)}>Rebalance</a
                 >
+                <a
+                    href="/profile"
+                    class={getLinkClass("/profile")}
+                    onclick={() => (menuOpen = false)}>Profile</a
+                >
             {:else}
                 <span class={getDisabledClass()}>Portfolios</span>
                 <span class={getDisabledClass()}>Deposit</span>
                 <span class={getDisabledClass()}>Rebalance</span>
+                <span class={getDisabledClass()}>Profile</span>
             {/if}
             <a
                 href="/calculators"

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     import Card from "$lib/components/Card.svelte";
     import CopyCash from "$lib/components/CopyCash.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
@@ -23,6 +24,7 @@
     let { class: className }: Props = $props();
 
     function loadSaved(): SavedInterestData {
+        if (!browser) return {};
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) return JSON.parse(raw);

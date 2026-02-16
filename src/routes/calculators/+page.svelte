@@ -1,6 +1,9 @@
 <script lang="ts">
     import InterestCalc from "$lib/components/InterestCalc.svelte";
     import RetirementCalc from "$lib/components/RetirementCalc.svelte";
+    import type { PageData } from "./$types";
+
+    const { data }: { data: PageData } = $props();
 
     let activeTab: "interest" | "retirement" = $state("retirement");
 </script>
@@ -30,6 +33,9 @@
     {#if activeTab === "interest"}
         <InterestCalc class="w-full max-w-sm mt-4" />
     {:else}
-        <RetirementCalc class="w-full max-w-sm mt-4" />
+        <RetirementCalc
+            class="w-full max-w-sm mt-4"
+            birthday={data.user?.birthday}
+        />
     {/if}
 </div>

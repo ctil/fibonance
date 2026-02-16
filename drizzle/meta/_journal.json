@@ -22,6 +22,13 @@
       "when": 1770348114573,
       "tag": "0002_familiar_komodo",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1771252868887,
+      "tag": "0003_lonely_madripoor",
+      "breakpoints": true
     }
   ]
 }

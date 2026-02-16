@@ -2,6 +2,7 @@ export interface RetirementResult {
     targetValue: number;
     yearsToRetirement: number;
     retirementDate: Date;
+    retirementAge?: number;
 }
 
 export function calculateRetirement(
@@ -10,6 +11,7 @@ export function calculateRetirement(
     annualExpenses: number,
     safeWithdrawalRate: number,
     expectedRealReturn: number,
+    birthday?: string | null,
 ): RetirementResult | "already" | "impossible" {
     const targetValue = annualExpenses / (safeWithdrawalRate / 100);
 
@@ -51,5 +53,13 @@ export function calculateRetirement(
         retirementDate.getFullYear() + Math.ceil(yearsToRetirement),
     );
 
-    return { targetValue, yearsToRetirement, retirementDate };
+    let retirementAge: number | undefined;
+    if (birthday) {
+        const birthDate = new Date(birthday);
+        const ageInMs = Date.now() - birthDate.getTime();
+        const ageInYears = ageInMs / (1000 * 60 * 60 * 24 * 365.25);
+        retirementAge = ageInYears + yearsToRetirement;
+    }
+
+    return { targetValue, yearsToRetirement, retirementDate, retirementAge };
 }

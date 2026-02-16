@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     import Card from "$lib/components/Card.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import InputPercent from "$lib/components/InputPercent.svelte";
@@ -17,11 +18,13 @@
 
     interface Props {
         class?: ClassValue;
+        birthday?: string | null;
     }
-    let { class: className }: Props = $props();
+    let { class: className, birthday = null }: Props = $props();
 
     // Load saved data from local storage
     function loadSaved(): SavedRetirementData {
+        if (!browser) return {};
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             if (raw) return JSON.parse(raw);
@@ -69,6 +72,7 @@
                 annualExpenses,
                 safeWithdrawalRate,
                 expectedRealReturn,
+                birthday,
             );
         }
         return null;
@@ -144,6 +148,12 @@
                     <span class="font-bold">Years to retirement:</span>
                     {result.yearsToRetirement.toFixed(1)} years
                 </p>
+                {#if result.retirementAge}
+                    <p class="text-lg">
+                        <span class="font-bold">Retirement age:</span>
+                        {result.retirementAge.toFixed(1)}
+                    </p>
+                {/if}
                 <p class="text-lg">
                     <span class="font-bold">Target date:</span>
                     {formatDate(result.retirementDate)}
