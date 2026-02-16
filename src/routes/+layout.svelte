@@ -35,6 +35,9 @@
     <!-- Desktop nav links -->
     <div class="hidden md:flex gap-2 items-center">
         <a href="/" class={getLinkClass("/")}>Home</a>
+        <a href="/calculators" class={getLinkClass("/calculators")}
+            >Calculators</a
+        >
         {#if data.user}
             <a href="/portfolios" class={getLinkClass("/portfolios")}
                 >Portfolios</a
@@ -49,9 +52,6 @@
             <span class={getDisabledClass()}>Rebalance</span>
             <span class={getDisabledClass()}>Profile</span>
         {/if}
-        <a href="/calculators" class={getLinkClass("/calculators")}
-            >Calculators</a
-        >
         {#if data.user}
             <form method="post" action="/logout" use:enhance class="inline">
                 <button class={getLinkClass("")}>Sign out</button>
@@ -108,6 +108,11 @@
                 class={getLinkClass("/")}
                 onclick={() => (menuOpen = false)}>Home</a
             >
+            <a
+                href="/calculators"
+                class={getLinkClass("/calculators")}
+                onclick={() => (menuOpen = false)}>Calculators</a
+            >
             {#if data.user}
                 <a
                     href="/portfolios"
@@ -135,11 +140,6 @@
                 <span class={getDisabledClass()}>Rebalance</span>
                 <span class={getDisabledClass()}>Profile</span>
             {/if}
-            <a
-                href="/calculators"
-                class={getLinkClass("/calculators")}
-                onclick={() => (menuOpen = false)}>Calculators</a
-            >
             {#if data.user}
                 <form method="post" action="/logout" use:enhance>
                     <button

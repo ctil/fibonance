@@ -1,12 +1,12 @@
 <script lang="ts">
     import Card from "$lib/components/Card.svelte";
     import { enhance } from "$app/forms";
-    import type { ActionData } from "./$types";
+    import type { ActionData, PageData } from "./$types";
 
-    let { form }: { form: ActionData } = $props();
+    let { data, form }: { data: PageData; form: ActionData } = $props();
 </script>
 
-<Card header="Profile">
+<Card header="Profile" class="w-[300px]">
     {#snippet body()}
         <form method="post" use:enhance>
             <div class="mb-4">
@@ -19,7 +19,8 @@
                     type="date"
                     name="birthday"
                     id="birthday"
-                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    value={data.birthday}
+                    class="mt-1 block w-48 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 />
             </div>
             <button
