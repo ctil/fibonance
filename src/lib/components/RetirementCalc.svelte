@@ -3,7 +3,10 @@
     import Card from "$lib/components/Card.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import InputPercent from "$lib/components/InputPercent.svelte";
-    import { calculateRetirement, calculateRequiredSavings } from "$lib/retirement";
+    import {
+        calculateRetirement,
+        calculateRequiredSavings,
+    } from "$lib/retirement";
     import type { ClassValue } from "svelte/elements";
 
     const STORAGE_KEY = "retirement-calc";
@@ -109,98 +112,162 @@
     }
 </script>
 
-<Card header="Retirement" class={className}>
-    {#snippet body()}
-        <InputCash
-            label="Current Portfolio Value"
-            class="mb-4"
-            bind:value={currentValue}
-        />
-        <InputCash
-            label="Annual Savings"
-            class="mb-4"
-            bind:value={annualSavings}
-        />
-        <InputCash
-            label="Annual Retirement Expenses"
-            class="mb-4"
-            bind:value={annualExpenses}
-        />
-        <InputPercent
-            label="Safe Withdrawal Rate (%)"
-            class="mb-4"
-            bind:value={safeWithdrawalRate}
-        />
-        <InputPercent
-            label="Expected Real Return (%)"
-            class="mb-4"
-            bind:value={expectedRealReturn}
-        />
-        {#if result === "already"}
-            <div
-                class="mt-6 rounded-lg border border-green-200 bg-green-50 p-4"
-            >
-                <p class="text-2xl font-semibold text-green-600">
-                    You can retire now!
-                </p>
-            </div>
-        {:else if result === "impossible"}
-            <div class="mt-6 rounded-lg border border-red-200 bg-red-50 p-4">
-                <p class="text-2xl font-semibold text-red-600">
-                    Cannot reach retirement target with current savings rate.
-                </p>
-            </div>
-        {:else if result != null}
-            <div
-                class="mt-6 space-y-1 rounded-lg border border-green-200 bg-green-50 p-4"
-            >
-                <p class="text-lg">
-                    <span class="font-bold">Target:</span>
-                    {formatCurrency(result.targetValue)}
-                </p>
-                <p class="text-lg">
-                    <span class="font-bold">Years to retirement:</span>
-                    {result.yearsToRetirement.toFixed(1)} years
-                </p>
-                {#if result.retirementAge}
-                    <p class="text-lg">
-                        <span class="font-bold">Retirement age:</span>
-                        {result.retirementAge.toFixed(1)}
+<div class={["w-full", className]}>
+    <h1 class="text-2xl font-semibold mb-6">Retirement Calculator</h1>
+
+    <div class="flex flex-col lg:flex-row gap-6">
+        <!-- LEFT: inputs card -->
+        <Card class="lg:w-80 shrink-0">
+            {#snippet body()}
+                <InputCash
+                    label="Current Portfolio Value"
+                    class="mb-4"
+                    bind:value={currentValue}
+                />
+                <InputCash
+                    label="Annual Savings"
+                    class="mb-4"
+                    bind:value={annualSavings}
+                />
+                <InputCash
+                    label="Annual Retirement Expenses"
+                    class="mb-4"
+                    bind:value={annualExpenses}
+                />
+                <InputPercent
+                    label="Safe Withdrawal Rate (%)"
+                    class="mb-4"
+                    bind:value={safeWithdrawalRate}
+                />
+                <InputPercent
+                    label="Expected Real Return (%)"
+                    bind:value={expectedRealReturn}
+                />
+            {/snippet}
+        </Card>
+
+        <!-- RIGHT: results -->
+        <div class="flex-1 min-w-0">
+            {#if result === "already"}
+                <div
+                    class="rounded-lg border border-green-200 bg-green-50 p-8 flex items-center justify-center min-h-48"
+                >
+                    <p class="text-3xl font-semibold text-green-600">
+                        You can retire now.
                     </p>
-                {/if}
-                <p class="text-lg">
-                    <span class="font-bold">Target date:</span>
-                    {formatDate(result.retirementDate)}
-                </p>
-            </div>
-            <div class="mt-4">
-                <label class="mb-1 block text-sm font-medium text-gray-700">
-                    Year adjustment
-                    <input
-                        type="number"
-                        step="1"
-                        bind:value={yearAdjustment}
-                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                    />
-                </label>
-                <p class="mt-2 text-sm text-gray-700">
-                    {#if yearAdjustment === 0}
-                        No change
-                    {:else if savingsAdjustment === "impossible"}
-                        Target is not reachable in that timeframe.
-                    {:else if savingsAdjustment != null}
-                        {@const diff = savingsAdjustment - annualSavings!}
-                        {yearAdjustment < 0
-                            ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
-                            : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
-                        {#if diff > 0}
-                            save <strong>+{formatCurrency(diff)}</strong> more per year ({formatCurrency(savingsAdjustment as number)}/yr)
-                        {:else}
-                            save <strong>{formatCurrency(Math.abs(diff))}</strong> less per year ({formatCurrency(savingsAdjustment as number)}/yr)
-                        {/if}
+                </div>
+            {:else if result === "impossible"}
+                <div
+                    class="rounded-lg border border-red-200 bg-red-50 p-8 flex items-center justify-center min-h-48"
+                >
+                    <p class="text-2xl font-semibold text-red-600">
+                        Cannot reach retirement target with current savings
+                        rate.
+                    </p>
+                </div>
+            {:else if result != null}
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div
+                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                    >
+                        <p
+                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                        >
+                            Target Portfolio
+                        </p>
+                        <p class="text-3xl font-bold">
+                            {formatCurrency(result.targetValue)}
+                        </p>
+                    </div>
+                    <div
+                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                    >
+                        <p
+                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                        >
+                            Years to Retirement
+                        </p>
+                        <p class="text-3xl font-bold">
+                            {result.yearsToRetirement.toFixed(1)}
+                        </p>
+                        <p class="text-sm text-cream-600 mt-1">years</p>
+                    </div>
+                    <div
+                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                    >
+                        <p
+                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                        >
+                            Target Date
+                        </p>
+                        <p class="text-3xl font-bold">
+                            {formatDate(result.retirementDate)}
+                        </p>
+                    </div>
+                    {#if result.retirementAge}
+                        <div
+                            class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                        >
+                            <p
+                                class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                            >
+                                Retirement Age
+                            </p>
+                            <p class="text-3xl font-bold">
+                                {result.retirementAge.toFixed(1)}
+                            </p>
+                        </div>
                     {/if}
-                </p>
-            </div>
-        {/if}
-    {/snippet}
-</Card>
+                </div>
+
+                <div
+                    class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                >
+                    <label class="mb-1 block text-sm font-medium text-gray-700">
+                        Year adjustment
+                        <input
+                            type="number"
+                            style="width: 100px"
+                            step="1"
+                            bind:value={yearAdjustment}
+                            class="mt-1 block rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                        />
+                    </label>
+                    <p class="mt-2 text-sm text-gray-700">
+                        {#if yearAdjustment === 0}
+                            No change
+                        {:else if savingsAdjustment === "impossible"}
+                            Target is not reachable in that timeframe.
+                        {:else if savingsAdjustment != null}
+                            {@const diff = savingsAdjustment - annualSavings!}
+                            {yearAdjustment < 0
+                                ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
+                                : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
+                            {#if diff > 0}
+                                save <strong>+{formatCurrency(diff)}</strong>
+                                more per year ({formatCurrency(
+                                    savingsAdjustment as number,
+                                )}/yr)
+                            {:else}
+                                save <strong
+                                    >{formatCurrency(Math.abs(diff))}</strong
+                                >
+                                less per year ({formatCurrency(
+                                    savingsAdjustment as number,
+                                )}/yr)
+                            {/if}
+                        {/if}
+                    </p>
+                </div>
+            {:else}
+                <div
+                    class="rounded-lg border border-cream-300 bg-cream-50 p-8 flex items-center justify-center min-h-48"
+                >
+                    <p class="text-cream-500">
+                        Fill in the inputs to see your retirement projection.
+                    </p>
+                </div>
+            {/if}
+        </div>
+    </div>
+</div>

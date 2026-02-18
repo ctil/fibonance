@@ -38,6 +38,7 @@
         <a href="/calculators" class={getLinkClass("/calculators")}
             >Calculators</a
         >
+        <a href="/retirement" class={getLinkClass("/retirement")}>Retirement</a>
         {#if data.user}
             <a href="/portfolios" class={getLinkClass("/portfolios")}
                 >Portfolios</a
@@ -112,6 +113,11 @@
                 href="/calculators"
                 class={getLinkClass("/calculators")}
                 onclick={() => (menuOpen = false)}>Calculators</a
+            >
+            <a
+                href="/retirement"
+                class={getLinkClass("/retirement")}
+                onclick={() => (menuOpen = false)}>Retirement</a
             >
             {#if data.user}
                 <a
