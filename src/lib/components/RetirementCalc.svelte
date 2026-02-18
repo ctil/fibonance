@@ -84,6 +84,13 @@
         return null;
     });
 
+    let coastFireNumber = $derived.by(() => {
+        if (result == null || typeof result !== "object") return null;
+        const r = expectedRealReturn! / 100;
+        if (r === 0) return result.targetValue;
+        return result.targetValue / Math.pow(1 + r, result.yearsToRetirement);
+    });
+
     let savingsAdjustment = $derived.by(() => {
         if (result == null || typeof result !== "object") return null;
         const targetYears = result.yearsToRetirement + yearAdjustment;
@@ -166,6 +173,35 @@
                     </p>
                 </div>
             {:else if result != null}
+                {@const progress = Math.min(
+                    100,
+                    (currentValue! / result.targetValue) * 100,
+                )}
+                <div
+                    class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 mb-4"
+                >
+                    <div class="flex justify-between text-sm mb-2">
+                        <span
+                            class="font-medium text-cream-600 uppercase tracking-wide text-xs"
+                            >Progress to Goal</span
+                        >
+                        <span class="font-semibold">{progress.toFixed(1)}%</span
+                        >
+                    </div>
+                    <div class="w-full bg-cream-100 rounded-full h-3">
+                        <div
+                            class="bg-green-500 h-3 rounded-full transition-all duration-300"
+                            style="width: {progress}%"
+                        ></div>
+                    </div>
+                    <div
+                        class="flex justify-between text-xs text-cream-500 mt-1"
+                    >
+                        <span>{formatCurrency(currentValue!)}</span>
+                        <span>{formatCurrency(result.targetValue)}</span>
+                    </div>
+                </div>
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
                     <div
                         class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
@@ -218,40 +254,93 @@
                             </p>
                         </div>
                     {/if}
-                </div>
-
-                <div
-                    class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                >
-                    <label class="mb-1 block text-sm font-medium text-gray-700">
-                        Year adjustment
-                        <input
-                            type="number"
-                            style="width: 100px"
-                            step="1"
-                            bind:value={yearAdjustment}
-                            class="mt-1 block rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                        />
-                    </label>
-                    <p class="mt-2 text-gray-700 text-md">
-                        {#if yearAdjustment === 0}
-                            No change
-                        {:else if savingsAdjustment === "impossible"}
-                            Target is not reachable in that timeframe.
-                        {:else if savingsAdjustment != null}
-                            {@const diff = savingsAdjustment - annualSavings!}
-                            {yearAdjustment < 0
-                                ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
-                                : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
-                            save {formatCurrency(savingsAdjustment)}/yr (<span
-                                class={diff > 0
-                                    ? "text-red-600"
-                                    : "text-green-600"}
+                    <div
+                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 sm:col-span-2"
+                    >
+                        <label
+                            class="mb-1 block text-sm font-medium text-gray-700"
+                        >
+                            Year adjustment
+                            <input
+                                type="number"
+                                style="width: 100px"
+                                step="1"
+                                bind:value={yearAdjustment}
+                                class="mt-1 block rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                            />
+                        </label>
+                        <p class="mt-2 text-gray-700 text-md">
+                            {#if yearAdjustment === 0}
+                                No change
+                            {:else if savingsAdjustment === "impossible"}
+                                Target is not reachable in that timeframe.
+                            {:else if savingsAdjustment != null}
+                                {@const diff =
+                                    savingsAdjustment - annualSavings!}
+                                {yearAdjustment < 0
+                                    ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
+                                    : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
+                                save {formatCurrency(savingsAdjustment)}/yr (<span
+                                    class={diff > 0
+                                        ? "text-red-600"
+                                        : "text-green-600"}
+                                >
+                                    {diff > 0 ? "+" : ""}{formatCurrency(diff)}
+                                </span>)
+                            {/if}
+                        </p>
+                    </div>
+                    {#if coastFireNumber != null}
+                        <div
+                            class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 sm:col-span-2"
+                        >
+                            <p
+                                class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
                             >
-                                {diff > 0 ? "+" : ""}{formatCurrency(diff)}
-                            </span>)
-                        {/if}
-                    </p>
+                                Coast FIRE Number
+                            </p>
+                            <p class="text-3xl font-bold">
+                                {formatCurrency(coastFireNumber)}
+                            </p>
+                            <p class="text-sm text-cream-600 mt-1">
+                                {#if currentValue! >= coastFireNumber}
+                                    <span class="text-green-600 font-medium"
+                                        >Reached</span
+                                    > — you could stop saving and still retire on
+                                    time.
+                                {:else}
+                                    Invest this today and you could stop saving;
+                                    growth alone would reach your target.
+                                {/if}
+                            </p>
+                        </div>
+                    {/if}
+                    <div
+                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                    >
+                        <p
+                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                        >
+                            Monthly Savings
+                        </p>
+                        <p class="text-3xl font-bold">
+                            {formatCurrency(annualSavings! / 12)}
+                        </p>
+                        <p class="text-sm text-cream-600 mt-1">per month</p>
+                    </div>
+                    <div
+                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                    >
+                        <p
+                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                        >
+                            Monthly Expenses (Retirement)
+                        </p>
+                        <p class="text-3xl font-bold">
+                            {formatCurrency(annualExpenses! / 12)}
+                        </p>
+                        <p class="text-sm text-cream-600 mt-1">per month</p>
+                    </div>
                 </div>
             {:else}
                 <div
