@@ -233,7 +233,7 @@
                             class="mt-1 block rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
                         />
                     </label>
-                    <p class="mt-2 text-sm text-gray-700">
+                    <p class="mt-2 text-gray-700 text-md">
                         {#if yearAdjustment === 0}
                             No change
                         {:else if savingsAdjustment === "impossible"}
@@ -243,19 +243,13 @@
                             {yearAdjustment < 0
                                 ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
                                 : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
-                            {#if diff > 0}
-                                save <strong>+{formatCurrency(diff)}</strong>
-                                more per year ({formatCurrency(
-                                    savingsAdjustment as number,
-                                )}/yr)
-                            {:else}
-                                save <strong
-                                    >{formatCurrency(Math.abs(diff))}</strong
-                                >
-                                less per year ({formatCurrency(
-                                    savingsAdjustment as number,
-                                )}/yr)
-                            {/if}
+                            save {formatCurrency(savingsAdjustment)}/yr (<span
+                                class={diff > 0
+                                    ? "text-red-600"
+                                    : "text-green-600"}
+                            >
+                                {diff > 0 ? "+" : ""}{formatCurrency(diff)}
+                            </span>)
                         {/if}
                     </p>
                 </div>
