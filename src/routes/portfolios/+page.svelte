@@ -1,6 +1,6 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
-    import PortfolioForm from "$lib/components/PortfolioForm.svelte";
+    import PortfolioForm from "./PortfolioForm.svelte";
     import Card from "$lib/components/Card.svelte";
     import { Plus, Pencil, Trash2 } from "lucide-svelte";
 

@@ -3,7 +3,7 @@
     import { tick } from "svelte";
     import type { Portfolio } from "$lib/server/portfolios";
     import { X } from "lucide-svelte";
-    import Card from "./Card.svelte";
+    import Card from "$lib/components/Card.svelte";
 
     interface Props {
         portfolio?: Portfolio;

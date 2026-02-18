@@ -1,5 +1,5 @@
 <script lang="ts">
-    import InterestCalc from "$lib/components/InterestCalc.svelte";
+    import InterestCalc from "./InterestCalc.svelte";
 </script>
 
 <div class="flex flex-col items-center mt-4 w-full">

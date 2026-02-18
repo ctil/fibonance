@@ -4,7 +4,7 @@
     import CopyCash from "$lib/components/CopyCash.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import InputPercent from "$lib/components/InputPercent.svelte";
-    import InputTime from "$lib/components/InputTime.svelte";
+    import InputTime from "./InputTime.svelte";
     import { calculateInterest, type CompoundFrequency } from "$lib/compound";
     import type { ClassValue } from "svelte/elements";
 

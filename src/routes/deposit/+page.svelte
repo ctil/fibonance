@@ -1,5 +1,5 @@
 <script lang="ts">
-    import DepositAllocation from "$lib/components/DepositAllocation.svelte";
+    import DepositAllocation from "./DepositAllocation.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
 
     let { data } = $props();

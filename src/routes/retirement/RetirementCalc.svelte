@@ -84,13 +84,6 @@
         return null;
     });
 
-    let coastFireNumber = $derived.by(() => {
-        if (result == null || typeof result !== "object") return null;
-        const r = expectedRealReturn! / 100;
-        if (r === 0) return result.targetValue;
-        return result.targetValue / Math.pow(1 + r, result.yearsToRetirement);
-    });
-
     let savingsAdjustment = $derived.by(() => {
         if (result == null || typeof result !== "object") return null;
         const targetYears = result.yearsToRetirement + yearAdjustment;
@@ -290,31 +283,6 @@
                             {/if}
                         </p>
                     </div>
-                    {#if coastFireNumber != null}
-                        <div
-                            class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 sm:col-span-2"
-                        >
-                            <p
-                                class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                            >
-                                Coast FIRE Number
-                            </p>
-                            <p class="text-3xl font-bold">
-                                {formatCurrency(coastFireNumber)}
-                            </p>
-                            <p class="text-sm text-cream-600 mt-1">
-                                {#if currentValue! >= coastFireNumber}
-                                    <span class="text-green-600 font-medium"
-                                        >Reached</span
-                                    > — you could stop saving and still retire on
-                                    time.
-                                {:else}
-                                    Invest this today and you could stop saving;
-                                    growth alone would reach your target.
-                                {/if}
-                            </p>
-                        </div>
-                    {/if}
                     <div
                         class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
                     >

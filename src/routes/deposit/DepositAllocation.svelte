@@ -3,8 +3,8 @@
     import type { Snippet } from "svelte";
     import type { ClassValue } from "svelte/elements";
     import { deposit } from "$lib/rebalance";
-    import CopyCash from "./CopyCash.svelte";
-    import Card from "./Card.svelte";
+    import CopyCash from "$lib/components/CopyCash.svelte";
+    import Card from "$lib/components/Card.svelte";
 
     interface Props {
         title: string;

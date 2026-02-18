@@ -27,6 +27,7 @@ bun test     # Run tests
 - Use Svelte runes
 - Add a class prop to all components
 - Fix all compiler warnings and errors
+- Colocate components with their pages unless the component is used in multiple places
 
 ## Database
 
