@@ -3,7 +3,7 @@
     import Card from "$lib/components/Card.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import InputPercent from "$lib/components/InputPercent.svelte";
-    import { calculateRetirement } from "$lib/retirement";
+    import { calculateRetirement, calculateRequiredSavings } from "$lib/retirement";
     import type { ClassValue } from "svelte/elements";
 
     const STORAGE_KEY = "retirement-calc";
@@ -14,6 +14,7 @@
         annualExpenses?: number | null;
         safeWithdrawalRate?: number | null;
         expectedRealReturn?: number | null;
+        yearAdjustment?: number | null;
     }
 
     interface Props {
@@ -44,6 +45,7 @@
     let expectedRealReturn = $state<number | null>(
         saved.expectedRealReturn ?? 6,
     );
+    let yearAdjustment = $state<number>(saved.yearAdjustment ?? 5);
 
     $effect(() => {
         const data = {
@@ -52,6 +54,7 @@
             annualExpenses,
             safeWithdrawalRate,
             expectedRealReturn,
+            yearAdjustment,
         };
         localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     });
@@ -76,6 +79,17 @@
             );
         }
         return null;
+    });
+
+    let savingsAdjustment = $derived.by(() => {
+        if (result == null || typeof result !== "object") return null;
+        const targetYears = result.yearsToRetirement + yearAdjustment;
+        return calculateRequiredSavings(
+            currentValue!,
+            result.targetValue,
+            expectedRealReturn!,
+            targetYears,
+        );
     });
 
     function formatCurrency(value: number): string {
@@ -157,6 +171,34 @@
                 <p class="text-lg">
                     <span class="font-bold">Target date:</span>
                     {formatDate(result.retirementDate)}
+                </p>
+            </div>
+            <div class="mt-4">
+                <label class="mb-1 block text-sm font-medium text-gray-700">
+                    Year adjustment
+                    <input
+                        type="number"
+                        step="1"
+                        bind:value={yearAdjustment}
+                        class="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
+                    />
+                </label>
+                <p class="mt-2 text-sm text-gray-700">
+                    {#if yearAdjustment === 0}
+                        No change
+                    {:else if savingsAdjustment === "impossible"}
+                        Target is not reachable in that timeframe.
+                    {:else if savingsAdjustment != null}
+                        {@const diff = savingsAdjustment - annualSavings!}
+                        {yearAdjustment < 0
+                            ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
+                            : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
+                        {#if diff > 0}
+                            save <strong>+{formatCurrency(diff)}</strong> more per year ({formatCurrency(savingsAdjustment as number)}/yr)
+                        {:else}
+                            save <strong>{formatCurrency(Math.abs(diff))}</strong> less per year ({formatCurrency(savingsAdjustment as number)}/yr)
+                        {/if}
+                    {/if}
                 </p>
             </div>
         {/if}

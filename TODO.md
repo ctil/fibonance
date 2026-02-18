@@ -1,5 +1,5 @@
-- [ ] Retirement page
-    - [ ] Calculate retirement date
+- [x] Retirement page
+    - [x] Calculate retirement date
     - [ ] Plot different scenarios based on a range of returns
     - [ ] Show how savings rate affects date
     - [ ] Can save investment amounts and assumptions

@@ -63,3 +63,18 @@ export function calculateRetirement(
 
     return { targetValue, yearsToRetirement, retirementDate, retirementAge };
 }
+
+export function calculateRequiredSavings(
+    currentValue: number,
+    targetValue: number,
+    expectedRealReturn: number,
+    targetYears: number,
+): number | "impossible" {
+    if (targetYears <= 0) return "impossible";
+    const r = expectedRealReturn / 100;
+    if (r === 0) {
+        return (targetValue - currentValue) / targetYears;
+    }
+    const A = Math.pow(1 + r, targetYears);
+    return (r * (targetValue - A * currentValue)) / (A - 1);
+}
