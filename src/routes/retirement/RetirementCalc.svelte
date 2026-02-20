@@ -84,6 +84,18 @@
         return null;
     });
 
+    let coastFireResult = $derived.by(() => {
+        if (result == null || typeof result !== "object") return null;
+        return calculateRetirement(
+            currentValue!,
+            0,
+            annualExpenses!,
+            safeWithdrawalRate!,
+            expectedRealReturn!,
+            birthday,
+        );
+    });
+
     let savingsAdjustment = $derived.by(() => {
         if (result == null || typeof result !== "object") return null;
         const targetYears = result.yearsToRetirement + yearAdjustment;
@@ -310,6 +322,64 @@
                         <p class="text-sm text-cream-600 mt-1">per month</p>
                     </div>
                 </div>
+                {#if coastFireResult != null}
+                    <div class="mb-4">
+                        <p
+                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-2"
+                        >
+                            Coast FIRE
+                        </p>
+                        {#if coastFireResult === "already"}
+                            <div
+                                class="rounded-lg border border-green-200 bg-green-50 p-4"
+                            >
+                                <p class="text-green-700 font-medium">
+                                    You've already reached Coast FIRE.
+                                </p>
+                            </div>
+                        {:else if coastFireResult === "impossible"}
+                            <div
+                                class="rounded-lg border border-red-200 bg-red-50 p-4"
+                            >
+                                <p class="text-red-700">
+                                    Coast FIRE requires a positive expected
+                                    return rate.
+                                </p>
+                            </div>
+                        {:else}
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div
+                                    class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                                >
+                                    <p
+                                        class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                                    >
+                                        Coast FIRE Year
+                                    </p>
+                                    <p class="text-3xl font-bold">
+                                        {coastFireResult.retirementDate.getFullYear()}
+                                    </p>
+                                </div>
+                                {#if coastFireResult.retirementAge != null}
+                                    <div
+                                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                                    >
+                                        <p
+                                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
+                                        >
+                                            Coast FIRE Age
+                                        </p>
+                                        <p class="text-3xl font-bold">
+                                            {coastFireResult.retirementAge.toFixed(
+                                                1,
+                                            )}
+                                        </p>
+                                    </div>
+                                {/if}
+                            </div>
+                        {/if}
+                    </div>
+                {/if}
             {:else}
                 <div
                     class="rounded-lg border border-cream-300 bg-cream-50 p-8 flex items-center justify-center min-h-48"
