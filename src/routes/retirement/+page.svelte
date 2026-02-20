@@ -7,9 +7,9 @@
         calculateRetirement,
         calculateRequiredSavings,
         formatCurrency,
-        formatDate,
     } from "$lib/retirement";
     import type { PageData } from "./$types";
+    import DateCard from "./DateCard.svelte";
     import ResultBanner from "./ResultBanner.svelte";
     import StatCard from "./StatCard.svelte";
 
@@ -198,18 +198,14 @@
                         value={result.yearsToRetirement.toFixed(1)}
                         subtext="years"
                     />
-                    <StatCard
+                    <DateCard
                         label="Target Date"
-                        value={formatDate(result.retirementDate)}
+                        date={result.retirementDate}
+                        years={result.yearsToRetirement}
+                        age={result.retirementAge}
                     />
-                    {#if result.retirementAge}
-                        <StatCard
-                            label="Retirement Age"
-                            value={result.retirementAge.toFixed(1)}
-                        />
-                    {/if}
                     <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 sm:col-span-2"
+                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
                     >
                         <label
                             class="mb-1 block text-sm font-medium text-gray-700"
@@ -281,20 +277,12 @@
                             </div>
                         {:else}
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <StatCard
-                                    label="Coast FIRE Year"
-                                    value={String(
-                                        coastFireResult.retirementDate.getFullYear(),
-                                    )}
+                                <DateCard
+                                    label="Coast FIRE Date"
+                                    date={coastFireResult.retirementDate}
+                                    years={coastFireResult.yearsToRetirement}
+                                    age={coastFireResult.retirementAge}
                                 />
-                                {#if coastFireResult.retirementAge != null}
-                                    <StatCard
-                                        label="Coast FIRE Age"
-                                        value={coastFireResult.retirementAge.toFixed(
-                                            1,
-                                        )}
-                                    />
-                                {/if}
                             </div>
                         {/if}
                     </div>
