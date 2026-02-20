@@ -229,19 +229,22 @@
                     <div
                         class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
                     >
-                        <label
-                            class="mb-1 block text-sm font-medium text-gray-700"
+                        <p
+                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
                         >
-                            Year adjustment
-                            <input
-                                type="number"
-                                style="width: 100px"
-                                step="1"
-                                bind:value={yearAdjustment}
-                                class="mt-1 block rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none"
-                            />
-                        </label>
-                        <p class="mt-2 text-gray-700 text-md">
+                            Year Adjustment
+                        </p>
+                        <label class="sr-only" for="year-adjustment"
+                            >Year adjustment</label
+                        >
+                        <input
+                            id="year-adjustment"
+                            type="number"
+                            step="1"
+                            bind:value={yearAdjustment}
+                            class="block w-24 rounded-md border border-gray-300 px-3 py-2 text-3xl font-bold focus:border-blue-500 focus:outline-none mb-2"
+                        />
+                        <p class="text-gray-700 text-md">
                             {#if yearAdjustment === 0}
                                 No change
                             {:else if savingsAdjustment === "impossible"}
@@ -252,13 +255,17 @@
                                 {yearAdjustment < 0
                                     ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
                                     : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
-                                save {formatCurrency(savingsAdjustment)}/yr (<span
+                                save
+                                <span
                                     class={diff > 0
                                         ? "text-red-600"
                                         : "text-green-600"}
                                 >
                                     {diff > 0 ? "+" : ""}{formatCurrency(diff)}
-                                </span>)
+                                </span>
+                                {diff > 0 ? "more" : "less"} per year ({formatCurrency(
+                                    savingsAdjustment,
+                                )})
                             {/if}
                         </p>
                     </div>

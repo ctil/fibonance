@@ -28,5 +28,5 @@
         {label}
     </p>
     <p class="text-3xl font-bold">{formatDate(date)}</p>
-    <p class="text-sm text-cream-600 mt-1">{subtext}</p>
+    <p class="text-md text-cream-600 mt-1">{subtext}</p>
 </div>

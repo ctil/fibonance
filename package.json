@@ -15,7 +15,7 @@
         "db:shell-prod": "turso db shell fibonance",
         "db:studio": "drizzle-kit studio",
         "dev": "vite dev",
-        "format": "prettier --write src",
+        "fmt": "prettier --write src",
         "prepare": "svelte-kit sync || echo ''",
         "preview": "vite preview",
         "register-user": "bun scripts/register-user.ts",
