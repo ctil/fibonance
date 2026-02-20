@@ -78,3 +78,16 @@ export function calculateRequiredSavings(
     const A = Math.pow(1 + r, targetYears);
     return (r * (targetValue - A * currentValue)) / (A - 1);
 }
+
+export function formatCurrency(value: number): string {
+    return value.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    });
+}
+
+export function formatDate(date: Date): string {
+    return date.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+}

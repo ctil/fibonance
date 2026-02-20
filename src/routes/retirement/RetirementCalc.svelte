@@ -6,8 +6,12 @@
     import {
         calculateRetirement,
         calculateRequiredSavings,
+        formatCurrency,
+        formatDate,
     } from "$lib/retirement";
     import type { ClassValue } from "svelte/elements";
+    import ResultBanner from "./ResultBanner.svelte";
+    import StatCard from "./StatCard.svelte";
 
     const STORAGE_KEY = "retirement-calc";
 
@@ -106,22 +110,6 @@
             targetYears,
         );
     });
-
-    function formatCurrency(value: number): string {
-        return value.toLocaleString("en-US", {
-            style: "currency",
-            currency: "USD",
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        });
-    }
-
-    function formatDate(date: Date): string {
-        return date.toLocaleDateString("en-US", {
-            month: "long",
-            year: "numeric",
-        });
-    }
 </script>
 
 <div class={["w-full", className]}>
@@ -161,22 +149,18 @@
         <!-- RIGHT: results -->
         <div class="flex-1 min-w-0">
             {#if result === "already"}
-                <div
-                    class="rounded-lg border border-green-200 bg-green-50 p-8 flex items-center justify-center min-h-48"
-                >
+                <ResultBanner variant="success">
                     <p class="text-3xl font-semibold text-green-600">
                         You can retire now.
                     </p>
-                </div>
+                </ResultBanner>
             {:else if result === "impossible"}
-                <div
-                    class="rounded-lg border border-red-200 bg-red-50 p-8 flex items-center justify-center min-h-48"
-                >
+                <ResultBanner variant="error">
                     <p class="text-2xl font-semibold text-red-600">
                         Cannot reach retirement target with current savings
                         rate.
                     </p>
-                </div>
+                </ResultBanner>
             {:else if result != null}
                 {@const progress = Math.min(
                     100,
@@ -208,56 +192,24 @@
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                    <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                    >
-                        <p
-                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                        >
-                            Target Portfolio
-                        </p>
-                        <p class="text-3xl font-bold">
-                            {formatCurrency(result.targetValue)}
-                        </p>
-                    </div>
-                    <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                    >
-                        <p
-                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                        >
-                            Years to Retirement
-                        </p>
-                        <p class="text-3xl font-bold">
-                            {result.yearsToRetirement.toFixed(1)}
-                        </p>
-                        <p class="text-sm text-cream-600 mt-1">years</p>
-                    </div>
-                    <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                    >
-                        <p
-                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                        >
-                            Target Date
-                        </p>
-                        <p class="text-3xl font-bold">
-                            {formatDate(result.retirementDate)}
-                        </p>
-                    </div>
+                    <StatCard
+                        label="Target Portfolio"
+                        value={formatCurrency(result.targetValue)}
+                    />
+                    <StatCard
+                        label="Years to Retirement"
+                        value={result.yearsToRetirement.toFixed(1)}
+                        subtext="years"
+                    />
+                    <StatCard
+                        label="Target Date"
+                        value={formatDate(result.retirementDate)}
+                    />
                     {#if result.retirementAge}
-                        <div
-                            class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                        >
-                            <p
-                                class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                            >
-                                Retirement Age
-                            </p>
-                            <p class="text-3xl font-bold">
-                                {result.retirementAge.toFixed(1)}
-                            </p>
-                        </div>
+                        <StatCard
+                            label="Retirement Age"
+                            value={result.retirementAge.toFixed(1)}
+                        />
                     {/if}
                     <div
                         class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 sm:col-span-2"
@@ -295,32 +247,16 @@
                             {/if}
                         </p>
                     </div>
-                    <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                    >
-                        <p
-                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                        >
-                            Monthly Savings
-                        </p>
-                        <p class="text-3xl font-bold">
-                            {formatCurrency(annualSavings! / 12)}
-                        </p>
-                        <p class="text-sm text-cream-600 mt-1">per month</p>
-                    </div>
-                    <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                    >
-                        <p
-                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                        >
-                            Monthly Expenses (Retirement)
-                        </p>
-                        <p class="text-3xl font-bold">
-                            {formatCurrency(annualExpenses! / 12)}
-                        </p>
-                        <p class="text-sm text-cream-600 mt-1">per month</p>
-                    </div>
+                    <StatCard
+                        label="Monthly Savings"
+                        value={formatCurrency(annualSavings! / 12)}
+                        subtext="per month"
+                    />
+                    <StatCard
+                        label="Monthly Expenses (Retirement)"
+                        value={formatCurrency(annualExpenses! / 12)}
+                        subtext="per month"
+                    />
                 </div>
                 {#if coastFireResult != null}
                     <div class="mb-4">
@@ -348,46 +284,30 @@
                             </div>
                         {:else}
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div
-                                    class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                                >
-                                    <p
-                                        class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                                    >
-                                        Coast FIRE Year
-                                    </p>
-                                    <p class="text-3xl font-bold">
-                                        {coastFireResult.retirementDate.getFullYear()}
-                                    </p>
-                                </div>
+                                <StatCard
+                                    label="Coast FIRE Year"
+                                    value={String(
+                                        coastFireResult.retirementDate.getFullYear(),
+                                    )}
+                                />
                                 {#if coastFireResult.retirementAge != null}
-                                    <div
-                                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
-                                    >
-                                        <p
-                                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                                        >
-                                            Coast FIRE Age
-                                        </p>
-                                        <p class="text-3xl font-bold">
-                                            {coastFireResult.retirementAge.toFixed(
-                                                1,
-                                            )}
-                                        </p>
-                                    </div>
+                                    <StatCard
+                                        label="Coast FIRE Age"
+                                        value={coastFireResult.retirementAge.toFixed(
+                                            1,
+                                        )}
+                                    />
                                 {/if}
                             </div>
                         {/if}
                     </div>
                 {/if}
             {:else}
-                <div
-                    class="rounded-lg border border-cream-300 bg-cream-50 p-8 flex items-center justify-center min-h-48"
-                >
+                <ResultBanner variant="empty">
                     <p class="text-cream-500">
                         Fill in the inputs to see your retirement projection.
                     </p>
-                </div>
+                </ResultBanner>
             {/if}
         </div>
     </div>
