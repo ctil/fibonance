@@ -140,6 +140,28 @@
                     label="Expected Real Return (%)"
                     bind:value={expectedRealReturn}
                 />
+                {#if annualSavings != null || annualExpenses != null}
+                    <div
+                        class="mt-5 pt-4 border-t border-cream-200 text-sm text-cream-700 space-y-1"
+                    >
+                        {#if annualSavings != null}
+                            <p>
+                                Monthly savings: <span
+                                    class="font-medium text-gray-900"
+                                    >{formatCurrency(annualSavings / 12)}</span
+                                >
+                            </p>
+                        {/if}
+                        {#if annualExpenses != null}
+                            <p>
+                                Monthly expenses: <span
+                                    class="font-medium text-gray-900"
+                                    >{formatCurrency(annualExpenses / 12)}</span
+                                >
+                            </p>
+                        {/if}
+                    </div>
+                {/if}
             {/snippet}
         </Card>
 
@@ -240,16 +262,6 @@
                             {/if}
                         </p>
                     </div>
-                    <StatCard
-                        label="Monthly Savings"
-                        value={formatCurrency(annualSavings! / 12)}
-                        subtext="per month"
-                    />
-                    <StatCard
-                        label="Monthly Expenses (Retirement)"
-                        value={formatCurrency(annualExpenses! / 12)}
-                        subtext="per month"
-                    />
                 </div>
                 {#if coastFireResult != null}
                     <div class="mb-4">
