@@ -97,6 +97,12 @@
         );
     });
 
+    let inflationAdjustedTarget = $derived(
+        result != null && typeof result === "object"
+            ? result.targetValue * Math.pow(1.03, result.yearsToRetirement)
+            : null,
+    );
+
     let savingsAdjustment = $derived.by(() => {
         if (result == null || typeof result !== "object") return null;
         const targetYears = result.yearsToRetirement + yearAdjustment;
@@ -214,6 +220,9 @@
                     <StatCard
                         label="Target Portfolio"
                         value={formatCurrency(result.targetValue)}
+                        subtext={inflationAdjustedTarget != null
+                            ? `${formatCurrency(inflationAdjustedTarget)} nominal (3% inflation)`
+                            : undefined}
                     />
                     <StatCard
                         label="Years to Retirement"
