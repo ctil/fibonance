@@ -74,8 +74,24 @@ export const stockAllocationsRelations = relations(
     }),
 );
 
+// Tax tables
+export const taxDocuments = sqliteTable("tax_documents", {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: text("user_id")
+        .notNull()
+        .references(() => users.id, { onDelete: "cascade" }),
+    institution: text("institution").notNull(),
+    docType: text("doc_type").notNull(),
+    taxYear: integer("tax_year").notNull(),
+    status: text("status").notNull().default("pending"), // "pending" | "available" | "downloaded"
+    portalUrl: text("portal_url"),
+    notes: text("notes"),
+    updatedAt: integer("updated_at").notNull(),
+});
+
 // Types
 export type User = typeof users.$inferSelect;
 export type Session = typeof sessions.$inferSelect;
 export type PortfolioRecord = typeof portfolios.$inferSelect;
 export type StockAllocationRecord = typeof stockAllocations.$inferSelect;
+export type TaxDocument = typeof taxDocuments.$inferSelect;

@@ -1,5 +1,5 @@
 import type { DrizzleDB } from ".";
-import { portfolios, stockAllocations } from "./schema";
+import { portfolios, stockAllocations, taxDocuments } from "./schema";
 import { and, asc, eq } from "drizzle-orm";
 import type { Config, Stock } from "$lib/rebalance/types";
 
@@ -143,4 +143,90 @@ export async function deletePortfolioInDb(
         .returning({ id: portfolios.id });
 
     return deleted.length > 0;
+}
+
+// Tax document queries
+
+const SEED_DOCUMENTS = [
+    { institution: "Betterment", docType: "1099", notes: null },
+    { institution: "US Bank Mortgage", docType: "1098", notes: null },
+    { institution: "Ally Bank", docType: "1099", notes: null },
+    {
+        institution: "Ally Financial",
+        docType: "1099",
+        notes: "Separate from Ally Bank",
+    },
+    { institution: "Fidelity", docType: "1099", notes: null },
+    { institution: "8z Rentals", docType: "1099", notes: "Under Documents" },
+    {
+        institution: "8z Rentals",
+        docType: "Year End Cashflow",
+        notes: "Under Statements",
+    },
+    { institution: "Work", docType: "W2", notes: null },
+    { institution: "Donations", docType: "Receipts", notes: null },
+    {
+        institution: "HealthEquity",
+        docType: "1099-SA",
+        notes: "Only if HSA distributions made",
+    },
+    { institution: "Work Equity", docType: "83(b) Forms", notes: null },
+    {
+        institution: "Optum",
+        docType: "1099-SA",
+        notes: "Only if HSA withdrawals; use UHC login",
+    },
+    {
+        institution: "My Home American",
+        docType: "1098",
+        notes: "Queen Ct mortgage",
+    },
+];
+
+export async function getTaxDocuments(
+    db: DrizzleDB,
+    userId: string,
+    taxYear: number,
+) {
+    return db
+        .select()
+        .from(taxDocuments)
+        .where(
+            and(
+                eq(taxDocuments.userId, userId),
+                eq(taxDocuments.taxYear, taxYear),
+            ),
+        )
+        .orderBy(asc(taxDocuments.id));
+}
+
+export async function updateTaxDocumentStatus(
+    db: DrizzleDB,
+    userId: string,
+    id: number,
+    status: string,
+): Promise<void> {
+    await db
+        .update(taxDocuments)
+        .set({ status, updatedAt: Math.floor(Date.now() / 1000) })
+        .where(and(eq(taxDocuments.id, id), eq(taxDocuments.userId, userId)));
+}
+
+export async function seedTaxDocuments(
+    db: DrizzleDB,
+    userId: string,
+    taxYear: number,
+): Promise<void> {
+    await db.insert(taxDocuments).values(
+        SEED_DOCUMENTS.map((doc) => ({
+            userId,
+            institution: doc.institution,
+            docType: doc.docType,
+            taxYear,
+            status: "pending",
+            portalUrl: null,
+            notes: doc.notes ?? null,
+            updatedAt: Math.floor(Date.now() / 1000),
+        })),
+    );
 }
