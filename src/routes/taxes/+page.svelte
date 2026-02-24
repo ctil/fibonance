@@ -9,26 +9,6 @@
     let { data, form }: { data: PageData; form: { message?: string } | null } =
         $props();
 
-    const STATUSES = ["pending", "available", "downloaded"] as const;
-    type Status = (typeof STATUSES)[number];
-
-    function nextStatus(current: string): Status {
-        const idx = STATUSES.indexOf(current as Status);
-        return STATUSES[(idx + 1) % STATUSES.length];
-    }
-
-    const STATUS_LABELS: Record<Status, string> = {
-        pending: "Pending",
-        available: "Available",
-        downloaded: "Downloaded",
-    };
-
-    const STATUS_CLASSES: Record<Status, string> = {
-        pending: "bg-cream-200 text-cream-800",
-        available: "bg-blue-100 text-blue-800",
-        downloaded: "bg-sage-100 text-sage-800",
-    };
-
     let docs = $state(untrack(() => data.docs));
 
     let editingId: number | null = $state(null);
@@ -66,6 +46,9 @@
         <TaxDocumentForm oncancel={cancelForm} errorMessage={form?.message} />
     {/if}
 
+    <div class="text-sm text-gray-500">
+        {docs.filter((d) => d.status === "downloaded").length}/{docs.length} downloaded
+    </div>
     <Card class="">
         {#snippet body()}
             <div class="space-y-1">
@@ -79,7 +62,6 @@
                             />
                         </div>
                     {:else}
-                        {@const status = doc.status as Status}
                         <div
                             class="flex items-start gap-3 py-3 border-b border-cream-200 last:border-0"
                         >
@@ -87,30 +69,33 @@
                                 method="post"
                                 action="?/updateStatus"
                                 use:enhance={() => {
-                                    const newStatus = nextStatus(doc.status);
-                                    doc.status = newStatus;
+                                    doc.status =
+                                        doc.status === "downloaded"
+                                            ? "pending"
+                                            : "downloaded";
                                     return async ({ update }) => {
                                         await update({ reset: false });
                                     };
                                 }}
-                                class="shrink-0"
+                                class="shrink-0 flex items-center pt-0.5"
                             >
                                 <input type="hidden" name="id" value={doc.id} />
                                 <input
                                     type="hidden"
                                     name="status"
-                                    value={nextStatus(doc.status)}
+                                    value={doc.status === "downloaded"
+                                        ? "pending"
+                                        : "downloaded"}
                                 />
-                                <button
-                                    type="submit"
-                                    class={[
-                                        "text-xs font-medium px-2 py-1 rounded-full cursor-pointer transition-opacity hover:opacity-80",
-                                        STATUS_CLASSES[status] ??
-                                            "bg-cream-200 text-cream-800",
-                                    ]}
-                                >
-                                    {STATUS_LABELS[status] ?? status}
-                                </button>
+                                <input
+                                    type="checkbox"
+                                    checked={doc.status === "downloaded"}
+                                    class="w-4 h-4 appearance-auto accent-sage-600 cursor-pointer"
+                                    onchange={(e) =>
+                                        e.currentTarget
+                                            .closest("form")
+                                            ?.requestSubmit()}
+                                />
                             </form>
 
                             <div class="flex-1 min-w-0">
@@ -197,16 +182,4 @@
             </div>
         {/snippet}
     </Card>
-
-    <div class="text-sm text-gray-500 flex gap-4">
-        <span
-            >{docs.filter((d) => d.status === "downloaded")
-                .length}/{docs.length}
-            downloaded</span
-        >
-        <span
-            >{docs.filter((d) => d.status === "available").length} available</span
-        >
-        <span>{docs.filter((d) => d.status === "pending").length} pending</span>
-    </div>
 </div>
