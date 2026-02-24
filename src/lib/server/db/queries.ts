@@ -212,6 +212,68 @@ export async function updateTaxDocumentStatus(
         .where(and(eq(taxDocuments.id, id), eq(taxDocuments.userId, userId)));
 }
 
+export async function createTaxDocument(
+    db: DrizzleDB,
+    userId: string,
+    taxYear: number,
+    data: {
+        institution: string;
+        docType: string;
+        notes?: string | null;
+        portalUrl?: string | null;
+    },
+): Promise<void> {
+    await db.insert(taxDocuments).values({
+        userId,
+        institution: data.institution,
+        docType: data.docType,
+        taxYear,
+        status: "pending",
+        portalUrl: data.portalUrl ?? null,
+        notes: data.notes ?? null,
+        updatedAt: Math.floor(Date.now() / 1000),
+    });
+}
+
+export async function updateTaxDocument(
+    db: DrizzleDB,
+    userId: string,
+    id: number,
+    data: {
+        institution: string;
+        docType: string;
+        notes?: string | null;
+        portalUrl?: string | null;
+    },
+): Promise<boolean> {
+    const updated = await db
+        .update(taxDocuments)
+        .set({
+            institution: data.institution,
+            docType: data.docType,
+            notes: data.notes ?? null,
+            portalUrl: data.portalUrl ?? null,
+            updatedAt: Math.floor(Date.now() / 1000),
+        })
+        .where(and(eq(taxDocuments.id, id), eq(taxDocuments.userId, userId)))
+        .returning({ id: taxDocuments.id });
+
+    return updated.length > 0;
+}
+
+export async function deleteTaxDocument(
+    db: DrizzleDB,
+    userId: string,
+    id: number,
+): Promise<boolean> {
+    const deleted = await db
+        .delete(taxDocuments)
+        .where(and(eq(taxDocuments.id, id), eq(taxDocuments.userId, userId)))
+        .returning({ id: taxDocuments.id });
+
+    return deleted.length > 0;
+}
+
 export async function seedTaxDocuments(
     db: DrizzleDB,
     userId: string,
