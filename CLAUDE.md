@@ -12,10 +12,10 @@ Financial planning web application with features such as portfolio rebalancing a
 
 ```sh
 bun install
-bun dev      # Start dev server
-bun build    # Production build
-bun check    # Type checking
-bun test     # Run tests
+bun dev        # Start dev server
+bun run build  # Production build
+bun check      # Type checking
+bun test       # Run tests
 ```
 
 ## Key Conventions
