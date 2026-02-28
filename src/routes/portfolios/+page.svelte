@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { enhance } from "$app/forms";
     import PortfolioForm from "./PortfolioForm.svelte";
     import Card from "$lib/components/Card.svelte";
-    import { Plus, Pencil, Trash2 } from "lucide-svelte";
+    import DeleteButton from "$lib/components/DeleteButton.svelte";
+    import { Plus, Pencil } from "lucide-svelte";
 
     let { data, form } = $props();
 
@@ -59,32 +59,12 @@
                     >
                         <Pencil size={16} />
                     </button>
-                    <form
-                        method="post"
+                    <DeleteButton
                         action="?/delete"
-                        use:enhance={({ cancel }) => {
-                            if (
-                                !confirm(
-                                    `Delete portfolio "${portfolio.name}"?`,
-                                )
-                            ) {
-                                cancel();
-                                return;
-                            }
-                        }}
-                    >
-                        <input
-                            type="hidden"
-                            name="portfolioId"
-                            value={portfolio.id}
-                        />
-                        <button
-                            type="submit"
-                            class="p-1 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition cursor-pointer"
-                        >
-                            <Trash2 size={16} />
-                        </button>
-                    </form>
+                        name="portfolioId"
+                        id={portfolio.id}
+                        confirmMessage={`Delete portfolio "${portfolio.name}"?`}
+                    />
                 {/snippet}
                 {#snippet body()}
                     {#each portfolio.config.stocks as stock}

@@ -1,8 +1,9 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
     import { untrack } from "svelte";
-    import { Plus, Pencil, Trash2 } from "lucide-svelte";
+    import { Plus, Pencil, ExternalLink } from "lucide-svelte";
     import Card from "$lib/components/Card.svelte";
+    import DeleteButton from "$lib/components/DeleteButton.svelte";
     import TaxDocumentForm from "./TaxDocumentForm.svelte";
     import type { PageData } from "./$types";
 
@@ -124,22 +125,7 @@
                                     class="shrink-0 text-sage-600 hover:text-sage-800"
                                     aria-label="Open portal"
                                 >
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        class="w-4 h-4"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path
-                                            d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
-                                        />
-                                        <polyline points="15 3 21 3 21 9" />
-                                        <line x1="10" y1="14" x2="21" y2="3" />
-                                    </svg>
+                                    <ExternalLink size={16} />
                                 </a>
                             {/if}
 
@@ -151,31 +137,17 @@
                                 <Pencil size={14} />
                             </button>
 
-                            <form
-                                method="post"
+                            <DeleteButton
                                 action="?/delete"
-                                use:enhance={({ cancel }) => {
-                                    if (
-                                        !confirm(
-                                            `Delete "${doc.institution} ${doc.docType}"?`,
-                                        )
-                                    ) {
-                                        cancel();
-                                        return;
-                                    }
+                                name="id"
+                                id={doc.id}
+                                confirmMessage={`Delete "${doc.institution} ${doc.docType}"?`}
+                                size={14}
+                                class="shrink-0"
+                                onsubmit={() => {
                                     docs = docs.filter((d) => d.id !== doc.id);
                                 }}
-                                class="shrink-0"
-                            >
-                                <input type="hidden" name="id" value={doc.id} />
-                                <button
-                                    type="submit"
-                                    class="p-1 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition cursor-pointer"
-                                    aria-label="Delete document"
-                                >
-                                    <Trash2 size={14} />
-                                </button>
-                            </form>
+                            />
                         </div>
                     {/if}
                 {/each}

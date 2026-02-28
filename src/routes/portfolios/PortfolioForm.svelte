@@ -4,6 +4,7 @@
     import type { Portfolio } from "$lib/server/portfolios";
     import { X } from "lucide-svelte";
     import Card from "$lib/components/Card.svelte";
+    import FormButtons from "$lib/components/FormButtons.svelte";
 
     interface Props {
         portfolio?: Portfolio;
@@ -165,21 +166,10 @@
                 <p class="text-red-600 text-sm mb-3">{errorMessage}</p>
             {/if}
 
-            <div class="flex gap-3">
-                <button
-                    type="submit"
-                    class="flex-1 bg-sage-600 text-cream-50 px-4 py-2 rounded-md hover:bg-sage-700 transition"
-                >
-                    {portfolio ? "Save" : "Create"}
-                </button>
-                <button
-                    type="button"
-                    class="flex-1 bg-cream-200 text-cream-700 px-4 py-2 rounded-md hover:bg-cream-300 transition"
-                    onclick={oncancel}
-                >
-                    Cancel
-                </button>
-            </div>
+            <FormButtons
+                submitLabel={portfolio ? "Save" : "Create"}
+                {oncancel}
+            />
         </form>
     {/snippet}
 </Card>

@@ -1,6 +1,7 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
     import Card from "$lib/components/Card.svelte";
+    import FormButtons from "$lib/components/FormButtons.svelte";
     import type { TaxDocument } from "$lib/server/db/schema";
 
     interface Props {
@@ -101,21 +102,7 @@
                 <p class="text-red-600 text-sm mb-3">{errorMessage}</p>
             {/if}
 
-            <div class="flex gap-3">
-                <button
-                    type="submit"
-                    class="flex-1 bg-sage-600 text-cream-50 px-4 py-2 rounded-md hover:bg-sage-700 transition cursor-pointer"
-                >
-                    {doc ? "Save" : "Create"}
-                </button>
-                <button
-                    type="button"
-                    class="flex-1 bg-cream-200 text-cream-700 px-4 py-2 rounded-md hover:bg-cream-300 transition cursor-pointer"
-                    onclick={oncancel}
-                >
-                    Cancel
-                </button>
-            </div>
+            <FormButtons submitLabel={doc ? "Save" : "Create"} {oncancel} />
         </form>
     {/snippet}
 </Card>

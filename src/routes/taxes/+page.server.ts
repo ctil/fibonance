@@ -22,6 +22,20 @@ export const load: PageServerLoad = async (event) => {
     return { docs, taxYear };
 };
 
+function parseTaxDocumentForm(data: FormData) {
+    const institution = (data.get("institution") as string)?.trim();
+    const docType = (data.get("docType") as string)?.trim();
+    const notes = (data.get("notes") as string)?.trim() || null;
+    const portalUrl = (data.get("portalUrl") as string)?.trim() || null;
+
+    if (!institution)
+        return { error: fail(400, { message: "Institution is required" }) };
+    if (!docType)
+        return { error: fail(400, { message: "Doc type is required" }) };
+
+    return { data: { institution, docType, notes, portalUrl } };
+}
+
 export const actions: Actions = {
     updateStatus: async (event) => {
         const user = requireLogin(event);
@@ -34,43 +48,21 @@ export const actions: Actions = {
     create: async (event) => {
         const user = requireLogin(event);
         const data = await event.request.formData();
-        const institution = (data.get("institution") as string)?.trim();
-        const docType = (data.get("docType") as string)?.trim();
-        const notes = (data.get("notes") as string)?.trim() || null;
-        const portalUrl = (data.get("portalUrl") as string)?.trim() || null;
-
-        if (!institution)
-            return fail(400, { message: "Institution is required" });
-        if (!docType) return fail(400, { message: "Doc type is required" });
+        const parsed = parseTaxDocumentForm(data);
+        if (parsed.error) return parsed.error;
 
         const taxYear = new Date().getFullYear() - 1;
-        await createTaxDocument(db, user.id, taxYear, {
-            institution,
-            docType,
-            notes,
-            portalUrl,
-        });
+        await createTaxDocument(db, user.id, taxYear, parsed.data);
     },
 
     update: async (event) => {
         const user = requireLogin(event);
         const data = await event.request.formData();
         const id = Number(data.get("id"));
-        const institution = (data.get("institution") as string)?.trim();
-        const docType = (data.get("docType") as string)?.trim();
-        const notes = (data.get("notes") as string)?.trim() || null;
-        const portalUrl = (data.get("portalUrl") as string)?.trim() || null;
+        const parsed = parseTaxDocumentForm(data);
+        if (parsed.error) return parsed.error;
 
-        if (!institution)
-            return fail(400, { message: "Institution is required" });
-        if (!docType) return fail(400, { message: "Doc type is required" });
-
-        await updateTaxDocument(db, user.id, id, {
-            institution,
-            docType,
-            notes,
-            portalUrl,
-        });
+        await updateTaxDocument(db, user.id, id, parsed.data);
     },
 
     delete: async (event) => {
