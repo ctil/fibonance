@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { browser } from "$app/environment";
+    import { enhance } from "$app/forms";
     import Card from "$lib/components/Card.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import InputPercent from "$lib/components/InputPercent.svelte";
@@ -13,55 +13,29 @@
     import ResultBanner from "./ResultBanner.svelte";
     import StatCard from "./StatCard.svelte";
 
-    const STORAGE_KEY = "retirement-calc";
-
-    interface SavedRetirementData {
-        currentValue?: number | null;
-        annualSavings?: number | null;
-        annualExpenses?: number | null;
-        safeWithdrawalRate?: number | null;
-        expectedRealReturn?: number | null;
-        yearAdjustment?: number | null;
-    }
-
     const { data }: { data: PageData } = $props();
     const birthday = $derived(data.user?.birthday ?? null);
 
-    // Load saved data from local storage
-    function loadSaved(): SavedRetirementData {
-        if (!browser) return {};
-        try {
-            const raw = localStorage.getItem(STORAGE_KEY);
-            if (raw) return JSON.parse(raw);
-        } catch (err) {
-            console.error("Error loading saved retirement data:", err);
-        }
-        return {};
-    }
-
-    const saved = loadSaved();
-    let currentValue = $state<number | null>(saved.currentValue ?? null);
-    let annualSavings = $state<number | null>(saved.annualSavings ?? null);
-    let annualExpenses = $state<number | null>(saved.annualExpenses ?? null);
-    let safeWithdrawalRate = $state<number | null>(
-        saved.safeWithdrawalRate ?? 4,
-    );
-    let expectedRealReturn = $state<number | null>(
-        saved.expectedRealReturn ?? 6,
-    );
-    let yearAdjustment = $state<number>(saved.yearAdjustment ?? 5);
-
-    $effect(() => {
-        const toSave = {
-            currentValue,
-            annualSavings,
-            annualExpenses,
-            safeWithdrawalRate,
-            expectedRealReturn,
-            yearAdjustment,
+    const initial = (() => {
+        const s = data.scenario;
+        const c = (v: number | null | undefined) =>
+            v != null ? v / 100 : null;
+        return {
+            currentValue: c(s?.currentValue),
+            annualSavings: c(s?.annualSavings),
+            annualExpenses: c(s?.annualExpenses),
+            safeWithdrawalRate: c(s?.safeWithdrawalRate) ?? 4,
+            expectedRealReturn: c(s?.expectedRealReturn) ?? 6,
+            yearAdjustment: s?.yearAdjustment ?? 5,
         };
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-    });
+    })();
+    let currentValue = $state<number | null>(initial.currentValue);
+    let annualSavings = $state<number | null>(initial.annualSavings);
+    let annualExpenses = $state<number | null>(initial.annualExpenses);
+    let safeWithdrawalRate = $state<number | null>(initial.safeWithdrawalRate);
+    let expectedRealReturn = $state<number | null>(initial.expectedRealReturn);
+    let yearAdjustment = $state<number>(initial.yearAdjustment);
+    let saveState = $state<"idle" | "saving" | "saved">("idle");
 
     let result = $derived.by(() => {
         if (
@@ -120,56 +94,115 @@
 
     <div class="flex flex-col lg:flex-row gap-6">
         <!-- LEFT: inputs card -->
-        <Card class="lg:w-80 shrink-0">
-            {#snippet body()}
-                <InputCash
-                    label="Current Portfolio Value"
-                    class="mb-4"
-                    bind:value={currentValue}
-                />
-                <InputCash
-                    label="Annual Savings"
-                    class="mb-4"
-                    bind:value={annualSavings}
-                />
-                <InputCash
-                    label="Annual Retirement Expenses"
-                    class="mb-4"
-                    bind:value={annualExpenses}
-                />
-                <InputPercent
-                    label="Safe Withdrawal Rate (%)"
-                    class="mb-4"
-                    bind:value={safeWithdrawalRate}
-                />
-                <InputPercent
-                    label="Expected Real Return (%)"
-                    bind:value={expectedRealReturn}
-                />
-                {#if annualSavings != null || annualExpenses != null}
-                    <div
-                        class="mt-5 pt-4 border-t border-cream-200 text-sm text-cream-700 space-y-1"
+        <form
+            method="POST"
+            action="?/save"
+            use:enhance={() => {
+                saveState = "saving";
+                return async ({ update }) => {
+                    await update({ reset: false });
+                    saveState = "saved";
+                    setTimeout(() => (saveState = "idle"), 2000);
+                };
+            }}
+        >
+            <input
+                type="hidden"
+                name="currentValue"
+                value={currentValue ?? ""}
+            />
+            <input
+                type="hidden"
+                name="annualSavings"
+                value={annualSavings ?? ""}
+            />
+            <input
+                type="hidden"
+                name="annualExpenses"
+                value={annualExpenses ?? ""}
+            />
+            <input
+                type="hidden"
+                name="safeWithdrawalRate"
+                value={safeWithdrawalRate ?? ""}
+            />
+            <input
+                type="hidden"
+                name="expectedRealReturn"
+                value={expectedRealReturn ?? ""}
+            />
+            <input type="hidden" name="yearAdjustment" value={yearAdjustment} />
+            <Card class="lg:w-80 shrink-0">
+                {#snippet body()}
+                    <InputCash
+                        label="Current Portfolio Value"
+                        class="mb-4"
+                        bind:value={currentValue}
+                    />
+                    <InputCash
+                        label="Annual Savings"
+                        class="mb-4"
+                        bind:value={annualSavings}
+                    />
+                    <InputCash
+                        label="Annual Retirement Expenses"
+                        class="mb-4"
+                        bind:value={annualExpenses}
+                    />
+                    <InputPercent
+                        label="Safe Withdrawal Rate (%)"
+                        class="mb-4"
+                        bind:value={safeWithdrawalRate}
+                    />
+                    <InputPercent
+                        label="Expected Real Return (%)"
+                        bind:value={expectedRealReturn}
+                    />
+                    {#if annualSavings != null || annualExpenses != null}
+                        <div
+                            class="mt-5 pt-4 border-t border-cream-200 text-sm text-cream-700 space-y-1"
+                        >
+                            {#if annualSavings != null}
+                                <p>
+                                    Monthly savings: <span
+                                        class="font-medium text-gray-900"
+                                        >{formatCurrency(
+                                            annualSavings / 12,
+                                        )}</span
+                                    >
+                                </p>
+                            {/if}
+                            {#if annualExpenses != null}
+                                <p>
+                                    Monthly expenses: <span
+                                        class="font-medium text-gray-900"
+                                        >{formatCurrency(
+                                            annualExpenses / 12,
+                                        )}</span
+                                    >
+                                </p>
+                            {/if}
+                        </div>
+                    {/if}
+                    <button
+                        type="submit"
+                        disabled={saveState === "saving"}
+                        class="mt-4 w-full rounded-md px-4 py-2 text-sm font-medium text-white transition-colors {saveState ===
+                        'saved'
+                            ? 'bg-green-600'
+                            : 'bg-blue-600 hover:bg-blue-700'}"
                     >
-                        {#if annualSavings != null}
-                            <p>
-                                Monthly savings: <span
-                                    class="font-medium text-gray-900"
-                                    >{formatCurrency(annualSavings / 12)}</span
-                                >
-                            </p>
+                        {#if saveState === "saving"}
+                            Saving...
+                        {:else if saveState === "saved"}
+                            Saved!
+                        {:else}
+                            Save
                         {/if}
-                        {#if annualExpenses != null}
-                            <p>
-                                Monthly expenses: <span
-                                    class="font-medium text-gray-900"
-                                    >{formatCurrency(annualExpenses / 12)}</span
-                                >
-                            </p>
-                        {/if}
-                    </div>
-                {/if}
-            {/snippet}
-        </Card>
+                    </button>
+                {/snippet}
+            </Card>
+        </form>
 
         <!-- RIGHT: results -->
         <div class="flex-1 min-w-0">

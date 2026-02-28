@@ -1,5 +1,10 @@
 import type { DrizzleDB } from ".";
-import { portfolios, stockAllocations, taxDocuments } from "./schema";
+import {
+    portfolios,
+    retirementScenarios,
+    stockAllocations,
+    taxDocuments,
+} from "./schema";
 import { and, asc, eq } from "drizzle-orm";
 import type { Config, Stock } from "$lib/rebalance/types";
 
@@ -291,4 +296,41 @@ export async function seedTaxDocuments(
             updatedAt: Math.floor(Date.now() / 1000),
         })),
     );
+}
+
+// Retirement scenario queries
+
+export async function getRetirementScenario(db: DrizzleDB, userId: string) {
+    const rows = await db
+        .select()
+        .from(retirementScenarios)
+        .where(eq(retirementScenarios.userId, userId))
+        .limit(1);
+    return rows[0] ?? null;
+}
+
+export async function upsertRetirementScenario(
+    db: DrizzleDB,
+    userId: string,
+    data: {
+        currentValue: number | null;
+        annualSavings: number | null;
+        annualExpenses: number | null;
+        safeWithdrawalRate: number | null;
+        expectedRealReturn: number | null;
+        yearAdjustment: number;
+    },
+) {
+    const existing = await getRetirementScenario(db, userId);
+    if (existing) {
+        await db
+            .update(retirementScenarios)
+            .set(data)
+            .where(eq(retirementScenarios.id, existing.id));
+    } else {
+        await db.insert(retirementScenarios).values({
+            userId,
+            ...data,
+        });
+    }
 }
