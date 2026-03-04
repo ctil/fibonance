@@ -1,6 +1,5 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
-    import { untrack } from "svelte";
     import { Plus, Pencil, ExternalLink } from "lucide-svelte";
     import Card from "$lib/components/Card.svelte";
     import DeleteButton from "$lib/components/DeleteButton.svelte";
@@ -10,7 +9,7 @@
     let { data, form }: { data: PageData; form: { message?: string } | null } =
         $props();
 
-    let docs = $state(untrack(() => data.docs));
+    let docs = $derived(data.docs);
 
     let editingId: number | null = $state(null);
     let creatingNew = $state(false);
@@ -70,10 +69,6 @@
                                 method="post"
                                 action="?/updateStatus"
                                 use:enhance={() => {
-                                    doc.status =
-                                        doc.status === "downloaded"
-                                            ? "pending"
-                                            : "downloaded";
                                     return async ({ update }) => {
                                         await update({ reset: false });
                                     };
@@ -122,7 +117,7 @@
                                     href={doc.portalUrl}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    class="shrink-0 text-sage-600 hover:text-sage-800"
+                                    class="shrink-0 p-1 text-sage-600 hover:text-sage-800"
                                     aria-label="Open portal"
                                 >
                                     <ExternalLink size={16} />
@@ -144,9 +139,6 @@
                                 confirmMessage={`Delete "${doc.institution} ${doc.docType}"?`}
                                 size={14}
                                 class="shrink-0"
-                                onsubmit={() => {
-                                    docs = docs.filter((d) => d.id !== doc.id);
-                                }}
                             />
                         </div>
                     {/if}
