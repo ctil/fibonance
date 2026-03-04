@@ -279,6 +279,22 @@ export async function deleteTaxDocument(
     return deleted.length > 0;
 }
 
+export async function uncheckAllTaxDocuments(
+    db: DrizzleDB,
+    userId: string,
+    taxYear: number,
+): Promise<void> {
+    await db
+        .update(taxDocuments)
+        .set({ status: "pending", updatedAt: Math.floor(Date.now() / 1000) })
+        .where(
+            and(
+                eq(taxDocuments.userId, userId),
+                eq(taxDocuments.taxYear, taxYear),
+            ),
+        );
+}
+
 export async function seedTaxDocuments(
     db: DrizzleDB,
     userId: string,

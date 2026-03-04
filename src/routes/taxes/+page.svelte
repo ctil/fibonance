@@ -46,8 +46,20 @@
         <TaxDocumentForm oncancel={cancelForm} errorMessage={form?.message} />
     {/if}
 
-    <div class="text-sm text-gray-500">
-        {docs.filter((d) => d.status === "downloaded").length}/{docs.length} downloaded
+    <div class="flex items-center gap-3 text-sm text-gray-500">
+        <span>
+            {docs.filter((d) => d.status === "downloaded").length}/{docs.length} downloaded
+        </span>
+        {#if docs.some((d) => d.status === "downloaded")}
+            <form method="post" action="?/uncheckAll" use:enhance>
+                <button
+                    type="submit"
+                    class="text-sage-600 hover:text-sage-800 underline cursor-pointer"
+                >
+                    Uncheck all
+                </button>
+            </form>
+        {/if}
     </div>
     <Card class="">
         {#snippet body()}

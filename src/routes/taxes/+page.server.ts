@@ -7,6 +7,7 @@ import {
     getTaxDocuments,
     seedTaxDocuments,
     updateTaxDocument,
+    uncheckAllTaxDocuments,
     updateTaxDocumentStatus,
 } from "$lib/server/db/queries";
 import type { Actions, PageServerLoad } from "./$types";
@@ -63,6 +64,12 @@ export const actions: Actions = {
         if (parsed.error) return parsed.error;
 
         await updateTaxDocument(db, user.id, id, parsed.data);
+    },
+
+    uncheckAll: async (event) => {
+        const user = requireLogin(event);
+        const taxYear = new Date().getFullYear() - 1;
+        await uncheckAllTaxDocuments(db, user.id, taxYear);
     },
 
     delete: async (event) => {
