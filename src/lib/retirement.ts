@@ -27,10 +27,7 @@ export function calculateRetirement(
         if (yearsToRetirement < 0 || !isFinite(yearsToRetirement)) {
             return "impossible";
         }
-        const retirementDate = new Date();
-        retirementDate.setFullYear(
-            retirementDate.getFullYear() + Math.ceil(yearsToRetirement),
-        );
+        const retirementDate = addYears(new Date(), yearsToRetirement);
         return { targetValue, yearsToRetirement, retirementDate };
     }
 
@@ -48,10 +45,7 @@ export function calculateRetirement(
         return "impossible";
     }
 
-    const retirementDate = new Date();
-    retirementDate.setFullYear(
-        retirementDate.getFullYear() + Math.ceil(yearsToRetirement),
-    );
+    const retirementDate = addYears(new Date(), yearsToRetirement);
 
     let retirementAge: number | undefined;
     if (birthday) {
@@ -77,6 +71,12 @@ export function calculateRequiredSavings(
     }
     const A = Math.pow(1 + r, targetYears);
     return (r * (targetValue - A * currentValue)) / (A - 1);
+}
+
+function addYears(date: Date, years: number): Date {
+    const result = new Date(date);
+    result.setTime(result.getTime() + years * 365.25 * 24 * 60 * 60 * 1000);
+    return result;
 }
 
 export function formatCurrency(value: number): string {
