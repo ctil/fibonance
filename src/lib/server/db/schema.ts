@@ -6,20 +6,61 @@ import {
 } from "drizzle-orm/sqlite-core";
 import { relations } from "drizzle-orm";
 
-// Auth tables
-export const users = sqliteTable("users", {
+// Better Auth tables. These are singular, unlike the rest of the schema —
+// Better Auth's adapter expects its default model names.
+export const user = sqliteTable("user", {
     id: text("id").primaryKey(),
-    username: text("username").notNull().unique(),
-    passwordHash: text("password_hash").notNull(),
+    name: text("name").notNull(),
+    email: text("email").notNull().unique(),
+    emailVerified: integer("email_verified", { mode: "boolean" }).notNull(),
+    image: text("image"),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
     birthday: text("birthday"),
 });
 
-export const sessions = sqliteTable("sessions", {
+export const session = sqliteTable("session", {
     id: text("id").primaryKey(),
+    expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+    token: text("token").notNull().unique(),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+    ipAddress: text("ip_address"),
+    userAgent: text("user_agent"),
     userId: text("user_id")
         .notNull()
-        .references(() => users.id),
+        .references(() => user.id, { onDelete: "cascade" }),
+});
+
+export const account = sqliteTable("account", {
+    id: text("id").primaryKey(),
+    accountId: text("account_id").notNull(),
+    providerId: text("provider_id").notNull(),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    idToken: text("id_token"),
+    accessTokenExpiresAt: integer("access_token_expires_at", {
+        mode: "timestamp",
+    }),
+    refreshTokenExpiresAt: integer("refresh_token_expires_at", {
+        mode: "timestamp",
+    }),
+    scope: text("scope"),
+    password: text("password"),
+    createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+    updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
+});
+
+export const verification = sqliteTable("verification", {
+    id: text("id").primaryKey(),
+    identifier: text("identifier").notNull(),
+    value: text("value").notNull(),
     expiresAt: integer("expires_at", { mode: "timestamp" }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" }),
+    updatedAt: integer("updated_at", { mode: "timestamp" }),
 });
 
 // Portfolio tables
@@ -29,7 +70,7 @@ export const portfolios = sqliteTable(
         id: integer("id").primaryKey({ autoIncrement: true }),
         userId: text("user_id")
             .notNull()
-            .references(() => users.id),
+            .references(() => user.id),
         name: text("name").notNull(),
         description: text("description"),
         createdAt: text("created_at").default("datetime('now')"),
@@ -52,15 +93,15 @@ export const stockAllocations = sqliteTable("stock_allocations", {
 });
 
 // Relations
-export const userRelations = relations(users, ({ many }) => ({
+export const userRelations = relations(user, ({ many }) => ({
     portfolios: many(portfolios),
     retirementScenarios: many(retirementScenarios),
 }));
 
 export const portfoliosRelations = relations(portfolios, ({ one, many }) => ({
-    user: one(users, {
+    user: one(user, {
         fields: [portfolios.userId],
-        references: [users.id],
+        references: [user.id],
     }),
     stockAllocations: many(stockAllocations),
 }));
@@ -80,7 +121,7 @@ export const taxDocuments = sqliteTable("tax_documents", {
     id: integer("id").primaryKey({ autoIncrement: true }),
     userId: text("user_id")
         .notNull()
-        .references(() => users.id, { onDelete: "cascade" }),
+        .references(() => user.id, { onDelete: "cascade" }),
     institution: text("institution").notNull(),
     docType: text("doc_type").notNull(),
     taxYear: integer("tax_year").notNull(),
@@ -95,7 +136,7 @@ export const retirementScenarios = sqliteTable("retirement_scenarios", {
     id: integer("id").primaryKey({ autoIncrement: true }),
     userId: text("user_id")
         .notNull()
-        .references(() => users.id, { onDelete: "cascade" }),
+        .references(() => user.id, { onDelete: "cascade" }),
     name: text("name").notNull().default("Default"),
     currentValue: integer("current_value"), // cents
     annualSavings: integer("annual_savings"), // cents
@@ -108,16 +149,14 @@ export const retirementScenarios = sqliteTable("retirement_scenarios", {
 export const retirementScenariosRelations = relations(
     retirementScenarios,
     ({ one }) => ({
-        user: one(users, {
+        user: one(user, {
             fields: [retirementScenarios.userId],
-            references: [users.id],
+            references: [user.id],
         }),
     }),
 );
 
 // Types
-export type User = typeof users.$inferSelect;
-export type Session = typeof sessions.$inferSelect;
 export type PortfolioRecord = typeof portfolios.$inferSelect;
 export type StockAllocationRecord = typeof stockAllocations.$inferSelect;
 export type TaxDocument = typeof taxDocuments.$inferSelect;

@@ -1,25 +1,22 @@
-import { fail, redirect } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 import { db } from "$lib/server/db";
-import { users } from "$lib/server/db/schema";
+import { requireLogin } from "$lib/server/auth";
+import { user } from "$lib/server/db/schema";
 import { eq } from "drizzle-orm";
 
-export const load: PageServerLoad = async ({ locals }) => {
-    if (!locals.user) {
-        throw redirect(302, "/login");
-    }
+export const load: PageServerLoad = async (event) => {
+    const currentUser = requireLogin(event);
     return {
-        birthday: locals.user.birthday,
+        birthday: currentUser.birthday,
     };
 };
 
 export const actions: Actions = {
-    default: async ({ request, locals }) => {
-        if (!locals.user) {
-            return fail(401, { message: "Unauthorized" });
-        }
+    default: async (event) => {
+        const currentUser = requireLogin(event);
 
-        const data = await request.formData();
+        const data = await event.request.formData();
         const birthday = data.get("birthday");
 
         if (typeof birthday !== "string") {
@@ -27,9 +24,9 @@ export const actions: Actions = {
         }
 
         await db
-            .update(users)
+            .update(user)
             .set({ birthday })
-            .where(eq(users.id, locals.user.id));
+            .where(eq(user.id, currentUser.id));
 
         return { success: true };
     },

@@ -1,110 +1,38 @@
 import { redirect, type RequestEvent } from "@sveltejs/kit";
-import { eq } from "drizzle-orm";
-import { sha256 } from "@oslojs/crypto/sha2";
-import { encodeBase64url, encodeHexLowerCase } from "@oslojs/encoding";
+import { betterAuth } from "better-auth";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { sveltekitCookies } from "better-auth/svelte-kit";
+import { getRequestEvent } from "$app/server";
+import { env } from "$env/dynamic/private";
 import { db } from "$lib/server/db";
-import * as table from "$lib/server/db/schema";
+import * as schema from "$lib/server/db/schema";
 
-const DAY_IN_MS = 1000 * 60 * 60 * 24;
+export const auth = betterAuth({
+    database: drizzleAdapter(db, { provider: "sqlite", schema }),
+    secret: env.BETTER_AUTH_SECRET,
+    baseURL: env.BETTER_AUTH_URL,
+    emailAndPassword: {
+        enabled: true,
+        // Single-user app. Accounts are created with `bun run set-password`.
+        disableSignUp: true,
+    },
+    session: {
+        expiresIn: 60 * 60 * 24 * 30, // 30 days
+        updateAge: 60 * 60 * 24, // refresh cookie if visited after 1 day
+    },
+    user: {
+        additionalFields: {
+            // Set on the profile page, read by the retirement calculator.
+            birthday: { type: "string", required: false, input: false },
+        },
+    },
+    plugins: [sveltekitCookies(getRequestEvent)],
+});
 
-// Sessions last 30 days and are renewed for another 30 days when
-// the user visits within the last 15 days before expiry.
+export type Session = typeof auth.$Infer.Session;
+export type User = typeof auth.$Infer.Session.user;
 
-export const sessionCookieName = "auth-session";
-
-export function generateSessionToken() {
-    const bytes = crypto.getRandomValues(new Uint8Array(18));
-    const token = encodeBase64url(bytes);
-    return token;
-}
-
-export async function createSession(token: string, userId: string) {
-    const sessionId = encodeHexLowerCase(
-        sha256(new TextEncoder().encode(token)),
-    );
-    const session: table.Session = {
-        id: sessionId,
-        userId,
-        expiresAt: new Date(Date.now() + DAY_IN_MS * 30),
-    };
-    await db.insert(table.sessions).values(session);
-    return session;
-}
-
-export async function validateSessionToken(token: string) {
-    const sessionId = encodeHexLowerCase(
-        sha256(new TextEncoder().encode(token)),
-    );
-    const [result] = await db
-        .select({
-            // Adjust user table here to tweak returned data
-            user: {
-                id: table.users.id,
-                username: table.users.username,
-                birthday: table.users.birthday,
-            },
-            session: table.sessions,
-        })
-        .from(table.sessions)
-        .innerJoin(table.users, eq(table.sessions.userId, table.users.id))
-        .where(eq(table.sessions.id, sessionId));
-
-    if (!result) {
-        return { session: null, user: null };
-    }
-    const { session, user } = result;
-
-    const sessionExpired = Date.now() >= session.expiresAt.getTime();
-    if (sessionExpired) {
-        await db
-            .delete(table.sessions)
-            .where(eq(table.sessions.id, session.id));
-        return { session: null, user: null };
-    }
-
-    const renewSession =
-        Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15;
-    if (renewSession) {
-        session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
-        await db
-            .update(table.sessions)
-            .set({ expiresAt: session.expiresAt })
-            .where(eq(table.sessions.id, session.id));
-    }
-
-    return { session, user };
-}
-
-export type SessionValidationResult = Awaited<
-    ReturnType<typeof validateSessionToken>
->;
-
-export async function invalidateSession(sessionId: string) {
-    await db.delete(table.sessions).where(eq(table.sessions.id, sessionId));
-}
-
-export function setSessionTokenCookie(
-    event: RequestEvent,
-    token: string,
-    expiresAt: Date,
-) {
-    event.cookies.set(sessionCookieName, token, {
-        expires: expiresAt,
-        path: "/",
-    });
-}
-
-export function deleteSessionTokenCookie(event: RequestEvent) {
-    event.cookies.delete(sessionCookieName, {
-        path: "/",
-    });
-}
-
-export function requireLogin(event: RequestEvent): {
-    id: string;
-    username: string;
-    birthday: string | null;
-} {
+export function requireLogin(event: RequestEvent): User {
     if (!event.locals.user) {
         const redirectTo = encodeURIComponent(event.url.pathname);
         throw redirect(302, `/login?redirectTo=${redirectTo}`);

@@ -43,6 +43,13 @@
       "when": 1772297244714,
       "tag": "0005_big_spyke",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1786804676768,
+      "tag": "0006_mushy_annihilus",
+      "breakpoints": true
     }
   ]
 }

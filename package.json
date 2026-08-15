@@ -17,20 +17,18 @@
         "fmt": "prettier --write src",
         "prepare": "svelte-kit sync || echo ''",
         "preview": "vite preview",
-        "register-user": "bun scripts/register-user.ts",
+        "set-password": "bun scripts/set-password.ts",
         "serve": "vite dev",
         "test": "bun test"
     },
     "dependencies": {
         "@libsql/client": "^0.17.0",
-        "@node-rs/argon2": "^2.0.2",
+        "better-auth": "^1.6.29",
         "drizzle-orm": "^0.45.1",
         "lucide-svelte": "^0.563.0",
         "yaml": "^2.7.0"
     },
     "devDependencies": {
-        "@oslojs/crypto": "^1.0.1",
-        "@oslojs/encoding": "^1.1.0",
         "@sveltejs/adapter-vercel": "^6.3.1",
         "@sveltejs/kit": "^2.49.1",
         "@sveltejs/vite-plugin-svelte": "^6.2.1",

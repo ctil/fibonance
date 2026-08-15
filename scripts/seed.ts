@@ -1,11 +1,10 @@
 import { createClient } from "@libsql/client";
 import { drizzle } from "drizzle-orm/libsql";
-import { hash } from "@node-rs/argon2";
+import { eq } from "drizzle-orm";
 import {
     portfolios,
     stockAllocations,
-    users,
-    sessions,
+    user,
 } from "../src/lib/server/db/schema";
 
 const url = process.env.TURSO_DATABASE_URL;
@@ -79,25 +78,29 @@ const SEED_DATA = [
 async function seed() {
     console.log("Seeding database...");
 
-    const [username, password] = Bun.argv.slice(2);
+    const [email] = Bun.argv.slice(2);
 
-    if (!username || !password) {
-        console.error(
-            "Usage: bun scripts/register-user.ts <username> <password>",
-        );
+    if (!email) {
+        console.error("Usage: bun scripts/seed.ts <email>");
+        console.error("Create the account first with: bun run set-password");
         process.exit(1);
     }
 
+    const [existing] = await db
+        .select({ id: user.id })
+        .from(user)
+        .where(eq(user.email, email));
+
+    if (!existing) {
+        console.error(`No user found with email "${email}".`);
+        console.error("Create the account first with: bun run set-password");
+        process.exit(1);
+    }
+
+    const userId = existing.id;
+
     await db.delete(stockAllocations);
-    await db.delete(sessions);
     await db.delete(portfolios);
-    await db.delete(users);
-
-    const userId = crypto.randomUUID();
-    const passwordHash = await hash(password);
-
-    await db.insert(users).values({ id: userId, username, passwordHash });
-    console.log(`User "${username}" registered successfully.`);
 
     for (const portfolio of SEED_DATA) {
         const [inserted] = await db
