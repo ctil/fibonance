@@ -1,5 +1,6 @@
 import type { DrizzleDB } from ".";
 import {
+    mortgages,
     portfolios,
     retirementScenarios,
     stockAllocations,
@@ -349,4 +350,83 @@ export async function upsertRetirementScenario(
             ...data,
         });
     }
+}
+
+// Mortgage queries
+
+export interface MortgageInput {
+    name: string;
+    startDate: string;
+    originalAmount: number;
+    interestRate: number;
+    termMonths: number;
+    piPayment: number;
+    escrowPayment: number;
+    currentBalance: number | null;
+    balanceAsOf: string | null;
+}
+
+export async function getMortgages(db: DrizzleDB, userId: string) {
+    return db
+        .select()
+        .from(mortgages)
+        .where(eq(mortgages.userId, userId))
+        .orderBy(asc(mortgages.sortOrder), asc(mortgages.id));
+}
+
+export async function createMortgage(
+    db: DrizzleDB,
+    userId: string,
+    data: MortgageInput,
+): Promise<void> {
+    await db.insert(mortgages).values({
+        userId,
+        ...data,
+        extraPayment: 0,
+        sortOrder: 0,
+        updatedAt: Math.floor(Date.now() / 1000),
+    });
+}
+
+export async function updateMortgage(
+    db: DrizzleDB,
+    userId: string,
+    id: number,
+    data: MortgageInput,
+): Promise<boolean> {
+    const updated = await db
+        .update(mortgages)
+        .set({ ...data, updatedAt: Math.floor(Date.now() / 1000) })
+        .where(and(eq(mortgages.id, id), eq(mortgages.userId, userId)))
+        .returning({ id: mortgages.id });
+
+    return updated.length > 0;
+}
+
+export async function deleteMortgage(
+    db: DrizzleDB,
+    userId: string,
+    id: number,
+): Promise<boolean> {
+    const deleted = await db
+        .delete(mortgages)
+        .where(and(eq(mortgages.id, id), eq(mortgages.userId, userId)))
+        .returning({ id: mortgages.id });
+
+    return deleted.length > 0;
+}
+
+export async function updateMortgageScenario(
+    db: DrizzleDB,
+    userId: string,
+    id: number,
+    extraPayment: number,
+): Promise<boolean> {
+    const updated = await db
+        .update(mortgages)
+        .set({ extraPayment, updatedAt: Math.floor(Date.now() / 1000) })
+        .where(and(eq(mortgages.id, id), eq(mortgages.userId, userId)))
+        .returning({ id: mortgages.id });
+
+    return updated.length > 0;
 }

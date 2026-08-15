@@ -5,9 +5,16 @@
         label: string;
         value: string;
         subtext?: string;
+        valueClass?: ClassValue;
         class?: ClassValue;
     }
-    let { label, value, subtext, class: className }: Props = $props();
+    let {
+        label,
+        value,
+        subtext,
+        valueClass,
+        class: className,
+    }: Props = $props();
 </script>
 
 <div
@@ -19,7 +26,7 @@
     <p class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1">
         {label}
     </p>
-    <p class="text-3xl font-bold">{value}</p>
+    <p class={["text-3xl font-bold", valueClass]}>{value}</p>
     {#if subtext}
         <p class="text-sm text-cream-600 mt-1">{subtext}</p>
     {/if}

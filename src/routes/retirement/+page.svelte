@@ -3,6 +3,7 @@
     import Card from "$lib/components/Card.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import InputPercent from "$lib/components/InputPercent.svelte";
+    import StatCard from "$lib/components/StatCard.svelte";
     import {
         calculateRetirement,
         calculateRequiredSavings,
@@ -11,7 +12,6 @@
     import type { PageData } from "./$types";
     import DateCard from "./DateCard.svelte";
     import ResultBanner from "./ResultBanner.svelte";
-    import StatCard from "./StatCard.svelte";
 
     const { data }: { data: PageData } = $props();
     const birthday = $derived(data.user?.birthday ?? null);

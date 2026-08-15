@@ -96,6 +96,7 @@ export const stockAllocations = sqliteTable("stock_allocations", {
 export const userRelations = relations(user, ({ many }) => ({
     portfolios: many(portfolios),
     retirementScenarios: many(retirementScenarios),
+    mortgages: many(mortgages),
 }));
 
 export const portfoliosRelations = relations(portfolios, ({ one, many }) => ({
@@ -156,8 +157,36 @@ export const retirementScenariosRelations = relations(
     }),
 );
 
+// Mortgage tables
+export const mortgages = sqliteTable("mortgages", {
+    id: integer("id").primaryKey({ autoIncrement: true }),
+    userId: text("user_id")
+        .notNull()
+        .references(() => user.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    startDate: text("start_date").notNull(), // ISO date of the first payment
+    originalAmount: integer("original_amount").notNull(), // cents
+    interestRate: integer("interest_rate").notNull(), // percentage * 1000 (e.g. 6375 = 6.375%)
+    termMonths: integer("term_months").notNull().default(360),
+    piPayment: integer("pi_payment").notNull(), // cents, monthly principal + interest
+    escrowPayment: integer("escrow_payment").default(0), // cents
+    currentBalance: integer("current_balance"), // cents, optional manual override
+    balanceAsOf: text("balance_as_of"), // ISO date the override was taken
+    extraPayment: integer("extra_payment").default(0), // cents, saved scenario
+    sortOrder: integer("sort_order").default(0),
+    updatedAt: integer("updated_at").notNull(),
+});
+
+export const mortgagesRelations = relations(mortgages, ({ one }) => ({
+    user: one(user, {
+        fields: [mortgages.userId],
+        references: [user.id],
+    }),
+}));
+
 // Types
 export type PortfolioRecord = typeof portfolios.$inferSelect;
 export type StockAllocationRecord = typeof stockAllocations.$inferSelect;
 export type TaxDocument = typeof taxDocuments.$inferSelect;
 export type RetirementScenario = typeof retirementScenarios.$inferSelect;
+export type Mortgage = typeof mortgages.$inferSelect;

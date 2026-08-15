@@ -4,11 +4,17 @@
     interface Props {
         value?: number | null;
         label: string;
+        step?: string;
         class?: ClassValue;
     }
 
     const uid = $props.id();
-    let { value = $bindable(), label, class: className }: Props = $props();
+    let {
+        value = $bindable(),
+        label,
+        step = "1",
+        class: className,
+    }: Props = $props();
 </script>
 
 <div class={className}>
@@ -19,7 +25,7 @@
         <input
             id="{uid}-percent"
             type="number"
-            step="1"
+            {step}
             min="0"
             class="pl-3 pr-8"
             bind:value

@@ -47,12 +47,14 @@
             <a href="/rebalance" class={getLinkClass("/rebalance")}>Rebalance</a
             >
             <a href="/taxes" class={getLinkClass("/taxes")}>Taxes</a>
+            <a href="/mortgage" class={getLinkClass("/mortgage")}>Mortgage</a>
             <a href="/profile" class={getLinkClass("/profile")}>Profile</a>
         {:else}
             <span class={getDisabledClass()}>Portfolios</span>
             <span class={getDisabledClass()}>Deposit</span>
             <span class={getDisabledClass()}>Rebalance</span>
             <span class={getDisabledClass()}>Taxes</span>
+            <span class={getDisabledClass()}>Mortgage</span>
             <span class={getDisabledClass()}>Profile</span>
         {/if}
         {#if data.user}
@@ -143,6 +145,11 @@
                     onclick={() => (menuOpen = false)}>Taxes</a
                 >
                 <a
+                    href="/mortgage"
+                    class={getLinkClass("/mortgage")}
+                    onclick={() => (menuOpen = false)}>Mortgage</a
+                >
+                <a
                     href="/profile"
                     class={getLinkClass("/profile")}
                     onclick={() => (menuOpen = false)}>Profile</a
@@ -152,6 +159,7 @@
                 <span class={getDisabledClass()}>Deposit</span>
                 <span class={getDisabledClass()}>Rebalance</span>
                 <span class={getDisabledClass()}>Taxes</span>
+                <span class={getDisabledClass()}>Mortgage</span>
                 <span class={getDisabledClass()}>Profile</span>
             {/if}
             {#if data.user}
