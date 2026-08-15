@@ -28,7 +28,7 @@
 
 <nav class="bg-sage-600 px-6 py-3 flex items-center justify-between relative">
     <div class="flex items-center gap-2">
-        <img src={favicon} alt="Cavalier" class="w-8 h-8" />
+        <img src={favicon} alt="Fibonance" class="w-8 h-8" />
         <span class="text-cream-50 text-xl font-semibold">Fibonance</span>
     </div>
 
