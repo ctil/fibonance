@@ -10,10 +10,13 @@
     import {
         calculateRetirement,
         calculateRequiredSavings,
+        projectGrowth,
+        CONTRIBUTIONS_PER_YEAR,
         formatCurrency,
         formatDate,
     } from "$lib/retirement";
     import type { PageData } from "./$types";
+    import GrowthChart from "./GrowthChart.svelte";
     import ResultBanner from "./ResultBanner.svelte";
 
     const { data }: { data: PageData } = $props();
@@ -79,6 +82,25 @@
             ? result.targetValue * Math.pow(1.03, result.yearsToRetirement)
             : null,
     );
+
+    let projection = $derived.by(() => {
+        if (result == null || typeof result !== "object") return null;
+        const points = projectGrowth(
+            currentValue!,
+            annualSavings!,
+            expectedRealReturn!,
+            result.yearsToRetirement,
+            result.targetValue,
+        );
+        if (points.length < 2) return null;
+        const end = points[points.length - 1];
+        return {
+            points,
+            contributed: end.contributed - currentValue!,
+            growth: end.balance - end.contributed,
+            years: end.year,
+        };
+    });
 
     let savingsAdjustment = $derived.by(() => {
         if (result == null || typeof result !== "object") return null;
@@ -304,6 +326,51 @@
                         </p>
                     </div>
                 </div>
+
+                {#if projection != null}
+                    <Card header="Projected growth">
+                        {#snippet body()}
+                            <GrowthChart
+                                points={projection.points}
+                                targetValue={result.targetValue}
+                            />
+                            <p
+                                class="mt-4 border-t border-line-soft pt-4 text-sm text-ink-muted"
+                            >
+                                Contributing
+                                <span class="font-medium text-ink tabular-nums">
+                                    {formatCurrency(
+                                        annualSavings! / CONTRIBUTIONS_PER_YEAR,
+                                    )}
+                                </span>
+                                every two weeks, you add
+                                <span class="font-medium text-ink tabular-nums">
+                                    {formatCurrency(projection.contributed)}
+                                </span>
+                                of your own money over {projection.years.toFixed(
+                                    1,
+                                )} years and earn
+                                <span
+                                    class="font-medium text-accent tabular-nums"
+                                >
+                                    {formatCurrency(projection.growth)}
+                                </span>
+                                in real growth.
+                                <!-- Biweekly money compounds sooner than the
+                                     year-end lump the headline figures assume,
+                                     so the two dates differ slightly. -->
+                                {#if projection.years < result.yearsToRetirement - 0.05}
+                                    Because the money goes in through the year
+                                    rather than at each year's end, that is
+                                    about {(
+                                        result.yearsToRetirement -
+                                        projection.years
+                                    ).toFixed(1)} years sooner than the date above.
+                                {/if}
+                            </p>
+                        {/snippet}
+                    </Card>
+                {/if}
 
                 {#if coastFireResult != null}
                     <section class="pt-2">

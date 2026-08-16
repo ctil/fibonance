@@ -58,6 +58,60 @@ export function calculateRetirement(
     return { targetValue, yearsToRetirement, retirementDate, retirementAge };
 }
 
+/** Contributions land every two weeks, so 26 a year. */
+export const CONTRIBUTIONS_PER_YEAR = 26;
+
+export interface ProjectionPoint {
+    /** Years from today. */
+    year: number;
+    /** Portfolio value at this point. */
+    balance: number;
+    /** Starting value plus everything paid in so far — the balance less growth. */
+    contributed: number;
+}
+
+/**
+ * Period-by-period projection of the portfolio, with the annual savings paid in
+ * as equal biweekly contributions rather than one lump at year end.
+ *
+ * Because the money arrives throughout the year it compounds sooner, so this
+ * reaches `targetValue` slightly earlier than `calculateRetirement`, which uses
+ * the closed-form annual annuity.
+ */
+export function projectGrowth(
+    currentValue: number,
+    annualSavings: number,
+    expectedRealReturn: number,
+    maxYears: number,
+    targetValue?: number,
+): ProjectionPoint[] {
+    if (!isFinite(maxYears) || maxYears <= 0) return [];
+
+    // A century of biweekly points is plenty; a longer horizon says more about
+    // the inputs than about any plan worth charting.
+    const periods = Math.min(
+        Math.ceil(maxYears * CONTRIBUTIONS_PER_YEAR),
+        100 * CONTRIBUTIONS_PER_YEAR,
+    );
+    // Geometric, not r/26, so the periods still compound to the annual rate.
+    const periodRate =
+        Math.pow(1 + expectedRealReturn / 100, 1 / CONTRIBUTIONS_PER_YEAR) - 1;
+    const perPeriod = annualSavings / CONTRIBUTIONS_PER_YEAR;
+
+    let balance = currentValue;
+    let contributed = currentValue;
+    const points: ProjectionPoint[] = [{ year: 0, balance, contributed }];
+
+    for (let p = 1; p <= periods; p++) {
+        balance = balance * (1 + periodRate) + perPeriod;
+        contributed += perPeriod;
+        points.push({ year: p / CONTRIBUTIONS_PER_YEAR, balance, contributed });
+        if (targetValue != null && balance >= targetValue) break;
+    }
+
+    return points;
+}
+
 export function calculateRequiredSavings(
     currentValue: number,
     targetValue: number,
