@@ -66,14 +66,14 @@
         {label}
     </label>
     <div class="relative">
-        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-cream-500"
+        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-ink-faint"
             >$</span
         >
         <input
             id="{uid}-amount"
             type="text"
             inputmode="decimal"
-            class="pl-7 pr-3"
+            class="pl-7 pr-3 tabular-nums"
             bind:value={displayValue}
             oninput={handleInput}
             onblur={handleBlur}

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { formatAmount } from "$lib/rebalance";
+    import { Check, Copy } from "lucide-svelte";
     import type { ClassValue } from "svelte/elements";
 
     interface Props {
@@ -21,39 +22,19 @@
     }
 </script>
 
-<span class={["copy-text", className]}>
-    <code>{displayText}</code>
-    <button onclick={copy} title="Copy to clipboard">
-        {copied ? "Copied!" : "Copy"}
+<span class={["inline-flex items-center gap-1.5", className]}>
+    <span class="tabular-nums text-ink">{displayText}</span>
+    <button
+        type="button"
+        onclick={copy}
+        title={copied ? "Copied" : "Copy to clipboard"}
+        aria-label={copied ? "Copied" : "Copy to clipboard"}
+        class="cursor-pointer rounded-control p-1 text-ink-faint transition-colors hover:bg-line-soft hover:text-ink"
+    >
+        {#if copied}
+            <Check size={14} class="text-accent" />
+        {:else}
+            <Copy size={14} />
+        {/if}
     </button>
 </span>
-
-<style>
-    .copy-text {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    code {
-        padding: 0.25rem 0.5rem;
-        background: var(--bg-secondary, #f5f5f5);
-        border-radius: 4px;
-        font-family: monospace;
-    }
-
-    button {
-        padding: 0.25rem 0.5rem;
-        border: 1px solid var(--border-color, #ccc);
-        border-radius: 4px;
-        background: var(--bg-primary, white);
-        cursor: pointer;
-        font-size: 0.875rem;
-        width: 4.5rem;
-        text-align: center;
-    }
-
-    button:hover {
-        background: var(--bg-secondary, #f5f5f5);
-    }
-</style>

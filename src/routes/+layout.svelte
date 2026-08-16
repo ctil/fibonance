@@ -3,38 +3,68 @@
     import favicon from "$lib/assets/favicon.svg";
     import { page } from "$app/state";
     import { enhance } from "$app/forms";
+    import { Menu, X } from "lucide-svelte";
     import NavDropdown from "./NavDropdown.svelte";
     import type { LayoutData } from "./$types";
 
     let { children, data }: { children: any; data: LayoutData } = $props();
     let menuOpen = $state(false);
 
-    const investmentsItems = [
-        { href: "/portfolios", label: "Portfolios" },
-        { href: "/deposit", label: "Deposit" },
-        { href: "/rebalance", label: "Rebalance" },
+    type NavLink = { href: string; label: string; auth?: boolean };
+    type NavGroup = { label: string; items: NavLink[] };
+    type NavEntry = NavLink | NavGroup;
+
+    const isGroup = (entry: NavEntry): entry is NavGroup => "items" in entry;
+
+    // One source of truth, rendered by both the desktop bar and the mobile
+    // sheet. Entries the signed-out visitor cannot reach are dropped rather
+    // than greyed out — a disabled link is a dead end you have to discover.
+    const nav: NavEntry[] = [
+        { href: "/", label: "Home" },
+        {
+            label: "Investments",
+            items: [
+                { href: "/portfolios", label: "Portfolios", auth: true },
+                { href: "/deposit", label: "Deposit", auth: true },
+                { href: "/rebalance", label: "Rebalance", auth: true },
+            ],
+        },
+        {
+            label: "Calculators",
+            items: [
+                { href: "/calculators", label: "Interest" },
+                { href: "/retirement", label: "Retirement", auth: true },
+            ],
+        },
+        { href: "/mortgage", label: "Mortgage", auth: true },
+        { href: "/taxes", label: "Taxes", auth: true },
+        { href: "/profile", label: "Profile", auth: true },
     ];
 
-    const calculatorsItems = [
-        { href: "/calculators", label: "Interest" },
-        { href: "/retirement", label: "Retirement" },
-    ];
+    const visible = (link: NavLink) => !link.auth || !!data.user;
 
-    function getLinkClass(path: string) {
-        const base =
-            "no-underline py-2 px-3 rounded text-cream-50 transition-all duration-200 hover:bg-white/10";
-        return page.url.pathname === path
-            ? `${base} font-bold bg-white/20`
-            : base;
-    }
+    let entries = $derived(
+        nav
+            .map((entry) =>
+                isGroup(entry)
+                    ? { ...entry, items: entry.items.filter(visible) }
+                    : entry,
+            )
+            .filter((entry) =>
+                isGroup(entry) ? entry.items.length > 0 : visible(entry),
+            ),
+    );
 
-    function getDisabledClass() {
-        return "py-2 px-3 rounded text-cream-50/50 cursor-not-allowed";
-    }
+    // Constant weight in every state: bolding the active link shifts the width
+    // of the whole bar as you navigate.
+    const linkBase =
+        "block rounded-control px-3 py-2 text-sm font-medium text-cream-50 " +
+        "no-underline transition-colors duration-150 hover:bg-white/10";
 
-    function getSectionClass() {
-        return "pt-2 px-3 text-xs font-semibold uppercase tracking-wide text-cream-50/60";
-    }
+    const linkClass = (href: string) =>
+        page.url.pathname === href ? `${linkBase} bg-white/15` : linkBase;
+
+    const close = () => (menuOpen = false);
 </script>
 
 <svelte:head>
@@ -42,145 +72,108 @@
     <link rel="icon" href={favicon} />
 </svelte:head>
 
-<nav class="bg-sage-600 px-6 py-3 flex items-center justify-between relative">
-    <div class="flex items-center gap-2">
-        <img src={favicon} alt="Fibonance" class="w-8 h-8" />
-        <span class="text-cream-50 text-xl font-semibold">Fibonance</span>
-    </div>
-
-    <!-- Desktop nav links -->
-    <div class="hidden md:flex gap-2 items-center">
-        <a href="/" class={getLinkClass("/")}>Home</a>
-        <NavDropdown
-            label="Investments"
-            items={investmentsItems}
-            disabled={!data.user}
-        />
-        <NavDropdown label="Calculators" items={calculatorsItems} />
-        {#if data.user}
-            <a href="/mortgage" class={getLinkClass("/mortgage")}>Mortgage</a>
-            <a href="/taxes" class={getLinkClass("/taxes")}>Taxes</a>
-            <a href="/profile" class={getLinkClass("/profile")}>Profile</a>
-        {:else}
-            <span class={getDisabledClass()}>Mortgage</span>
-            <span class={getDisabledClass()}>Taxes</span>
-            <span class={getDisabledClass()}>Profile</span>
-        {/if}
-        {#if data.user}
-            <form method="post" action="/logout" use:enhance class="inline">
-                <button class={getLinkClass("")}>Sign out</button>
-            </form>
-        {:else}
-            <a href="/login" class={getLinkClass("/login")}>Sign in</a>
-        {/if}
-    </div>
-
-    <!-- Hamburger button (mobile) -->
-    <button
-        class="md:hidden text-cream-50 p-2"
-        onclick={() => (menuOpen = !menuOpen)}
-        aria-label="Toggle menu"
+{#snippet navLink(link: NavLink)}
+    <a
+        href={link.href}
+        class={linkClass(link.href)}
+        aria-current={page.url.pathname === link.href ? "page" : undefined}
+        onclick={close}
     >
-        {#if menuOpen}
-            <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M6 18L18 6M6 6l12 12"
-                />
-            </svg>
-        {:else}
-            <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                />
-            </svg>
-        {/if}
-    </button>
+        {link.label}
+    </a>
+{/snippet}
 
-    <!-- Mobile dropdown menu -->
-    {#if menuOpen}
+{#snippet signOut()}
+    {#if data.user}
+        <form method="post" action="/logout" use:enhance>
+            <button class="{linkBase} w-full text-left" onclick={close}>
+                Sign out
+            </button>
+        </form>
+    {:else}
+        {@render navLink({ href: "/login", label: "Sign in" })}
+    {/if}
+{/snippet}
+
+<div class="flex min-h-screen flex-col">
+    <nav class="on-chrome relative bg-chrome">
         <div
-            class="absolute top-full left-0 right-0 bg-sage-600 md:hidden flex flex-col py-2 px-6 gap-1 shadow-lg z-50"
+            class="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8"
         >
             <a
                 href="/"
-                class={getLinkClass("/")}
-                onclick={() => (menuOpen = false)}>Home</a
+                class="flex shrink-0 items-center gap-2.5 no-underline"
+                onclick={close}
             >
-            <span class={getSectionClass()}>Investments</span>
-            {#each investmentsItems as item (item.href)}
-                {#if data.user}
-                    <a
-                        href={item.href}
-                        class="ml-3 {getLinkClass(item.href)}"
-                        onclick={() => (menuOpen = false)}>{item.label}</a
-                    >
-                {:else}
-                    <span class="ml-3 {getDisabledClass()}">{item.label}</span>
-                {/if}
-            {/each}
-            <span class={getSectionClass()}>Calculators</span>
-            {#each calculatorsItems as item (item.href)}
-                <a
-                    href={item.href}
-                    class="ml-3 {getLinkClass(item.href)}"
-                    onclick={() => (menuOpen = false)}>{item.label}</a
+                <img src={favicon} alt="" class="h-8 w-8" />
+                <span class="type-display text-lg text-cream-50">Fibonance</span
                 >
-            {/each}
-            {#if data.user}
-                <a
-                    href="/mortgage"
-                    class={getLinkClass("/mortgage")}
-                    onclick={() => (menuOpen = false)}>Mortgage</a
-                >
-                <a
-                    href="/taxes"
-                    class={getLinkClass("/taxes")}
-                    onclick={() => (menuOpen = false)}>Taxes</a
-                >
-                <a
-                    href="/profile"
-                    class={getLinkClass("/profile")}
-                    onclick={() => (menuOpen = false)}>Profile</a
-                >
-            {:else}
-                <span class={getDisabledClass()}>Mortgage</span>
-                <span class={getDisabledClass()}>Taxes</span>
-                <span class={getDisabledClass()}>Profile</span>
-            {/if}
-            {#if data.user}
-                <form method="post" action="/logout" use:enhance>
-                    <button
-                        class={getLinkClass("")}
-                        onclick={() => (menuOpen = false)}>Sign out</button
-                    >
-                </form>
-            {:else}
-                <a
-                    href="/login"
-                    class={getLinkClass("/login")}
-                    onclick={() => (menuOpen = false)}>Sign in</a
-                >
-            {/if}
-        </div>
-    {/if}
-</nav>
+            </a>
 
-<div class="p-5">
-    {@render children()}
+            <!-- Desktop -->
+            <div class="hidden items-center gap-1 md:flex">
+                {#each entries as entry (isGroup(entry) ? entry.label : entry.href)}
+                    {#if isGroup(entry)}
+                        <NavDropdown label={entry.label} items={entry.items} />
+                    {:else}
+                        {@render navLink(entry)}
+                    {/if}
+                {/each}
+                {@render signOut()}
+            </div>
+
+            <button
+                class="rounded-control p-2 text-cream-50 transition-colors hover:bg-white/10 md:hidden"
+                onclick={() => (menuOpen = !menuOpen)}
+                aria-label={menuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={menuOpen}
+            >
+                {#if menuOpen}
+                    <X size={22} />
+                {:else}
+                    <Menu size={22} />
+                {/if}
+            </button>
+        </div>
+
+        <!-- Mobile -->
+        {#if menuOpen}
+            <div
+                class="absolute inset-x-0 top-full z-50 flex flex-col gap-1 bg-chrome px-4 pt-1 pb-3 shadow-overlay sm:px-6 md:hidden"
+            >
+                {#each entries as entry (isGroup(entry) ? entry.label : entry.href)}
+                    {#if isGroup(entry)}
+                        <!-- /85 rather than /70: at 11px this is small text and
+                             /70 lands at 3.9:1 on the chrome. -->
+                        <p class="type-eyebrow px-3 pt-3 pb-1 text-cream-50/85">
+                            {entry.label}
+                        </p>
+                        {#each entry.items as item (item.href)}
+                            <div class="pl-3">{@render navLink(item)}</div>
+                        {/each}
+                    {:else}
+                        {@render navLink(entry)}
+                    {/if}
+                {/each}
+                <div class="mt-2 border-t border-white/15 pt-2">
+                    {@render signOut()}
+                </div>
+            </div>
+        {/if}
+    </nav>
+
+    <main
+        class="mx-auto w-full max-w-6xl grow px-4 py-8 sm:px-6 lg:px-8 lg:py-10"
+    >
+        {@render children()}
+    </main>
+
+    <footer class="border-t border-line">
+        <div
+            class="mx-auto flex w-full max-w-6xl items-center gap-2 px-4 py-5 text-xs text-ink-faint sm:px-6 lg:px-8"
+        >
+            <img src={favicon} alt="" class="h-4 w-4 opacity-60" />
+            <span>Fibonance &mdash; planning estimates, not advice.</span>
+        </div>
+    </footer>
 </div>

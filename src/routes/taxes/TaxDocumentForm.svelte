@@ -3,12 +3,13 @@
     import Card from "$lib/components/Card.svelte";
     import FormButtons from "$lib/components/FormButtons.svelte";
     import type { TaxDocument } from "$lib/server/db/schema";
+    import type { ClassValue } from "svelte/elements";
 
     interface Props {
         doc?: TaxDocument;
         oncancel: () => void;
         errorMessage?: string | null;
-        class?: string;
+        class?: ClassValue;
     }
 
     let { doc, oncancel, errorMessage, class: className }: Props = $props();
@@ -34,7 +35,7 @@
     let action = $derived(doc ? "?/update" : "?/create");
 </script>
 
-<Card class={className ?? ""}>
+<Card class={className}>
     {#snippet body()}
         <form
             method="post"
@@ -52,38 +53,41 @@
                 <input type="hidden" name="id" value={doc.id} />
             {/if}
 
-            <h3 class="text-lg font-semibold mb-4">
-                {doc ? "Edit Document" : "New Document"}
+            <h3 class="type-display mb-5 text-lg text-ink">
+                {doc ? "Edit document" : "New document"}
             </h3>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <label for="td-institution">Institution</label>
                 <input
                     id="td-institution"
                     name="institution"
                     type="text"
                     required
+                    class="px-3"
                     bind:value={institution}
                 />
             </div>
 
-            <div class="mb-3">
-                <label for="td-docType">Doc Type</label>
+            <div class="mb-4">
+                <label for="td-docType">Document type</label>
                 <input
                     id="td-docType"
                     name="docType"
                     type="text"
                     required
+                    class="px-3"
                     bind:value={docType}
                 />
             </div>
 
-            <div class="mb-3">
+            <div class="mb-4">
                 <label for="td-notes">Notes</label>
                 <input
                     id="td-notes"
                     name="notes"
                     type="text"
+                    class="px-3"
                     bind:value={notes}
                 />
             </div>
@@ -94,12 +98,13 @@
                     id="td-portalUrl"
                     name="portalUrl"
                     type="url"
+                    class="px-3"
                     bind:value={portalUrl}
                 />
             </div>
 
             {#if errorMessage}
-                <p class="text-red-600 text-sm mb-3">{errorMessage}</p>
+                <p class="mb-3 text-sm text-danger">{errorMessage}</p>
             {/if}
 
             <FormButtons submitLabel={doc ? "Save" : "Create"} {oncancel} />

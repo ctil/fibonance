@@ -12,15 +12,15 @@
     let { variant, children, class: className }: Props = $props();
 
     const styles: Record<Variant, string> = {
-        success: "border-green-200 bg-green-50",
-        error: "border-red-200 bg-red-50",
-        empty: "border-cream-300 bg-cream-50",
+        success: "border-accent-line bg-accent-soft",
+        error: "border-danger-line bg-danger-soft",
+        empty: "border-line bg-surface",
     };
 </script>
 
 <div
     class={[
-        "rounded-lg border p-8 flex items-center justify-center min-h-48",
+        "flex min-h-48 items-center justify-center rounded-surface border p-8",
         styles[variant],
         className,
     ]}

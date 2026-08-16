@@ -1,16 +1,19 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
+    import Button from "$lib/components/Button.svelte";
     import Card from "$lib/components/Card.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
     import InputPercent from "$lib/components/InputPercent.svelte";
+    import Meter from "$lib/components/Meter.svelte";
+    import PageHeader from "$lib/components/PageHeader.svelte";
     import StatCard from "$lib/components/StatCard.svelte";
     import {
         calculateRetirement,
         calculateRequiredSavings,
         formatCurrency,
+        formatDate,
     } from "$lib/retirement";
     import type { PageData } from "./$types";
-    import DateCard from "./DateCard.svelte";
     import ResultBanner from "./ResultBanner.svelte";
 
     const { data }: { data: PageData } = $props();
@@ -87,208 +90,192 @@
             targetYears,
         );
     });
+
+    const dateSubtext = (years: number, age?: number | null) =>
+        age != null
+            ? `Age ${age.toFixed(1)} · in ${years.toFixed(1)} years`
+            : `in ${years.toFixed(1)} years`;
 </script>
 
-<div class="w-full">
-    <h1 class="text-2xl font-semibold mb-6">Retirement Calculator</h1>
+<svelte:head>
+    <title>Retirement - Fibonance</title>
+</svelte:head>
 
-    <div class="flex flex-col lg:flex-row gap-6">
-        <!-- LEFT: inputs card -->
-        <form
-            method="POST"
-            action="?/save"
-            use:enhance={() => {
-                saveState = "saving";
-                return async ({ update }) => {
-                    await update({ reset: false });
-                    saveState = "saved";
-                    setTimeout(() => (saveState = "idle"), 2000);
-                };
-            }}
-        >
-            <input
-                type="hidden"
-                name="currentValue"
-                value={currentValue ?? ""}
-            />
-            <input
-                type="hidden"
-                name="annualSavings"
-                value={annualSavings ?? ""}
-            />
-            <input
-                type="hidden"
-                name="annualExpenses"
-                value={annualExpenses ?? ""}
-            />
-            <input
-                type="hidden"
-                name="safeWithdrawalRate"
-                value={safeWithdrawalRate ?? ""}
-            />
-            <input
-                type="hidden"
-                name="expectedRealReturn"
-                value={expectedRealReturn ?? ""}
-            />
-            <input type="hidden" name="yearAdjustment" value={yearAdjustment} />
-            <Card class="lg:w-80 shrink-0">
-                {#snippet body()}
-                    <InputCash
-                        label="Current Portfolio Value"
-                        class="mb-4"
-                        bind:value={currentValue}
-                    />
-                    <InputCash
-                        label="Annual Savings"
-                        class="mb-4"
-                        bind:value={annualSavings}
-                    />
-                    <InputCash
-                        label="Annual Retirement Expenses"
-                        class="mb-4"
-                        bind:value={annualExpenses}
-                    />
-                    <InputPercent
-                        label="Safe Withdrawal Rate (%)"
-                        class="mb-4"
-                        bind:value={safeWithdrawalRate}
-                    />
-                    <InputPercent
-                        label="Expected Real Return (%)"
-                        bind:value={expectedRealReturn}
-                    />
-                    {#if annualSavings != null || annualExpenses != null}
-                        <div
-                            class="mt-5 pt-4 border-t border-cream-200 text-sm text-cream-700 space-y-1"
-                        >
-                            {#if annualSavings != null}
-                                <p>
-                                    Monthly savings: <span
-                                        class="font-medium text-gray-900"
-                                        >{formatCurrency(
-                                            annualSavings / 12,
-                                        )}</span
-                                    >
-                                </p>
-                            {/if}
-                            {#if annualExpenses != null}
-                                <p>
-                                    Monthly expenses: <span
-                                        class="font-medium text-gray-900"
-                                        >{formatCurrency(
-                                            annualExpenses / 12,
-                                        )}</span
-                                    >
-                                </p>
-                            {/if}
-                        </div>
-                    {/if}
-                    <button
-                        type="submit"
-                        disabled={saveState === "saving"}
-                        class="mt-4 w-full rounded-md px-4 py-2 text-sm font-medium text-white transition-colors {saveState ===
-                        'saved'
-                            ? 'bg-green-600'
-                            : 'bg-blue-600 hover:bg-blue-700'}"
+<PageHeader
+    eyebrow="Calculators"
+    title="Retirement"
+    description="How much you need, and when your savings get you there."
+/>
+
+<div class="flex flex-col gap-6 lg:flex-row">
+    <!-- LEFT: inputs card -->
+    <form
+        method="POST"
+        action="?/save"
+        class="lg:w-80 lg:shrink-0"
+        use:enhance={() => {
+            saveState = "saving";
+            return async ({ update }) => {
+                await update({ reset: false });
+                saveState = "saved";
+                setTimeout(() => (saveState = "idle"), 2000);
+            };
+        }}
+    >
+        <input type="hidden" name="currentValue" value={currentValue ?? ""} />
+        <input type="hidden" name="annualSavings" value={annualSavings ?? ""} />
+        <input
+            type="hidden"
+            name="annualExpenses"
+            value={annualExpenses ?? ""}
+        />
+        <input
+            type="hidden"
+            name="safeWithdrawalRate"
+            value={safeWithdrawalRate ?? ""}
+        />
+        <input
+            type="hidden"
+            name="expectedRealReturn"
+            value={expectedRealReturn ?? ""}
+        />
+        <input type="hidden" name="yearAdjustment" value={yearAdjustment} />
+        <Card header="Your numbers">
+            {#snippet body()}
+                <InputCash
+                    label="Current portfolio value"
+                    class="mb-4"
+                    bind:value={currentValue}
+                />
+                <InputCash
+                    label="Annual savings"
+                    class="mb-4"
+                    bind:value={annualSavings}
+                />
+                <InputCash
+                    label="Annual retirement expenses"
+                    class="mb-4"
+                    bind:value={annualExpenses}
+                />
+                <InputPercent
+                    label="Safe withdrawal rate (%)"
+                    class="mb-4"
+                    bind:value={safeWithdrawalRate}
+                />
+                <InputPercent
+                    label="Expected real return (%)"
+                    bind:value={expectedRealReturn}
+                />
+                {#if annualSavings != null || annualExpenses != null}
+                    <dl
+                        class="mt-5 space-y-1.5 border-t border-line-soft pt-4 text-sm"
                     >
-                        {#if saveState === "saving"}
-                            Saving...
-                        {:else if saveState === "saved"}
-                            Saved!
-                        {:else}
-                            Save
+                        {#if annualSavings != null}
+                            <div class="flex justify-between gap-4">
+                                <dt class="text-ink-faint">Monthly savings</dt>
+                                <dd class="font-medium text-ink tabular-nums">
+                                    {formatCurrency(annualSavings / 12)}
+                                </dd>
+                            </div>
                         {/if}
-                    </button>
-                {/snippet}
-            </Card>
-        </form>
-
-        <!-- RIGHT: results -->
-        <div class="flex-1 min-w-0">
-            {#if result === "already"}
-                <ResultBanner variant="success">
-                    <p class="text-3xl font-semibold text-green-600">
-                        You can retire now.
-                    </p>
-                </ResultBanner>
-            {:else if result === "impossible"}
-                <ResultBanner variant="error">
-                    <p class="text-2xl font-semibold text-red-600">
-                        Cannot reach retirement target with current savings
-                        rate.
-                    </p>
-                </ResultBanner>
-            {:else if result != null}
-                {@const progress = Math.min(
-                    100,
-                    (currentValue! / result.targetValue) * 100,
-                )}
-                <div
-                    class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 mb-4"
+                        {#if annualExpenses != null}
+                            <div class="flex justify-between gap-4">
+                                <dt class="text-ink-faint">Monthly expenses</dt>
+                                <dd class="font-medium text-ink tabular-nums">
+                                    {formatCurrency(annualExpenses / 12)}
+                                </dd>
+                            </div>
+                        {/if}
+                    </dl>
+                {/if}
+                <Button
+                    type="submit"
+                    block
+                    class="mt-5"
+                    disabled={saveState === "saving"}
                 >
-                    <div class="flex justify-between text-sm mb-2">
-                        <span
-                            class="font-medium text-cream-600 uppercase tracking-wide text-xs"
-                            >Progress to Goal</span
-                        >
-                        <span class="font-semibold">{progress.toFixed(1)}%</span
-                        >
-                    </div>
-                    <div class="w-full bg-cream-100 rounded-full h-3">
-                        <div
-                            class="bg-green-500 h-3 rounded-full transition-all duration-300"
-                            style="width: {progress}%"
-                        ></div>
-                    </div>
-                    <div
-                        class="flex justify-between text-xs text-cream-500 mt-1"
-                    >
-                        <span>{formatCurrency(currentValue!)}</span>
-                        <span>{formatCurrency(result.targetValue)}</span>
-                    </div>
-                </div>
+                    {#if saveState === "saving"}
+                        Saving…
+                    {:else if saveState === "saved"}
+                        Saved
+                    {:else}
+                        Save
+                    {/if}
+                </Button>
+            {/snippet}
+        </Card>
+    </form>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+    <!-- RIGHT: results -->
+    <div class="min-w-0 flex-1">
+        {#if result === "already"}
+            <ResultBanner variant="success">
+                <p class="type-display text-3xl text-accent">
+                    You can retire now.
+                </p>
+            </ResultBanner>
+        {:else if result === "impossible"}
+            <ResultBanner variant="error">
+                <p class="type-display text-2xl text-danger">
+                    This savings rate never reaches the target.
+                </p>
+            </ResultBanner>
+        {:else if result != null}
+            {@const progress = Math.min(
+                100,
+                (currentValue! / result.targetValue) * 100,
+            )}
+            <div class="space-y-4">
+                <Card>
+                    {#snippet body()}
+                        <Meter
+                            label="Progress to goal"
+                            value="{progress.toFixed(1)}%"
+                            percent={progress}
+                            startCaption={formatCurrency(currentValue!)}
+                            endCaption={formatCurrency(result.targetValue)}
+                        />
+                    {/snippet}
+                </Card>
+
+                <div class="grid gap-4 sm:grid-cols-2">
                     <StatCard
-                        label="Target Portfolio"
+                        label="Target portfolio"
                         value={formatCurrency(result.targetValue)}
                         subtext={inflationAdjustedTarget != null
                             ? `${formatCurrency(inflationAdjustedTarget)} nominal (3% inflation)`
                             : undefined}
                     />
                     <StatCard
-                        label="Years to Retirement"
+                        label="Years to retirement"
                         value={result.yearsToRetirement.toFixed(1)}
                         subtext="years"
                     />
-                    <DateCard
-                        label="Target Date"
-                        date={result.retirementDate}
-                        years={result.yearsToRetirement}
-                        age={result.retirementAge}
+                    <StatCard
+                        label="Target date"
+                        value={formatDate(result.retirementDate)}
+                        subtext={dateSubtext(
+                            result.yearsToRetirement,
+                            result.retirementAge,
+                        )}
                     />
+
                     <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5"
+                        class="rounded-surface border border-line bg-surface p-5 shadow-surface"
                     >
-                        <p
-                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-1"
-                        >
-                            Year Adjustment
-                        </p>
-                        <label class="sr-only" for="year-adjustment"
-                            >Year adjustment</label
-                        >
+                        <label class="type-eyebrow" for="year-adjustment">
+                            Shift retirement by (years)
+                        </label>
                         <input
                             id="year-adjustment"
                             type="number"
                             step="1"
                             bind:value={yearAdjustment}
-                            class="block w-24 rounded-md border border-gray-300 px-3 py-2 text-3xl font-bold focus:border-blue-500 focus:outline-none mb-2"
+                            class="type-display mt-1.5 mb-2 w-24 px-3 text-3xl tabular-nums"
                         />
-                        <p class="text-gray-700 text-md">
+                        <p class="text-sm text-ink-muted">
                             {#if yearAdjustment === 0}
-                                No change
+                                No change to the target date.
                             {:else if savingsAdjustment === "impossible"}
                                 Target is not reachable in that timeframe.
                             {:else if savingsAdjustment != null}
@@ -298,63 +285,76 @@
                                     ? `To retire ${Math.abs(yearAdjustment)} year${Math.abs(yearAdjustment) === 1 ? "" : "s"} earlier`
                                     : `To retire ${yearAdjustment} year${yearAdjustment === 1 ? "" : "s"} later`},
                                 save
+                                <!-- "more"/"less" already carries the
+                                     direction, so the figure is unsigned. -->
                                 <span
-                                    class={diff > 0
-                                        ? "text-red-600"
-                                        : "text-green-600"}
+                                    class={[
+                                        "font-medium tabular-nums",
+                                        diff > 0
+                                            ? "text-attention"
+                                            : "text-accent",
+                                    ]}
                                 >
-                                    {diff > 0 ? "+" : ""}{formatCurrency(diff)}
+                                    {formatCurrency(Math.abs(diff))}
                                 </span>
                                 {diff > 0 ? "more" : "less"} per year ({formatCurrency(
                                     savingsAdjustment,
-                                )})
+                                )} a year).
                             {/if}
                         </p>
                     </div>
                 </div>
+
                 {#if coastFireResult != null}
-                    <div class="mb-4">
-                        <p
-                            class="text-xs font-medium text-cream-600 uppercase tracking-wide mb-2"
-                        >
-                            Coast FIRE
-                        </p>
+                    <section class="pt-2">
+                        <h2 class="type-eyebrow mb-2">Coast FIRE</h2>
                         {#if coastFireResult === "already"}
                             <div
-                                class="rounded-lg border border-green-200 bg-green-50 p-4"
+                                class="rounded-surface border border-accent-line bg-accent-soft p-4"
                             >
-                                <p class="text-green-700 font-medium">
-                                    You've already reached Coast FIRE.
+                                <p class="font-medium text-accent">
+                                    You have already reached Coast FIRE.
                                 </p>
                             </div>
                         {:else if coastFireResult === "impossible"}
                             <div
-                                class="rounded-lg border border-red-200 bg-red-50 p-4"
+                                class="rounded-surface border border-danger-line bg-danger-soft p-4"
                             >
-                                <p class="text-red-700">
-                                    Coast FIRE requires a positive expected
-                                    return rate.
+                                <p class="text-danger">
+                                    Coast FIRE needs a positive expected return
+                                    rate.
                                 </p>
                             </div>
                         {:else}
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <DateCard
-                                    label="Coast FIRE Date"
-                                    date={coastFireResult.retirementDate}
-                                    years={coastFireResult.yearsToRetirement}
-                                    age={coastFireResult.retirementAge}
+                            <div class="grid gap-4 sm:grid-cols-2">
+                                <StatCard
+                                    label="Coast FIRE date"
+                                    value={formatDate(
+                                        coastFireResult.retirementDate,
+                                    )}
+                                    subtext={dateSubtext(
+                                        coastFireResult.yearsToRetirement,
+                                        coastFireResult.retirementAge,
+                                    )}
                                 />
+                                <div
+                                    class="flex items-center rounded-surface border border-dashed border-line p-5 text-sm text-ink-muted"
+                                >
+                                    The date your current savings coast to the
+                                    target on their own, with nothing more
+                                    added.
+                                </div>
                             </div>
                         {/if}
-                    </div>
+                    </section>
                 {/if}
-            {:else}
-                <ResultBanner variant="empty">
-                    <p class="text-cream-500">
-                        Fill in the inputs to see your retirement projection.
-                    </p>
-                </ResultBanner>
-            {/if}
-        </div>
+            </div>
+        {:else}
+            <ResultBanner variant="empty">
+                <p class="text-ink-faint">
+                    Fill in the inputs to see your retirement projection.
+                </p>
+            </ResultBanner>
+        {/if}
     </div>
 </div>

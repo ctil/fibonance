@@ -1,7 +1,16 @@
 <script lang="ts">
+    import PageHeader from "$lib/components/PageHeader.svelte";
     import InterestCalc from "./InterestCalc.svelte";
 </script>
 
-<div class="flex flex-col items-center mt-4 w-full">
-    <InterestCalc class="w-full max-w-sm" />
-</div>
+<svelte:head>
+    <title>Interest - Fibonance</title>
+</svelte:head>
+
+<PageHeader
+    eyebrow="Calculators"
+    title="Compound interest"
+    description="What a starting balance and a regular contribution grow to."
+/>
+
+<InterestCalc />

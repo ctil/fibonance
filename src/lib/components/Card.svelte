@@ -6,25 +6,37 @@
         header?: string;
         headerActions?: Snippet;
         body: Snippet;
+        /** Removes the body padding, for cards whose body is a table or list. */
+        flush?: boolean;
         class?: ClassValue;
     }
-    let { header, headerActions, body, class: className }: Props = $props();
+
+    let {
+        header,
+        headerActions,
+        body,
+        flush,
+        class: className,
+    }: Props = $props();
 </script>
 
 <div
-    class={["bg-white border border-cream-300 rounded-lg shadow-sm", className]}
+    class={[
+        "bg-surface border border-line rounded-surface shadow-surface",
+        className,
+    ]}
 >
     {#if header}
         <div
-            class="px-6 py-4 border-b border-cream-300 flex items-center justify-center relative"
+            class="flex items-center justify-between gap-3 border-b border-line-soft px-5 py-3.5"
         >
-            <h3 class="mb-0 text-lg font-semibold">{header}</h3>
+            <h3 class="type-display mb-0 text-base text-ink">{header}</h3>
             {#if headerActions}
-                <div class="absolute right-3 flex items-center gap-1">
+                <div class="flex shrink-0 items-center gap-1">
                     {@render headerActions()}
                 </div>
             {/if}
         </div>
     {/if}
-    <div class="p-6">{@render body()}</div>
+    <div class={flush ? "" : "p-5"}>{@render body()}</div>
 </div>

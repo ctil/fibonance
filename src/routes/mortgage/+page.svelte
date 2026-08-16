@@ -1,10 +1,15 @@
 <script lang="ts">
     import { enhance } from "$app/forms";
     import { Pencil, Plus } from "lucide-svelte";
+    import Button from "$lib/components/Button.svelte";
     import Card from "$lib/components/Card.svelte";
     import DeleteButton from "$lib/components/DeleteButton.svelte";
+    import Field from "$lib/components/Field.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
+    import Meter from "$lib/components/Meter.svelte";
+    import PageHeader from "$lib/components/PageHeader.svelte";
     import StatCard from "$lib/components/StatCard.svelte";
+    import { buttonClass } from "$lib/components/button";
     import {
         amortize,
         currentBalance,
@@ -155,22 +160,28 @@
     );
 </script>
 
-<div class="w-full">
-    <h1 class="text-2xl font-bold mb-6">Mortgage Payoff</h1>
+<svelte:head>
+    <title>Mortgage - Fibonance</title>
+</svelte:head>
 
+<PageHeader
+    eyebrow="Mortgage"
+    title="Payoff"
+    description="What paying extra principal does to the term and the interest."
+/>
+
+<div class="w-full">
     {#if mortgages.length === 0 && !creating}
         <div
-            class="bg-white border border-cream-300 rounded-lg shadow-sm p-8 text-center"
+            class="rounded-surface border border-dashed border-line p-10 text-center"
         >
-            <p class="text-cream-500 mb-4">
+            <p class="text-sm text-ink-muted">
                 Add a mortgage to see early-payoff scenarios.
             </p>
-            <button
-                class="bg-sage-600 text-cream-50 px-4 py-2 rounded-md hover:bg-sage-700 transition cursor-pointer"
-                onclick={() => (creating = true)}
-            >
+            <Button class="mt-4" onclick={() => (creating = true)}>
+                <Plus size={16} />
                 Add mortgage
-            </button>
+            </Button>
         </div>
     {/if}
 
@@ -187,18 +198,15 @@
             <!-- LEFT: loan details and scenario controls -->
             <div class="lg:w-80 shrink-0 flex flex-col gap-6">
                 {#if mortgages.length > 1}
-                    <div>
-                        <label for="mortgage-picker">Mortgage</label>
-                        <select
-                            id="mortgage-picker"
-                            class="px-3"
-                            bind:value={selectedId}
-                        >
-                            {#each mortgages as m (m.id)}
-                                <option value={m.id}>{m.name}</option>
-                            {/each}
-                        </select>
-                    </div>
+                    <Field label="Mortgage">
+                        {#snippet control(id)}
+                            <select {id} class="px-3" bind:value={selectedId}>
+                                {#each mortgages as m (m.id)}
+                                    <option value={m.id}>{m.name}</option>
+                                {/each}
+                            </select>
+                        {/snippet}
+                    </Field>
                 {/if}
 
                 {#if editing}
@@ -211,7 +219,7 @@
                     <Card header={selected.name}>
                         {#snippet headerActions()}
                             <button
-                                class="p-1 text-sage-600 hover:text-sage-800 hover:bg-cream-200 rounded transition cursor-pointer"
+                                class="cursor-pointer rounded-control p-1.5 text-ink-faint transition-colors hover:bg-line-soft hover:text-ink"
                                 aria-label="Edit mortgage"
                                 onclick={() => (editing = true)}
                             >
@@ -225,36 +233,36 @@
                             />
                         {/snippet}
                         {#snippet body()}
-                            <dl class="text-sm space-y-2">
+                            <dl class="space-y-2 text-sm">
                                 <div class="flex justify-between">
-                                    <dt class="text-cream-600">
+                                    <dt class="text-ink-faint">
                                         Current balance
                                     </dt>
-                                    <dd class="font-medium">
+                                    <dd class="font-medium tabular-nums">
                                         {balance === "never" || balance == null
                                             ? "—"
                                             : formatAmount(balance, true)}
                                     </dd>
                                 </div>
                                 <div class="flex justify-between">
-                                    <dt class="text-cream-600">Rate</dt>
-                                    <dd class="font-medium">
+                                    <dt class="text-ink-faint">Rate</dt>
+                                    <dd class="font-medium tabular-nums">
                                         {(selected.interestRate / 1000).toFixed(
                                             3,
                                         )}%
                                     </dd>
                                 </div>
                                 <div class="flex justify-between">
-                                    <dt class="text-cream-600">
+                                    <dt class="text-ink-faint">
                                         Principal + interest
                                     </dt>
-                                    <dd class="font-medium">
+                                    <dd class="font-medium tabular-nums">
                                         {formatAmount(selected.piPayment, true)}
                                     </dd>
                                 </div>
                                 <div class="flex justify-between">
-                                    <dt class="text-cream-600">Escrow</dt>
-                                    <dd class="font-medium">
+                                    <dt class="text-ink-faint">Escrow</dt>
+                                    <dd class="font-medium tabular-nums">
                                         {formatAmount(
                                             selected.escrowPayment ?? 0,
                                             true,
@@ -262,39 +270,40 @@
                                     </dd>
                                 </div>
                                 <div class="flex justify-between">
-                                    <dt class="text-cream-600">
+                                    <dt class="text-ink-faint">
                                         Original amount
                                     </dt>
-                                    <dd class="font-medium">
-                                        {formatCurrency(
-                                            selected.originalAmount / 100,
+                                    <dd class="font-medium tabular-nums">
+                                        {formatAmount(
+                                            selected.originalAmount,
+                                            true,
                                         )}
                                     </dd>
                                 </div>
                                 <div class="flex justify-between">
-                                    <dt class="text-cream-600">
+                                    <dt class="text-ink-faint">
                                         First payment
                                     </dt>
-                                    <dd class="font-medium">
+                                    <dd class="font-medium tabular-nums">
                                         {selected.startDate}
                                     </dd>
                                 </div>
                                 {#if selected.balanceAsOf}
                                     <div class="flex justify-between">
-                                        <dt class="text-cream-600">
+                                        <dt class="text-ink-faint">
                                             Balance from
                                         </dt>
-                                        <dd class="font-medium">
+                                        <dd class="font-medium tabular-nums">
                                             {selected.balanceAsOf}
                                         </dd>
                                     </div>
                                 {/if}
                             </dl>
                             <p
-                                class="mt-4 pt-3 border-t border-cream-200 text-sm text-cream-700"
+                                class="mt-4 border-t border-line-soft pt-3 text-sm text-ink-muted"
                             >
                                 Total monthly outlay
-                                <span class="font-medium text-cream-900"
+                                <span class="font-medium text-ink tabular-nums"
                                     >{formatAmount(totalMonthly, true)}</span
                                 >, of which
                                 {formatAmount(
@@ -303,12 +312,15 @@
                                 )}
                                 is escrow and never changes the payoff.
                             </p>
-                            <button
-                                class="mt-4 w-full flex items-center justify-center gap-2 bg-cream-200 text-cream-700 px-4 py-2 rounded-md hover:bg-cream-300 transition cursor-pointer"
+                            <Button
+                                variant="secondary"
+                                block
+                                class="mt-4"
                                 onclick={() => (creating = true)}
                             >
-                                <Plus size={16} /> Add mortgage
-                            </button>
+                                <Plus size={16} />
+                                Add mortgage
+                            </Button>
                         {/snippet}
                     </Card>
                 {/if}
@@ -333,8 +345,9 @@
                             <label for="extra-amount"
                                 >Extra principal / month</label
                             >
-                            <div class="flex items-baseline gap-3 mb-3">
-                                <span class="text-2xl font-bold text-meadow-700"
+                            <div class="mb-3 flex items-baseline gap-3">
+                                <span
+                                    class="type-display text-2xl text-accent tabular-nums"
                                     >{formatCurrency(extra)}</span
                                 >
                                 <input
@@ -342,7 +355,7 @@
                                     type="number"
                                     step="25"
                                     min="0"
-                                    class="px-3 w-28 ml-auto text-right"
+                                    class="ml-auto w-28 px-3 text-right tabular-nums"
                                     bind:value={extra}
                                 />
                             </div>
@@ -357,21 +370,25 @@
                                 class="slider"
                                 aria-label="Extra principal per month"
                             />
-                            <div class="flex flex-wrap gap-1.5 mt-3">
+                            <div class="mt-3 flex flex-wrap gap-1.5">
                                 {#each PRESETS as preset (preset)}
                                     <button
                                         type="button"
-                                        class="text-xs rounded-full px-3 py-1 border transition cursor-pointer {extra ===
-                                        preset
-                                            ? 'bg-sage-600 border-sage-600 text-cream-50'
-                                            : 'bg-cream-50 border-cream-300 text-cream-700 hover:border-sage-500'}"
+                                        class={buttonClass(
+                                            {
+                                                variant: "secondary",
+                                                size: "sm",
+                                                selected: extra === preset,
+                                            },
+                                            "text-xs tabular-nums",
+                                        )}
                                         onclick={() => (extra = preset)}
                                         >${preset}</button
                                     >
                                 {/each}
                             </div>
 
-                            <div class="mt-5 pt-4 border-t border-cream-200">
+                            <div class="mt-5 border-t border-line-soft pt-4">
                                 <InputCash
                                     label="One-time lump sum"
                                     class="mb-3"
@@ -386,7 +403,7 @@
                                 />
                             </div>
 
-                            <div class="mt-5 pt-4 border-t border-cream-200">
+                            <div class="mt-5 border-t border-line-soft pt-4">
                                 <label for="target-month"
                                     >Target payoff month</label
                                 >
@@ -397,14 +414,15 @@
                                     bind:value={targetMonth}
                                 />
                                 {#if targetSolution === "unreachable"}
-                                    <p class="text-sm text-red-600 mt-2">
+                                    <p class="mt-2 text-sm text-danger">
                                         That date can't be reached with extra
                                         principal alone.
                                     </p>
                                 {:else if targetSolution != null}
-                                    <p class="text-sm text-cream-700 mt-2">
+                                    <p class="mt-2 text-sm text-ink-muted">
                                         Needs
-                                        <span class="font-medium"
+                                        <span
+                                            class="font-medium text-ink tabular-nums"
                                             >{formatAmount(
                                                 targetSolution,
                                                 true,
@@ -413,7 +431,7 @@
                                         extra per month.
                                         <button
                                             type="button"
-                                            class="text-sage-600 hover:text-sage-800 underline cursor-pointer"
+                                            class="cursor-pointer font-medium text-accent underline underline-offset-2 hover:text-accent-hover"
                                             onclick={() =>
                                                 (extra = targetSolution / 100)}
                                             >Apply</button
@@ -422,23 +440,21 @@
                                 {/if}
                             </div>
 
-                            <button
+                            <Button
                                 type="submit"
+                                block
+                                class="mt-5"
                                 disabled={saveState === "saving"}
-                                class="mt-5 w-full rounded-md px-4 py-2 text-sm font-medium text-cream-50 transition-colors cursor-pointer {saveState ===
-                                'saved'
-                                    ? 'bg-meadow-600'
-                                    : 'bg-sage-600 hover:bg-sage-700'}"
                             >
                                 {#if saveState === "saving"}
-                                    Saving...
+                                    Saving…
                                 {:else if saveState === "saved"}
-                                    Saved!
+                                    Saved
                                 {:else}
                                     Save extra payment
                                 {/if}
-                            </button>
-                            <p class="text-xs text-cream-500 mt-2">
+                            </Button>
+                            <p class="mt-2 text-xs text-ink-faint">
                                 Only the extra payment is saved. The lump sum
                                 and target date are one-off what-ifs.
                             </p>
@@ -451,28 +467,30 @@
             <div class="flex-1 min-w-0">
                 {#if balance === "never" || baseline === "never" || current === "never"}
                     <div
-                        class="rounded-lg border border-red-200 bg-red-50 p-4 text-red-700"
+                        class="rounded-surface border border-danger-line bg-danger-soft p-4 text-danger"
                     >
                         The monthly payment doesn't cover the interest on this
                         balance, so the loan never pays off. Check the rate and
                         the principal + interest amount.
                     </div>
                 {:else if loan != null && baseline != null && current != null}
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                    <div class="mb-4 grid gap-4 sm:grid-cols-2">
+                        <!-- With no extra payment there is nothing saved, so
+                             these two say so rather than showing a bare dash. -->
                         <StatCard
                             label="Time reclaimed"
-                            value={savedMonths > 0
-                                ? formatTerm(savedMonths)
-                                : "—"}
-                            valueClass="text-meadow-700"
+                            value={formatTerm(savedMonths)}
+                            tone="positive"
+                            empty={savedMonths <= 0}
+                            emptyHint="Add an extra payment to pull the payoff date in."
                             subtext="{savedMonths} fewer payments than the minimum"
                         />
                         <StatCard
                             label="Interest saved"
-                            value={savedInterest > 0
-                                ? formatCurrency(savedInterest / 100)
-                                : "—"}
-                            valueClass="text-chestnut-600"
+                            value={formatCurrency(savedInterest / 100)}
+                            tone="positive"
+                            empty={savedInterest <= 0}
+                            emptyHint="Add an extra payment to cut the interest."
                             subtext="over the life of the loan"
                         />
                         <StatCard
@@ -485,52 +503,34 @@
                         <StatCard
                             label="Payoff at minimum"
                             value={formatTerm(baseline.months)}
-                            valueClass="text-cream-600"
+                            tone="muted"
                             subtext="paid off {formatDate(
                                 payoffDate(nextPayment, baseline.months),
                             )}"
                         />
                     </div>
 
-                    <!-- Term bar -->
-                    <div
-                        class="bg-white border border-cream-300 rounded-lg shadow-sm p-5 mb-4"
-                    >
-                        <div
-                            class="flex justify-between text-xs text-cream-600 mb-2"
-                        >
-                            <span class="uppercase tracking-wide font-medium"
-                                >Today</span
-                            >
-                            <span
-                                >Minimum payoff · {formatTerm(
+                    <Card class="mb-4">
+                        {#snippet body()}
+                            <Meter
+                                label="Term you actually pay"
+                                value={formatTerm(current.months)}
+                                percent={barFillPct}
+                                tone="attention"
+                                startCaption="Today"
+                                endCaption="Minimum payoff · {formatTerm(
                                     baseline.months,
-                                )}</span
-                            >
-                        </div>
-                        <div
-                            class="relative w-full bg-cream-100 rounded-full h-8 overflow-hidden"
-                        >
-                            <div
-                                class="bg-meadow-500 h-8 rounded-full transition-all duration-300 flex items-center px-3"
-                                style="width: {barFillPct}%"
-                            >
-                                {#if barFillPct > 30}
-                                    <span
-                                        class="text-xs text-cream-50 font-medium whitespace-nowrap"
-                                        >You pay · {formatTerm(
-                                            current.months,
-                                        )}</span
-                                    >
-                                {/if}
-                            </div>
-                        </div>
-                        {#if savedMonths > 0}
-                            <p class="text-xs text-meadow-700 mt-2 text-right">
-                                {formatTerm(savedMonths)} of payments gone
-                            </p>
-                        {/if}
-                    </div>
+                                )}"
+                            />
+                            {#if savedMonths > 0}
+                                <p
+                                    class="mt-3 border-t border-line-soft pt-3 text-sm text-accent"
+                                >
+                                    {formatTerm(savedMonths)} of payments gone.
+                                </p>
+                            {/if}
+                        {/snippet}
+                    </Card>
 
                     <Card class="mb-4" header="Balance over time">
                         {#snippet body()}
@@ -548,7 +548,7 @@
                                 extra={Math.round(extra * 100)}
                                 {nextPayment}
                             />
-                            <p class="text-xs text-cream-500 mt-4">
+                            <p class="mt-4 text-xs text-ink-faint">
                                 Assumes a fixed rate and that the extra is
                                 applied to principal every month starting with
                                 the next payment. Real totals differ by a few
@@ -573,7 +573,7 @@
         padding: 0;
         border: 0;
         border-radius: 999px;
-        background: var(--color-cream-300);
+        background: var(--color-line);
         cursor: pointer;
     }
     .slider::-webkit-slider-thumb {
@@ -582,20 +582,20 @@
         width: 20px;
         height: 20px;
         border-radius: 50%;
-        background: var(--color-cream-50);
-        border: 3px solid var(--color-sage-600);
+        background: var(--color-surface);
+        border: 3px solid var(--color-accent);
         cursor: pointer;
     }
     .slider::-moz-range-thumb {
         width: 18px;
         height: 18px;
         border-radius: 50%;
-        background: var(--color-cream-50);
-        border: 3px solid var(--color-sage-600);
+        background: var(--color-surface);
+        border: 3px solid var(--color-accent);
         cursor: pointer;
     }
     .slider:focus-visible {
-        outline: 2px solid var(--color-meadow-400);
+        outline: 2px solid var(--color-accent);
         outline-offset: 2px;
     }
 </style>

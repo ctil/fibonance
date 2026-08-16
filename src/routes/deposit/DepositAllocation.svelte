@@ -25,13 +25,14 @@
 
 <Card class={className} header={title} {headerActions}>
     {#snippet body()}
-        {#each result.allocations as allocation}
-            <div class="flex justify-between mb-2">
-                <span class="w-[60px]"
-                    ><b class="mr-3">{allocation.symbol}</b></span
-                >
-                <CopyCash cents={allocation.amount} />
-            </div>
-        {/each}
+        <ul class="divide-y divide-line-soft">
+            {#each result.allocations as allocation}
+                <li class="flex items-center justify-between gap-4 py-2.5">
+                    <span class="font-medium text-ink">{allocation.symbol}</span
+                    >
+                    <CopyCash cents={allocation.amount} />
+                </li>
+            {/each}
+        </ul>
     {/snippet}
 </Card>

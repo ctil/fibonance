@@ -1,9 +1,17 @@
 @import "tailwindcss";
+@import "@fontsource-variable/archivo/standard.css";
 @plugin "@tailwindcss/forms";
 
 /*
  * Fibonance Design System
- * Color palette inspired by Cavalier King Charles Spaniel imagery
+ *
+ * Palette inspired by Cavalier King Charles Spaniel imagery. The five ramps
+ * below are the raw material; the semantic tokens beneath them are what pages
+ * should actually reach for, so that "the colour of a label" is decided once.
+ *
+ * Every semantic value here clears WCAG AA (4.5:1) against the surface it is
+ * designed to sit on. Where a ramp step failed, the token points one step
+ * darker rather than the step you might expect.
  */
 
 @theme {
@@ -55,46 +63,196 @@
     --color-sage-100: #e5ece3;
     --color-sage-50: #f4f7f3;
 
-    /* Highlight - Sky Blue (from background) */
-    --color-sky-900: #1a3347;
-    --color-sky-800: #2a4f6e;
-    --color-sky-700: #3a6b95;
-    --color-sky-600: #4d87b8;
-    --color-sky-500: #6299c7;
-    --color-sky-400: #7fb0d4;
-    --color-sky-300: #9fc6e1;
-    --color-sky-200: #c2dcec;
-    --color-sky-100: #e0eef5;
-    --color-sky-50: #f2f8fb;
+    /* Highlight - Horizon Blue (from the sky behind the hills).
+     * Named "horizon" rather than "sky" so it does not shadow Tailwind's own
+     * sky palette. */
+    --color-horizon-900: #1a3347;
+    --color-horizon-800: #2a4f6e;
+    --color-horizon-700: #3a6b95;
+    --color-horizon-600: #4d87b8;
+    --color-horizon-500: #6299c7;
+    --color-horizon-400: #7fb0d4;
+    --color-horizon-300: #9fc6e1;
+    --color-horizon-200: #c2dcec;
+    --color-horizon-100: #e0eef5;
+    --color-horizon-50: #f2f8fb;
+
+    /* Danger - warm brick, so destructive actions stay inside the palette
+     * instead of importing a cold stock red. */
+    --color-danger-900: #4a1710;
+    --color-danger-700: #8a2d20;
+    --color-danger-600: #a8392a;
+    --color-danger-200: #f0cfc7;
+    --color-danger-50: #fbeae6;
+
+    /* ---- Semantic tokens ------------------------------------------------ */
+
+    /* Surfaces nest from darkest to lightest: page -> card -> control. */
+    --color-surface-sunken: var(--color-cream-200);
+    --color-surface: var(--color-cream-50);
+    --color-surface-inset: var(--color-cream-100);
+
+    /* Text. All three clear AA on --color-surface; cream-600 does not (3.6:1)
+     * and so is deliberately absent here. */
+    --color-ink: var(--color-cream-900); /* 14.3:1 */
+    --color-ink-muted: var(--color-cream-800); /* 9.3:1  */
+    --color-ink-faint: var(--color-cream-700); /* 5.7:1  */
+
+    --color-line: var(--color-cream-300);
+    --color-line-soft: var(--color-cream-200);
+
+    /* Growth, positive values, primary actions. meadow-700 rather than 600 so
+     * the same token works as a fill under white text (6.2:1) and as text on
+     * cream (6.1:1); meadow-600 manages only 4.0:1 either way. */
+    --color-accent: var(--color-meadow-700);
+    --color-accent-hover: var(--color-meadow-800);
+    --color-accent-soft: var(--color-meadow-50);
+    --color-accent-line: var(--color-meadow-200);
+
+    /* Navigation chrome. sage-700, not 600: cream-50 on sage-600 is 4.0:1. */
+    --color-chrome: var(--color-sage-700);
+    --color-chrome-hover: var(--color-sage-800);
+
+    /* Cost, interest paid, sells - money leaving. */
+    --color-attention: var(--color-chestnut-600); /* 5.3:1 */
+    --color-attention-soft: var(--color-chestnut-50);
+
+    /* Destructive only. Not for negative numbers - those are "attention". */
+    --color-danger: var(--color-danger-600); /* 6.2:1 */
+    --color-danger-hover: var(--color-danger-700);
+    --color-danger-soft: var(--color-danger-50);
+    --color-danger-line: var(--color-danger-200);
+
+    /* Projections, baselines and target markers - what could be, not what is. */
+    --color-projection: var(--color-horizon-700); /* 5.5:1 */
+    --color-projection-soft: var(--color-horizon-50);
+
+    /* ---- Type ----------------------------------------------------------- */
+
+    --font-sans:
+        "Archivo Variable", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+    /* ---- Shape ---------------------------------------------------------- */
+
+    /* Two radii, not four. Controls are tighter than the surfaces they sit in. */
+    --radius-control: 0.5rem;
+    --radius-surface: 0.75rem;
+
+    /* Warm-tinted shadows; neutral black reads grey against cream. */
+    --shadow-surface:
+        0 1px 2px 0 color-mix(in oklab, var(--color-cream-900) 5%, transparent),
+        0 1px 3px -1px
+            color-mix(in oklab, var(--color-cream-900) 7%, transparent);
+    --shadow-overlay:
+        0 4px 6px -2px
+            color-mix(in oklab, var(--color-cream-900) 8%, transparent),
+        0 12px 24px -6px
+            color-mix(in oklab, var(--color-cream-900) 14%, transparent);
 }
 
-/* Base styles */
-body {
-    @apply bg-cream-200 text-cream-900;
+/* Display treatment: Archivo's width axis carries the hierarchy, so headings
+ * read as wider rather than merely bigger. Used on page titles and stat values. */
+@utility type-display {
+    font-stretch: 112%;
+    font-weight: 650;
+    letter-spacing: -0.02em;
 }
 
-/* Financial-specific: positive/negative values */
+/* Eyebrow: the small caps label above a title or beside a stat. */
+@utility type-eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-faint);
+}
+
+/*
+ * Base layer.
+ *
+ * These rules live inside @layer base on purpose. Previously they sat outside
+ * any layer, which made them beat every utility class and forced pages to fight
+ * back with !important and magic pixel values. Inside the layer, a plain
+ * utility on the element wins as expected.
+ */
+@layer base {
+    html {
+        color-scheme: light;
+    }
+
+    body {
+        @apply bg-surface-sunken text-ink;
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        /* Native checkboxes, radios and range thumbs, without restyling them. */
+        accent-color: var(--color-accent);
+    }
+
+    label {
+        @apply block text-sm font-medium text-ink-faint mb-1.5;
+    }
+
+    input,
+    select,
+    textarea {
+        @apply w-full py-2 bg-surface-inset border border-line rounded-control
+               text-ink placeholder-cream-500
+               transition-colors duration-150;
+    }
+
+    /* One focus treatment for the whole app. */
+    :focus-visible {
+        outline: 2px solid var(--color-accent);
+        outline-offset: 2px;
+    }
+
+    /* On the sage chrome, an accent-green ring is nearly invisible (1.5:1), so
+     * anything focusable inside it switches to cream. */
+    .on-chrome :focus-visible {
+        outline-color: var(--color-cream-50);
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+        @apply border-accent;
+        outline: 2px solid var(--color-accent);
+        outline-offset: -1px;
+    }
+
+    /* Numbers are the point of this app: money and durations always line up. */
+    table {
+        font-variant-numeric: tabular-nums;
+    }
+
+    ::selection {
+        background: var(--color-accent-line);
+        color: var(--color-ink);
+    }
+}
+
+/* Financial-specific: positive/negative values. */
 .value-positive {
-    @apply text-meadow-700 font-medium;
+    @apply text-accent font-medium;
 }
 
 .value-negative {
-    @apply text-red-600 font-medium;
+    @apply text-attention font-medium;
 }
 
 .value-neutral {
-    @apply text-cream-700;
+    @apply text-ink-faint;
 }
 
-/* Form element styles */
-label {
-    @apply block text-sm font-medium text-cream-700 mb-1.5;
-}
-
-input,
-select {
-    @apply w-full py-2 bg-cream-50 border border-cream-300 rounded-lg
-           text-cream-900 placeholder-cream-400
-           focus:outline-none focus:ring-2 focus:ring-meadow-400 focus:border-meadow-400
-           transition-colors duration-150;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

@@ -1,6 +1,8 @@
 <script lang="ts">
     import DepositAllocation from "./DepositAllocation.svelte";
+    import Field from "$lib/components/Field.svelte";
     import InputCash from "$lib/components/InputCash.svelte";
+    import PageHeader from "$lib/components/PageHeader.svelte";
 
     let { data } = $props();
 
@@ -19,38 +21,50 @@
     });
 </script>
 
-<div class="flex items-end gap-4 mb-5 flex-wrap">
-    <InputCash class="w-[200px]" label="Amount" bind:value={toDeposit} />
-    <div class="flex flex-col gap-1">
-        <label for="portfolio-select" class="text-sm font-medium"
-            >Portfolio</label
-        >
-        <select
-            id="portfolio-select"
-            class="block"
-            value={selectedPortfolioId ?? ""}
-            onchange={(e) => {
-                const val = (e.target as HTMLSelectElement).value;
-                selectedPortfolioId = val ? Number(val) : null;
-            }}
-        >
-            <option value="">Select a portfolio</option>
-            {#each data.portfolios as portfolio}
-                <option value={portfolio.id}>{portfolio.name}</option>
-            {/each}
-        </select>
-    </div>
+<svelte:head>
+    <title>Deposit - Fibonance</title>
+</svelte:head>
+
+<PageHeader
+    eyebrow="Investments"
+    title="Deposit"
+    description="Split a new deposit across a portfolio's targets."
+/>
+
+<div class="flex flex-wrap items-end gap-4">
+    <InputCash class="w-52" label="Amount" bind:value={toDeposit} />
+    <Field label="Portfolio" class="w-56">
+        {#snippet control(id)}
+            <select
+                {id}
+                class="px-3"
+                value={selectedPortfolioId ?? ""}
+                onchange={(e) => {
+                    const val = (e.target as HTMLSelectElement).value;
+                    selectedPortfolioId = val ? Number(val) : null;
+                }}
+            >
+                <option value="">Select a portfolio</option>
+                {#each data.portfolios as portfolio}
+                    <option value={portfolio.id}>{portfolio.name}</option>
+                {/each}
+            </select>
+        {/snippet}
+    </Field>
 </div>
 
-{#if selectedPortfolio}
-    <div class="w-full md:w-[260px]">
+<div class="mt-8 max-w-sm">
+    {#if selectedPortfolio}
         <DepositAllocation
-            class="w-full"
             title={selectedPortfolio.name}
             config={selectedPortfolio.config}
             depositCents={toDepositCents}
         />
-    </div>
-{:else}
-    <p class="text-sage-500">Select a portfolio to see deposit allocations.</p>
-{/if}
+    {:else}
+        <div
+            class="rounded-surface border border-dashed border-line p-8 text-center text-sm text-ink-faint"
+        >
+            Choose a portfolio to see how the deposit splits.
+        </div>
+    {/if}
+</div>

@@ -81,7 +81,7 @@
 <div class={className}>
     <svg
         viewBox="0 0 {W} {H}"
-        class="w-full h-auto"
+        class="h-auto w-full [font-variant-numeric:tabular-nums]"
         role="img"
         aria-label="Remaining balance over time, comparing the minimum payment with your extra payment"
     >
@@ -92,7 +92,7 @@
                 x2={W - PAD.right}
                 y1={tick.y}
                 y2={tick.y}
-                stroke="var(--color-cream-200)"
+                stroke="var(--color-line-soft)"
                 stroke-width="1"
             />
             <text
@@ -100,7 +100,7 @@
                 y={tick.y + 4}
                 text-anchor="end"
                 font-size="12"
-                fill="var(--color-cream-600)"
+                fill="var(--color-ink-faint)"
             >
                 {thousands(tick.value)}
             </text>
@@ -112,7 +112,7 @@
             x2={W - PAD.right}
             y1={PAD.top + plotH}
             y2={PAD.top + plotH}
-            stroke="var(--color-cream-300)"
+            stroke="var(--color-line)"
             stroke-width="1"
         />
         {#each xTicks as tick (tick.label)}
@@ -121,7 +121,7 @@
                 y={H - 8}
                 text-anchor="middle"
                 font-size="12"
-                fill="var(--color-cream-600)"
+                fill="var(--color-ink-faint)"
             >
                 {tick.label}
             </text>
@@ -132,8 +132,9 @@
             <polyline
                 points={basePoints}
                 fill="none"
-                stroke="var(--color-cream-500)"
+                stroke="var(--color-projection)"
                 stroke-width="2"
+                stroke-dasharray="5 4"
                 stroke-linejoin="round"
             />
         {/if}
@@ -143,20 +144,23 @@
             <polyline
                 points={extraPoints}
                 fill="none"
-                stroke="var(--color-meadow-600)"
+                stroke="var(--color-accent)"
                 stroke-width="3"
                 stroke-linejoin="round"
             />
         {/if}
     </svg>
 
-    <div class="flex gap-5 mt-3 text-sm text-cream-600">
+    <div class="mt-3 flex gap-5 text-sm text-ink-muted">
         <span class="flex items-center gap-2">
-            <span class="inline-block w-4 h-0.5 bg-cream-500"></span>
+            <span
+                class="inline-block h-0.5 w-4 bg-projection"
+                style="mask-image: repeating-linear-gradient(to right, #000 0 5px, transparent 5px 9px)"
+            ></span>
             Minimum payment
         </span>
         <span class="flex items-center gap-2">
-            <span class="inline-block w-4 h-0.5 bg-meadow-600"></span>
+            <span class="inline-block h-0.5 w-4 bg-accent"></span>
             With your extra
         </span>
     </div>

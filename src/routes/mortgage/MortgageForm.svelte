@@ -131,8 +131,8 @@
                 value={showOverride ? balanceAsOf : ""}
             />
 
-            <h3 class="text-lg font-semibold mb-4">
-                {mortgage ? "Edit Mortgage" : "New Mortgage"}
+            <h3 class="type-display mb-5 text-lg text-ink">
+                {mortgage ? "Edit mortgage" : "New mortgage"}
             </h3>
 
             <div class="mb-3">
@@ -194,13 +194,13 @@
                 bind:value={piPayment}
             />
             {#if suggestedPi != null && piPayment !== suggestedPi}
-                <p class="text-xs text-cream-600 mb-3">
+                <p class="mb-3 text-xs text-ink-faint">
                     Scheduled payment for these terms is ${suggestedPi.toFixed(
                         2,
                     )}.
                     <button
                         type="button"
-                        class="text-sage-600 hover:text-sage-800 underline cursor-pointer"
+                        class="cursor-pointer font-medium text-accent underline underline-offset-2 hover:text-accent-hover"
                         onclick={() => (piPayment = suggestedPi)}>Use it</button
                     >
                 </p>
@@ -214,19 +214,19 @@
                 bind:value={escrowPayment}
             />
 
-            <div class="mb-3 pt-3 border-t border-cream-200">
-                <label class="flex items-center gap-2 cursor-pointer">
+            <div class="mb-3 border-t border-line-soft pt-4">
+                <label class="mb-0 flex cursor-pointer items-center gap-2">
                     <input
                         type="checkbox"
-                        class="w-4 h-4 appearance-auto accent-sage-600 cursor-pointer"
+                        class="h-4 w-4 cursor-pointer rounded-sm"
                         bind:checked={showOverride}
                     />
-                    <span class="text-sm font-medium text-cream-700"
+                    <span class="text-sm font-medium text-ink-muted"
                         >Override the computed balance</span
                     >
                 </label>
                 {#if showOverride}
-                    <p class="text-xs text-cream-600 mt-1 mb-3">
+                    <p class="mt-1 mb-3 text-xs text-ink-faint">
                         Use the balance your servicer shows. Otherwise it is
                         computed by amortizing from the first payment.
                     </p>
@@ -246,7 +246,7 @@
             </div>
 
             {#if errorMessage}
-                <p class="text-red-600 text-sm mb-3">{errorMessage}</p>
+                <p class="mb-3 text-sm text-danger">{errorMessage}</p>
             {/if}
 
             <FormButtons

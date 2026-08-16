@@ -49,44 +49,43 @@
 <div class={["overflow-x-auto", className]}>
     <table class="w-full text-sm">
         <thead>
-            <tr class="border-b border-cream-300 text-left">
-                <th class="py-2 pr-4">Extra / mo</th>
-                <th class="py-2 pr-4">Payoff</th>
-                <th class="py-2 pr-4">Done by</th>
-                <th class="py-2 pr-4">Time saved</th>
-                <th class="py-2 pr-4">Interest saved</th>
+            <tr class="border-b border-line text-left">
+                <th class="type-eyebrow py-3 pr-4">Extra / mo</th>
+                <th class="type-eyebrow py-3 pr-4">Payoff</th>
+                <th class="type-eyebrow py-3 pr-4">Done by</th>
+                <th class="type-eyebrow py-3 pr-4">Time saved</th>
+                <th class="type-eyebrow py-3 pr-4 text-right">Interest saved</th
+                >
             </tr>
         </thead>
-        <tbody>
+        <tbody class="divide-y divide-line-soft">
             {#each rows as row (row.amount)}
-                <tr
-                    class="border-b border-cream-200 {row.amount === extra
-                        ? 'bg-meadow-50'
-                        : ''}"
-                >
-                    <td class="py-2 pr-4 font-medium whitespace-nowrap">
+                <tr class={row.amount === extra ? "bg-accent-soft" : ""}>
+                    <td class="py-2.5 pr-4 font-medium whitespace-nowrap">
                         {formatCurrency(row.amount / 100)}
                         {#if row.amount === extra}
                             <span
-                                class="ml-2 text-[10px] uppercase tracking-wide bg-meadow-600 text-cream-50 rounded px-1.5 py-0.5"
+                                class="ml-2 rounded-control bg-accent px-1.5 py-0.5 text-[10px] font-semibold tracking-wide text-cream-50 uppercase"
                                 >you</span
                             >
                         {/if}
                     </td>
-                    <td class="py-2 pr-4 whitespace-nowrap">
+                    <td class="py-2.5 pr-4 whitespace-nowrap">
                         {row.months == null ? "—" : formatTerm(row.months)}
                     </td>
-                    <td class="py-2 pr-4 whitespace-nowrap">
+                    <td class="py-2.5 pr-4 whitespace-nowrap">
                         {row.months == null
                             ? "—"
                             : formatDate(payoffDate(nextPayment, row.months))}
                     </td>
-                    <td class="py-2 pr-4 whitespace-nowrap">
+                    <td class="py-2.5 pr-4 whitespace-nowrap">
                         {row.savedMonths > 0
                             ? formatTerm(row.savedMonths)
                             : "—"}
                     </td>
-                    <td class="py-2 pr-4 whitespace-nowrap">
+                    <td
+                        class="py-2.5 pr-4 text-right whitespace-nowrap text-ink-faint"
+                    >
                         {#if row.savedInterest > 0}
                             <span class="value-positive"
                                 >{formatCurrency(row.savedInterest / 100)}</span

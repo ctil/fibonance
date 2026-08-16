@@ -1,6 +1,9 @@
 <script lang="ts">
     import { page } from "$app/state";
     import { authClient } from "$lib/auth-client";
+    import Button from "$lib/components/Button.svelte";
+    import Card from "$lib/components/Card.svelte";
+    import Field from "$lib/components/Field.svelte";
 
     let email = $state("");
     let password = $state("");
@@ -32,58 +35,47 @@
     <title>Sign in - Fibonance</title>
 </svelte:head>
 
-<div class="max-w-md mx-auto mt-8">
-    <h1 class="text-2xl font-bold text-sage-700 mb-6">Sign in</h1>
+<div class="mx-auto max-w-sm py-8">
+    <h1 class="type-display mb-1 text-3xl text-ink">Sign in</h1>
+    <p class="mb-7 text-sm text-ink-muted">
+        Fibonance is a single-account app. Welcome back.
+    </p>
 
-    <form onsubmit={handleSubmit} class="space-y-4">
-        <div>
-            <label
-                for="email"
-                class="block text-sm font-medium text-sage-700 mb-1"
-            >
-                Email
-            </label>
-            <input
-                id="email"
-                name="email"
-                type="email"
-                autocomplete="username"
-                required
-                bind:value={email}
-                class="w-full px-3 py-2 border border-sage-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500"
-            />
-        </div>
+    <Card>
+        {#snippet body()}
+            <form onsubmit={handleSubmit} class="space-y-4">
+                <Field label="Email">
+                    {#snippet control(id)}
+                        <input
+                            {id}
+                            name="email"
+                            type="email"
+                            autocomplete="username"
+                            required
+                            bind:value={email}
+                            class="px-3"
+                        />
+                    {/snippet}
+                </Field>
 
-        <div>
-            <label
-                for="password"
-                class="block text-sm font-medium text-sage-700 mb-1"
-            >
-                Password
-            </label>
-            <input
-                id="password"
-                name="password"
-                type="password"
-                autocomplete="current-password"
-                required
-                bind:value={password}
-                class="w-full px-3 py-2 border border-sage-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-sage-500 focus:border-sage-500"
-            />
-        </div>
+                <Field label="Password" error={message}>
+                    {#snippet control(id)}
+                        <input
+                            {id}
+                            name="password"
+                            type="password"
+                            autocomplete="current-password"
+                            required
+                            bind:value={password}
+                            class="px-3"
+                        />
+                    {/snippet}
+                </Field>
 
-        {#if message}
-            <p class="text-red-600 text-sm">{message}</p>
-        {/if}
-
-        <div class="flex gap-3">
-            <button
-                type="submit"
-                disabled={loading}
-                class="flex-1 bg-sage-600 text-cream-50 px-4 py-2 rounded-md hover:bg-sage-700 transition disabled:opacity-60"
-            >
-                {loading ? "Signing in..." : "Sign in"}
-            </button>
-        </div>
-    </form>
+                <Button type="submit" block disabled={loading} class="mt-2">
+                    {loading ? "Signing in…" : "Sign in"}
+                </Button>
+            </form>
+        {/snippet}
+    </Card>
 </div>

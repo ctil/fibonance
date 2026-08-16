@@ -2,7 +2,9 @@
     import { enhance } from "$app/forms";
     import { tick } from "svelte";
     import type { Portfolio } from "$lib/server/portfolios";
-    import { X } from "lucide-svelte";
+    import type { ClassValue } from "svelte/elements";
+    import { Plus, X } from "lucide-svelte";
+    import Button from "$lib/components/Button.svelte";
     import Card from "$lib/components/Card.svelte";
     import FormButtons from "$lib/components/FormButtons.svelte";
 
@@ -10,9 +12,15 @@
         portfolio?: Portfolio;
         oncancel: () => void;
         errorMessage?: string | null;
+        class?: ClassValue;
     }
 
-    let { portfolio, oncancel, errorMessage }: Props = $props();
+    let {
+        portfolio,
+        oncancel,
+        errorMessage,
+        class: className,
+    }: Props = $props();
 
     function getInitialName() {
         return portfolio?.name ?? "";
@@ -46,7 +54,7 @@
     let action = $derived(portfolio ? "?/update" : "?/create");
 </script>
 
-<Card class="w-full max-w-lg">
+<Card class={["w-full max-w-2xl", className]}>
     {#snippet body()}
         <form
             method="post"
@@ -64,30 +72,31 @@
                 <input type="hidden" name="portfolioId" value={portfolio.id} />
             {/if}
 
-            <h3 class="text-lg font-semibold mb-4">
-                {portfolio ? "Edit Portfolio" : "New Portfolio"}
+            <h3 class="type-display mb-5 text-lg text-ink">
+                {portfolio ? "Edit portfolio" : "New portfolio"}
             </h3>
 
-            <div class="mb-3">
+            <div class="mb-5">
                 <label for="portfolio-name">Name</label>
                 <input
                     id="portfolio-name"
                     name="name"
                     type="text"
                     required
+                    class="px-3"
                     bind:value={name}
                 />
             </div>
 
-            <div class="mb-3">
-                <div class="flex items-center justify-between mb-2">
-                    <h4 class="text-md font-medium">Stocks</h4>
+            <div class="mb-5">
+                <div class="mb-2 flex items-baseline justify-between">
+                    <h4 class="type-eyebrow">Holdings</h4>
                     <span
                         class={[
-                            "text-sm font-medium",
+                            "text-sm font-medium tabular-nums",
                             percentageSum === 100
-                                ? "text-meadow-700"
-                                : "text-red-600",
+                                ? "text-accent"
+                                : "text-attention",
                         ]}
                     >
                         Total: {percentageSum}%
@@ -105,6 +114,7 @@
                                 type="text"
                                 required
                                 placeholder="VTI"
+                                class="px-3"
                                 bind:value={stock.symbol}
                                 oninput={() => {
                                     stock.symbol = stock.symbol.toUpperCase();
@@ -122,6 +132,7 @@
                                 max="100"
                                 step="1"
                                 required
+                                class="px-3 tabular-nums"
                                 bind:value={stock.targetPercentage}
                             />
                         </div>
@@ -133,6 +144,7 @@
                                 id="stock-alt-{i}"
                                 type="text"
                                 placeholder="FSKAX, SWTSX"
+                                class="px-3"
                                 bind:value={stock.alternatives}
                                 oninput={() => {
                                     stock.alternatives =
@@ -142,28 +154,31 @@
                         </div>
                         <button
                             type="button"
-                            class="p-1.5 text-red-600 hover:text-red-800 hover:bg-red-100 rounded transition cursor-pointer"
+                            class="cursor-pointer rounded-control p-1.5 text-ink-faint transition-colors hover:bg-danger-soft hover:text-danger disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-ink-faint"
                             onclick={() => removeStock(i)}
                             disabled={stocks.length <= 1}
+                            aria-label="Remove holding"
                         >
                             <X size={16} />
                         </button>
                     </div>
                 {/each}
 
-                <button
-                    type="button"
-                    class="text-sm text-sage-600 hover:text-sage-800 transition"
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    class="mt-1 -ml-3"
                     onclick={addStock}
                 >
-                    + Add Stock
-                </button>
+                    <Plus size={14} />
+                    Add holding
+                </Button>
             </div>
 
             <input type="hidden" name="stocks" value={JSON.stringify(stocks)} />
 
             {#if errorMessage}
-                <p class="text-red-600 text-sm mb-3">{errorMessage}</p>
+                <p class="mb-3 text-sm text-danger">{errorMessage}</p>
             {/if}
 
             <FormButtons

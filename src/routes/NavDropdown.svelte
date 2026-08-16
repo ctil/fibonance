@@ -1,19 +1,18 @@
 <script lang="ts">
     import { page } from "$app/state";
     import { ChevronDown } from "lucide-svelte";
+    import type { ClassValue } from "svelte/elements";
 
     type Item = { href: string; label: string };
 
     let {
         label,
         items,
-        disabled = false,
-        class: className = "",
+        class: className,
     }: {
         label: string;
         items: Item[];
-        disabled?: boolean;
-        class?: string;
+        class?: ClassValue;
     } = $props();
 
     let open = $state(false);
@@ -39,53 +38,50 @@
         }
     }
 
-    function itemClass(href: string) {
-        const base =
-            "block no-underline whitespace-nowrap py-2 px-3 rounded text-cream-50 transition-all duration-200 hover:bg-white/10";
-        return page.url.pathname === href
-            ? `${base} font-bold bg-white/20`
-            : base;
-    }
+    const itemBase =
+        "block whitespace-nowrap rounded-control px-3 py-2 text-sm font-medium " +
+        "text-cream-50 no-underline transition-colors duration-150 hover:bg-white/10";
+
+    const itemClass = (href: string) =>
+        page.url.pathname === href ? `${itemBase} bg-white/15` : itemBase;
 </script>
 
 <svelte:window onclick={onWindowClick} onkeydown={onWindowKeydown} />
 
-<div class="relative {className}" bind:this={container}>
-    {#if disabled}
-        <span
-            class="flex items-center gap-1 py-2 px-3 rounded text-cream-50/50 cursor-not-allowed"
-        >
-            {label}
-            <ChevronDown class="w-4 h-4" />
-        </span>
-    {:else}
-        <button
-            type="button"
-            class="flex items-center gap-1 py-2 px-3 rounded text-cream-50 transition-all duration-200 hover:bg-white/10 {active
-                ? 'font-bold bg-white/20'
-                : ''}"
-            aria-expanded={open}
-            aria-haspopup="true"
-            onclick={() => (open = !open)}
-        >
-            {label}
-            <ChevronDown
-                class="w-4 h-4 transition-transform duration-200 {open
-                    ? 'rotate-180'
-                    : ''}"
-            />
-        </button>
+<div class={["on-chrome relative", className]} bind:this={container}>
+    <button
+        type="button"
+        class={[
+            "flex cursor-pointer items-center gap-1 rounded-control px-3 py-2 text-sm",
+            "font-medium text-cream-50 transition-colors duration-150 hover:bg-white/10",
+            active && "bg-white/15",
+        ]}
+        aria-expanded={open}
+        aria-haspopup="true"
+        onclick={() => (open = !open)}
+    >
+        {label}
+        <ChevronDown
+            size={16}
+            class="transition-transform duration-200 {open ? 'rotate-180' : ''}"
+        />
+    </button>
 
-        {#if open}
-            <div
-                class="absolute top-full right-0 mt-1 min-w-full bg-sage-700 rounded shadow-lg py-1 px-1 flex flex-col gap-1 z-50"
-            >
-                {#each items as item (item.href)}
-                    <a href={item.href} class={itemClass(item.href)}>
-                        {item.label}
-                    </a>
-                {/each}
-            </div>
-        {/if}
+    {#if open}
+        <div
+            class="absolute top-full right-0 z-50 mt-1 flex min-w-full flex-col gap-1 rounded-surface bg-chrome-hover p-1 shadow-overlay"
+        >
+            {#each items as item (item.href)}
+                <a
+                    href={item.href}
+                    class={itemClass(item.href)}
+                    aria-current={page.url.pathname === item.href
+                        ? "page"
+                        : undefined}
+                >
+                    {item.label}
+                </a>
+            {/each}
+        </div>
     {/if}
 </div>

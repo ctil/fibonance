@@ -52,3 +52,6 @@ prompts/
 
 # Local database
 local.db
+
+# Playwright MCP screenshots
+.playwright-mcp/
