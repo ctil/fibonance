@@ -3,10 +3,22 @@
     import favicon from "$lib/assets/favicon.svg";
     import { page } from "$app/state";
     import { enhance } from "$app/forms";
+    import NavDropdown from "./NavDropdown.svelte";
     import type { LayoutData } from "./$types";
 
     let { children, data }: { children: any; data: LayoutData } = $props();
     let menuOpen = $state(false);
+
+    const investmentsItems = [
+        { href: "/portfolios", label: "Portfolios" },
+        { href: "/deposit", label: "Deposit" },
+        { href: "/rebalance", label: "Rebalance" },
+    ];
+
+    const calculatorsItems = [
+        { href: "/calculators", label: "Interest" },
+        { href: "/retirement", label: "Retirement" },
+    ];
 
     function getLinkClass(path: string) {
         const base =
@@ -18,6 +30,10 @@
 
     function getDisabledClass() {
         return "py-2 px-3 rounded text-cream-50/50 cursor-not-allowed";
+    }
+
+    function getSectionClass() {
+        return "pt-2 px-3 text-xs font-semibold uppercase tracking-wide text-cream-50/60";
     }
 </script>
 
@@ -35,26 +51,19 @@
     <!-- Desktop nav links -->
     <div class="hidden md:flex gap-2 items-center">
         <a href="/" class={getLinkClass("/")}>Home</a>
-        <a href="/calculators" class={getLinkClass("/calculators")}
-            >Calculators</a
-        >
-        <a href="/retirement" class={getLinkClass("/retirement")}>Retirement</a>
+        <NavDropdown
+            label="Investments"
+            items={investmentsItems}
+            disabled={!data.user}
+        />
+        <NavDropdown label="Calculators" items={calculatorsItems} />
         {#if data.user}
-            <a href="/portfolios" class={getLinkClass("/portfolios")}
-                >Portfolios</a
-            >
-            <a href="/deposit" class={getLinkClass("/deposit")}>Deposit</a>
-            <a href="/rebalance" class={getLinkClass("/rebalance")}>Rebalance</a
-            >
-            <a href="/taxes" class={getLinkClass("/taxes")}>Taxes</a>
             <a href="/mortgage" class={getLinkClass("/mortgage")}>Mortgage</a>
+            <a href="/taxes" class={getLinkClass("/taxes")}>Taxes</a>
             <a href="/profile" class={getLinkClass("/profile")}>Profile</a>
         {:else}
-            <span class={getDisabledClass()}>Portfolios</span>
-            <span class={getDisabledClass()}>Deposit</span>
-            <span class={getDisabledClass()}>Rebalance</span>
-            <span class={getDisabledClass()}>Taxes</span>
             <span class={getDisabledClass()}>Mortgage</span>
+            <span class={getDisabledClass()}>Taxes</span>
             <span class={getDisabledClass()}>Profile</span>
         {/if}
         {#if data.user}
@@ -113,31 +122,31 @@
                 class={getLinkClass("/")}
                 onclick={() => (menuOpen = false)}>Home</a
             >
-            <a
-                href="/calculators"
-                class={getLinkClass("/calculators")}
-                onclick={() => (menuOpen = false)}>Calculators</a
-            >
-            <a
-                href="/retirement"
-                class={getLinkClass("/retirement")}
-                onclick={() => (menuOpen = false)}>Retirement</a
-            >
+            <span class={getSectionClass()}>Investments</span>
+            {#each investmentsItems as item (item.href)}
+                {#if data.user}
+                    <a
+                        href={item.href}
+                        class="ml-3 {getLinkClass(item.href)}"
+                        onclick={() => (menuOpen = false)}>{item.label}</a
+                    >
+                {:else}
+                    <span class="ml-3 {getDisabledClass()}">{item.label}</span>
+                {/if}
+            {/each}
+            <span class={getSectionClass()}>Calculators</span>
+            {#each calculatorsItems as item (item.href)}
+                <a
+                    href={item.href}
+                    class="ml-3 {getLinkClass(item.href)}"
+                    onclick={() => (menuOpen = false)}>{item.label}</a
+                >
+            {/each}
             {#if data.user}
                 <a
-                    href="/portfolios"
-                    class={getLinkClass("/portfolios")}
-                    onclick={() => (menuOpen = false)}>Portfolios</a
-                >
-                <a
-                    href="/deposit"
-                    class={getLinkClass("/deposit")}
-                    onclick={() => (menuOpen = false)}>Deposit</a
-                >
-                <a
-                    href="/rebalance"
-                    class={getLinkClass("/rebalance")}
-                    onclick={() => (menuOpen = false)}>Rebalance</a
+                    href="/mortgage"
+                    class={getLinkClass("/mortgage")}
+                    onclick={() => (menuOpen = false)}>Mortgage</a
                 >
                 <a
                     href="/taxes"
@@ -145,21 +154,13 @@
                     onclick={() => (menuOpen = false)}>Taxes</a
                 >
                 <a
-                    href="/mortgage"
-                    class={getLinkClass("/mortgage")}
-                    onclick={() => (menuOpen = false)}>Mortgage</a
-                >
-                <a
                     href="/profile"
                     class={getLinkClass("/profile")}
                     onclick={() => (menuOpen = false)}>Profile</a
                 >
             {:else}
-                <span class={getDisabledClass()}>Portfolios</span>
-                <span class={getDisabledClass()}>Deposit</span>
-                <span class={getDisabledClass()}>Rebalance</span>
-                <span class={getDisabledClass()}>Taxes</span>
                 <span class={getDisabledClass()}>Mortgage</span>
+                <span class={getDisabledClass()}>Taxes</span>
                 <span class={getDisabledClass()}>Profile</span>
             {/if}
             {#if data.user}
